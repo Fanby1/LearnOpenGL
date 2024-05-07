@@ -45,3 +45,19 @@ void CObject::addVBO(GLuint vVBO)
 	glBindVertexArray(m_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, vVBO);
 }
+
+void CObject::deleteVBO(GLuint vVBO)
+{
+	m_VBO.erase(vVBO);
+	createVAO();
+}
+
+void CObject::createEBO(std::shared_ptr<unsigned int> vIndices, size_t vSize)
+{
+	glGenBuffers(1, &m_EBO);
+	// 绑定EBO
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+
+	// 将索引数据传入EBO
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, vSize, vIndices.get(), GL_STATIC_DRAW);
+}

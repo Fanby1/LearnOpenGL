@@ -16,8 +16,8 @@ public:
 	void createVAO();
 	void createVBO(std::shared_ptr<float> vVertices, size_t vSize, unsigned int vType);
 	void addVBO(GLuint vVBO);
-	void deleteVBO(GLuint vVBO){}
-	void createEBO(std::shared_ptr<unsigned int> vIndices, size_t vSize){}
-	void setEBO(GLuint vEBO){}
+	void deleteVBO(GLuint vVBO);
+	void createEBO(std::shared_ptr<unsigned int> vIndices, size_t vSize);
+	void setEBO(GLuint vEBO);
 };
 
