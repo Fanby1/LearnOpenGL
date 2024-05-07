@@ -3,25 +3,7 @@
 #include <iostream>
 #include "CWindow.h"
 #include "CShaderFrame.h"
-
-const char* VertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-const char* FragmentShaderSourceOrange = "#version 330 core\n"
-"out vec4 FragColorOrange;\n"
-"void main()\n"
-"{\n"
-"   FragColorOrange = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\n\0";
-const char* FragmentShaderSourceYellow = "#version 330 core\n"
-"out vec4 FragColorYellow;\n"
-"void main()\n"
-"{\n"
-"   FragColorYellow = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
-"}\n\0";
+#include "CShader.h"
 
 // set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
@@ -124,12 +106,9 @@ int main() {
     auto VAO_1 = createVAO(VBO, EBO_1);
     auto VAO_2 = createVAO(VBO, EBO_2);
    
-    auto VertexShader = CShaderFrame::generateShader(VertexShaderSource, GL_VERTEX_SHADER);
-    auto FragmentShaderOrange = CShaderFrame::generateShader(FragmentShaderSourceOrange, GL_FRAGMENT_SHADER);
-    auto FragmentShaderYellow = CShaderFrame::generateShader(FragmentShaderSourceYellow, GL_FRAGMENT_SHADER);
-    auto ShaderProgrameOrange = linkShader(VertexShader, FragmentShaderOrange);
-    auto ShaderProgrameYellow = linkShader(VertexShader, FragmentShaderYellow);
+    CShader OrangeShader("./Shader/vertex.vs", "./Shader/orange.fs");
+    CShader YelloShader("./Shader/vertex.vs", "./Shader/yellow.fs");
     
-    Window.render({ ShaderProgrameOrange, ShaderProgrameYellow }, { VAO_1 , VAO_2});
+    Window.render({ OrangeShader.ID, YelloShader.ID }, { VAO_1 , VAO_2});
     //Window.render({ ShaderProgrameOrange }, { VAO_1 });
 }

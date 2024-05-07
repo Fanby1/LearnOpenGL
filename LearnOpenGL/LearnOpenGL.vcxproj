@@ -22,10 +22,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CObject.h" />
+    <ClInclude Include="CShader.h" />
     <ClInclude Include="CShaderFrame.h" />
     <ClInclude Include="CWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CObject.cpp" />
+    <ClCompile Include="CShader.cpp" />
     <ClCompile Include="CShaderFrame.cpp" />
     <ClCompile Include="CWindow.cpp" />
     <ClCompile Include="glad.c" />
@@ -143,6 +147,7 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="D:\vc_packages\GLAD.1.0.0\build\glad.targets" Condition="Exists('D:\vc_packages\GLAD.1.0.0\build\glad.targets')" />
     <Import Project="D:\vc_packages\GLFW.3.4.0\build\glfw.targets" Condition="Exists('D:\vc_packages\GLFW.3.4.0\build\glfw.targets')" />
+    <Import Project="D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets" Condition="Exists('D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -150,5 +155,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('D:\vc_packages\GLAD.1.0.0\build\glad.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\GLAD.1.0.0\build\glad.targets'))" />
     <Error Condition="!Exists('D:\vc_packages\GLFW.3.4.0\build\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\GLFW.3.4.0\build\glfw.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets'))" />
   </Target>
 </Project>

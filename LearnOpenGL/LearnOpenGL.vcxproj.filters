@@ -24,6 +24,12 @@
     <ClInclude Include="CWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -36,6 +42,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
