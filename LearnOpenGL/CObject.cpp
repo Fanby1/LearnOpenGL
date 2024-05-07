@@ -30,7 +30,9 @@ void CObject::createVAO()
 		glBindBuffer(GL_ARRAY_BUFFER, VBO.first);
 		__setPointer(VBO.second);
 	}
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+	if (m_EBO != -1) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+	}
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
