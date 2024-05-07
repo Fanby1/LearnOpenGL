@@ -30,6 +30,9 @@
     <ClInclude Include="CShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CTexture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -48,6 +51,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

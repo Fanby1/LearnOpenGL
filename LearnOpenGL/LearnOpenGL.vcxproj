@@ -25,12 +25,14 @@
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CShader.h" />
     <ClInclude Include="CShaderFrame.h" />
+    <ClInclude Include="CTexture.h" />
     <ClInclude Include="CWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CShader.cpp" />
     <ClCompile Include="CShaderFrame.cpp" />
+    <ClCompile Include="CTexture.cpp" />
     <ClCompile Include="CWindow.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />

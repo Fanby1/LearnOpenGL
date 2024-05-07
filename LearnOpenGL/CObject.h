@@ -1,23 +1,29 @@
 #pragma once
-#include <set>
+#include <map>
 #include <memory>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#define VERTEX_TYPE_VERTEX_BIT 1
+#define VERTEX_TYPE_COLOR_BIT 2
+#define VERTEX_TYPE_TEXTURE_BIT 4
+#define VERTEX_TYPE_NORMAL_BIT 8
 class CObject
 {
 private:
-	std::shared_ptr<float> m_Vertices = nullptr;
-	std::shared_ptr<GLuint> m_Indices = nullptr;
 	GLuint m_VAO = -1;
-	std::set<GLuint> m_VBO;
+	std::map<GLuint, unsigned int> m_VBO;
+
 	GLuint m_EBO = -1;
 	unsigned int m_VeticesOffset, m_ColorsOffset, m_TexturesOffset;
+	void __setPointer(unsigned int vType);
 public:
 	void createVAO();
-	void createVBO(std::shared_ptr<float> vVertices, size_t vSize, unsigned int vType);
-	void addVBO(GLuint vVBO);
+	GLuint createVBO(float* vVertices, size_t vSize, unsigned int vType);
+	GLuint createEBO(unsigned int* vIndices, size_t vSize);
+	void addVBO(GLuint vVBO, unsigned int vType);
 	void deleteVBO(GLuint vVBO);
-	void createEBO(std::shared_ptr<unsigned int> vIndices, size_t vSize);
 	void setEBO(GLuint vEBO);
+	GLuint getVAO();
 };
 
