@@ -1,6 +1,9 @@
 #pragma once
 #include <map>
 #include <memory>
+#include <vector>
+#include <algorithm>
+#include <numeric>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -12,16 +15,17 @@ class CObject
 {
 private:
 	GLuint m_VAO = -1;
-	std::map<GLuint, unsigned int> m_VBO;
+	std::map<GLuint, std::pair<unsigned int, std::vector<unsigned int>>> m_VBO;
 
 	GLuint m_EBO = -1;
 	unsigned int m_VeticesOffset, m_ColorsOffset, m_TexturesOffset;
-	void __setPointer(unsigned int vType);
+	void __setPointer(unsigned int vType, std::vector<unsigned> vOffset);
 public:
+	
 	void createVAO();
-	GLuint createVBO(float* vVertices, size_t vSize, unsigned int vType);
+	GLuint createVBO(float* vVertices, size_t vSize, unsigned int vType, std::vector<unsigned int> vOffset);
+	void addVBO(GLuint vVBO, unsigned int vType, std::vector<unsigned int> vOffset);
 	GLuint createEBO(unsigned int* vIndices, size_t vSize);
-	void addVBO(GLuint vVBO, unsigned int vType);
 	void deleteVBO(GLuint vVBO);
 	void setEBO(GLuint vEBO);
 	GLuint getVAO();

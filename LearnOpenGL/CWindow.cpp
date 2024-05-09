@@ -32,7 +32,7 @@ void CWindow::render(std::vector<unsigned int> vShaderProgram, std::vector<unsig
         for (int i = 0; i < vShaderProgram.size(); i++) {
             glUseProgram(vShaderProgram[i]);
             glBindVertexArray(vVAO[i]);
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
             glBindVertexArray(0);
         }
         // glBindVertexArray(0); // no need to unbind it every time 

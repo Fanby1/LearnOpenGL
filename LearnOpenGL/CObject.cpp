@@ -1,20 +1,14 @@
 #include "CObject.h"
 
-void CObject::__setPointer(unsigned int vType)
+void CObject::__setPointer(unsigned int vType, std::vector<unsigned> vOffset)
 {
-	int Step = 0;
-	auto Temp = vType;
-	while (Temp) {
-		Step += Temp & 1;
-		Temp >>= 1;
-	}
-	Step *= 3;
+	int Step = std::accumulate(vOffset.begin(), vOffset.end(),0) * sizeof(float);
 	unsigned int Offset = 0;
 	for (size_t i = 0; i < 4; i++) {
 		if (vType & (1u << i)) {
-			glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, Step * sizeof(float), (void*)Offset);
+			glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, Step, (void*)Offset);
 			glEnableVertexAttribArray(i);
-			Offset += 3 * sizeof(float);
+			Offset += vOffset[i] * sizeof(float);
 		}
 	}
 }
@@ -28,7 +22,7 @@ void CObject::createVAO()
 	glBindVertexArray(m_VAO);
 	for (auto& VBO : m_VBO) {
 		glBindBuffer(GL_ARRAY_BUFFER, VBO.first);
-		__setPointer(VBO.second);
+		__setPointer(VBO.second.first, VBO.second.second);
 	}
 	if (m_EBO != -1) {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
@@ -37,23 +31,23 @@ void CObject::createVAO()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-GLuint CObject::createVBO(float* vVertices, size_t vSize, unsigned int vType)
+GLuint CObject::createVBO(float* vVertices, size_t vSize, unsigned int vType, std::vector<unsigned int> vOffset)
 {
 	GLuint VBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, vSize, vVertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	m_VBO[VBO] = vType;
+	m_VBO[VBO] = { vType, vOffset };
 	return VBO;
 }
 
-void CObject::addVBO(GLuint vVBO, unsigned int vType)
+void CObject::addVBO(GLuint vVBO, unsigned int vType, std::vector<unsigned int> vOffset)
 {
 	if (m_VBO.find(vVBO) != m_VBO.end()) {
 		return;
 	}
-	m_VBO[vVBO] = vType;
+	m_VBO[vVBO] = { vType, vOffset };
 	glBindVertexArray(m_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, vVBO);
 	createVAO();
@@ -86,3 +80,4 @@ GLuint CObject::getVAO()
 {
 	return m_VAO;
 }
+
