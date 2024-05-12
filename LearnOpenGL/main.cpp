@@ -2,10 +2,12 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "CWindow.h"
-#include "CShaderFrame.h"
 #include "CShader.h"
 #include "CObject.h"
 #include "CTexture.h"
+#include "CVertexArrayObject.h"
+#include "CVertexBufferObject.h"
+#include "CElementBufferObject.h"
 
 // set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
@@ -63,19 +65,30 @@ static void initGLFW() {
 }
 
 static void renderOrangeAndYellow(CWindow& vWindow) {
-    CObject TriangleOrange, TriangleYellow;
-    auto VBO = TriangleOrange.createVBO(Vertices, sizeof(Vertices), VERTEX_TYPE_VERTEX_BIT, {3});
-    TriangleOrange.createEBO(IndicesFirst, sizeof(IndicesFirst));
-    TriangleOrange.createVAO();
-    TriangleYellow.createEBO(IndicesSecond, sizeof(IndicesSecond));
-    TriangleYellow.addVBO(VBO, VERTEX_TYPE_VERTEX_BIT, {3});
+    auto OrangeShader = std::make_shared<CShader>("./Shader/vertex.vs", "./Shader/orange.fs");
+    auto YelloShader = std::make_shared<CShader>("./Shader/vertex.vs", "./Shader/yellow.fs");
+    
+    std::vector<unsigned int> temp = { 3u };
+    auto VBO = std::make_shared<CVertexBufferObject>(Vertices, sizeof(Vertices), VERTEX_TYPE_VERTEX_BIT, temp);
+    auto EBOYellow = std::make_shared<CElementBufferObject>(IndicesSecond, sizeof(IndicesSecond));
+    auto EBOOrange = std::make_shared<CElementBufferObject>(IndicesFirst, sizeof(IndicesFirst));
 
-    CShader OrangeShader("./Shader/vertex.vs", "./Shader/orange.fs");
-    CShader YelloShader("./Shader/vertex.vs", "./Shader/yellow.fs");
+    auto VAOYellow = std::make_shared<CVertexArrayObject>(), VAOOrange = std::make_shared<CVertexArrayObject>();
+    VAOYellow->addVBO(VBO);
+    VAOYellow->setEBO(EBOYellow);
+    
+    VAOOrange->addVBO(VBO);
+    VAOOrange->setEBO(EBOOrange);
+    auto TriangleOrange = std::make_shared<CObject>(), TriangleYellow = std::make_shared<CObject>();
+    TriangleOrange->addVAO(VAOOrange, OrangeShader);
+    TriangleYellow->addVAO(VAOYellow, YelloShader);
 
-    vWindow.render({ OrangeShader.ID, YelloShader.ID }, { TriangleOrange.getVAO() , TriangleYellow.getVAO() });
+    vWindow.setObject({ TriangleOrange, TriangleYellow });
+    
+    vWindow.render();
+    
 }
-
+/*
 static void renderMix(CWindow& vWindow) {
     CObject Mix;
     Mix.createVBO(MixVertices, sizeof(MixVertices), VERTEX_TYPE_VERTEX_BIT | VERTEX_TYPE_COLOR_BIT, {3,3});
@@ -101,13 +114,14 @@ static void renderTexture(CWindow& vWindow) {
 
     vWindow.render({ TextureShader.ID }, { Rectangle.getVAO() });
 }
+*/
 
 int main() {
     initGLFW();
     CWindow Window(800, 600);
     initGLAD();
     
-    // renderOrangeAndYellow(Window);
+    renderOrangeAndYellow(Window);
     // renderMix(Window);
-    renderTexture(Window);
+    // renderTexture(Window);
 }

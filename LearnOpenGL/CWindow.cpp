@@ -17,7 +17,22 @@ CWindow::CWindow(unsigned int vWidth, unsigned int vHeight): m_Width(vWidth), m_
     glfwSetFramebufferSizeCallback(m_Window, _framebuffer_size_callback);
 }
 
-void CWindow::render(std::vector<unsigned int> vShaderProgram, std::vector<unsigned int> vVAO)
+void CWindow::setObject(std::set<std::shared_ptr<CObject>>&& vObjects)
+{
+    m_Objects = vObjects;
+}
+
+void CWindow::deleteObejct(std::shared_ptr<CObject> vObject)
+{
+    m_Objects.erase(vObject);
+}
+
+void CWindow::addObject(std::shared_ptr<CObject> vObject)
+{
+    m_Objects.insert(vObject);
+}
+
+void CWindow::render()
 {
     while (!glfwWindowShouldClose(m_Window))
     {
@@ -29,11 +44,13 @@ void CWindow::render(std::vector<unsigned int> vShaderProgram, std::vector<unsig
 
         // draw our first triangle
         // ..:: Drawing code (in render loop) :: ..
-        for (int i = 0; i < vShaderProgram.size(); i++) {
-            glUseProgram(vShaderProgram[i]);
-            glBindVertexArray(vVAO[i]);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-            glBindVertexArray(0);
+        for (auto& Object : m_Objects) {
+            for (auto& It : *Object) {
+                glUseProgram(It.second->ID);
+                glBindVertexArray(It.first->getID());
+                glDrawElements(GL_TRIANGLES, It.first->getEBO()->getSize(), GL_UNSIGNED_INT, 0);
+                glBindVertexArray(0);
+            }
         }
         // glBindVertexArray(0); // no need to unbind it every time 
 

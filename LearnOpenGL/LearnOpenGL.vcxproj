@@ -22,20 +22,24 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CElementBufferObject.h" />
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CShader.h" />
-    <ClInclude Include="CShaderFrame.h" />
     <ClInclude Include="CTexture.h" />
+    <ClInclude Include="CVertexArrayObject.h" />
+    <ClInclude Include="CVertexBufferObject.h" />
     <ClInclude Include="CWindow.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CElementBufferObject.cpp" />
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CShader.cpp" />
-    <ClCompile Include="CShaderFrame.cpp" />
     <ClCompile Include="CTexture.cpp" />
+    <ClCompile Include="CVertexArrayObject.cpp" />
+    <ClCompile Include="CVertexBufferObject.cpp" />
     <ClCompile Include="CWindow.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
@@ -127,6 +131,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
