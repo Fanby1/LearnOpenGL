@@ -88,40 +88,58 @@ static void renderOrangeAndYellow(CWindow& vWindow) {
     vWindow.render();
     
 }
-/*
-static void renderMix(CWindow& vWindow) {
-    CObject Mix;
-    Mix.createVBO(MixVertices, sizeof(MixVertices), VERTEX_TYPE_VERTEX_BIT | VERTEX_TYPE_COLOR_BIT, {3,3});
-    unsigned int temp[] = { 0,1,2 };
-    Mix.createEBO(temp, sizeof(temp));
-    Mix.createVAO();
-    
-    CShader MixShader("./Shader/mix.vs", "./Shader/mix.fs");
 
-    vWindow.render({ MixShader.ID }, { Mix.getVAO() });
+static void renderMix(CWindow& vWindow) {
+    auto MixShader = std::make_shared<CShader>("./Shader/mix.vs", "./Shader/mix.fs");
+
+    std::vector<unsigned int> Offset = { 3,3 };
+    unsigned int Index[] = {0,1,2};
+    auto MixVBO = std::make_shared<CVertexBufferObject>(MixVertices, sizeof(MixVertices), VERTEX_TYPE_VERTEX_BIT | VERTEX_TYPE_COLOR_BIT, Offset);
+    auto MixEBO = std::make_shared<CElementBufferObject>(Index, sizeof(Index));
+    auto MixVAO = std::make_shared<CVertexArrayObject>();
+
+    MixVAO->addVBO(MixVBO);
+    MixVAO->setEBO(MixEBO);
+
+    auto Mix = std::make_shared<CObject>();
+    Mix->addVAO(MixVAO, MixShader);
+    
+    vWindow.addObject(Mix);
+
+    vWindow.render();
 }
 
 static void renderTexture(CWindow& vWindow) {
-    CObject Rectangle;
-    Rectangle.createVBO(TextureVertices, sizeof(TextureVertices), VERTEX_TYPE_VERTEX_BIT | VERTEX_TYPE_COLOR_BIT | VERTEX_TYPE_TEXTURE_BIT, { 3,3,2 });
-    Rectangle.createEBO(TextureIndices, sizeof(TextureIndices));
-    Rectangle.createVAO();
+    auto TextureShader = std::make_shared<CShader>("./Shader/texture.vs", "./Shader/texture.fs");
+
+    std::vector<unsigned int> Offset = { 3,3,2 };
+
+    auto RectangleVBO = std::make_shared<CVertexBufferObject>(TextureVertices, sizeof(TextureVertices), VERTEX_TYPE_VERTEX_BIT | VERTEX_TYPE_COLOR_BIT | VERTEX_TYPE_TEXTURE_BIT, Offset);
+    auto RectangleEBO = std::make_shared<CElementBufferObject>(TextureIndices, sizeof(TextureIndices));
+    auto RectangleVAO = std::make_shared<CVertexArrayObject>();
+
+    RectangleVAO->addVBO(RectangleVBO);
+    RectangleVAO->setEBO(RectangleEBO);
+
+    auto Rectangle = std::make_shared<CObject>();
+    Rectangle->addVAO(RectangleVAO, TextureShader);
 
     CImage Image("./Assert/container.jpg");
     CTexture Texture(Image);
     Texture.bind();
-    CShader TextureShader("./Shader/texture.vs", "./Shader/texture.fs");
+    
+    vWindow.addObject(Rectangle);
 
-    vWindow.render({ TextureShader.ID }, { Rectangle.getVAO() });
+    vWindow.render();
 }
-*/
+
 
 int main() {
     initGLFW();
     CWindow Window(800, 600);
     initGLAD();
     
-    renderOrangeAndYellow(Window);
+    // renderOrangeAndYellow(Window);
     // renderMix(Window);
-    // renderTexture(Window);
+    renderTexture(Window);
 }
