@@ -1,8 +1,9 @@
 #include "CTexture.h"
 
-CTexture::CTexture(const CImage& vImage, GLuint vTextureIndex)
+CTexture::CTexture(const CImage& vImage, GLuint vTextureUnit)
 {
-    glActiveTexture(vTextureIndex);
+    m_TextureUnit = vTextureUnit;
+    glActiveTexture(vTextureUnit);
     glGenTextures(1, &m_Texture);
     glBindTexture(GL_TEXTURE_2D, m_Texture);
     // set the texture wrapping/filtering options (on the currently bound texture object)
@@ -21,6 +22,7 @@ CTexture::CTexture(const CImage& vImage, GLuint vTextureIndex)
 
 void CTexture::bind()
 {
+    glActiveTexture(m_TextureUnit);
     glBindTexture(GL_TEXTURE_2D, m_Texture);
 }
 

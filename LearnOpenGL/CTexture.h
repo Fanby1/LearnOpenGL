@@ -6,8 +6,9 @@ class CTexture
 {
 private:
 	GLuint m_Texture = 0;
+	GLuint m_TextureUnit = 0;
 public:
-	CTexture(const CImage& vImage, GLuint vTextureIndex);
+	CTexture(const CImage& vImage, GLuint vTextureUnit);
 	void bind();
 	GLuint getTexture() const;
 };
