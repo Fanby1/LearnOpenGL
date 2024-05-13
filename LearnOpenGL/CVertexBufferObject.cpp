@@ -33,7 +33,7 @@ const void CVertexBufferObject::bind() const
 	unsigned int Offset = 0;
 	for (size_t i = 0; i < 4; i++) {
 		if (m_Type & (1u << i)) {
-			glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, m_Step, (void*)Offset);
+			glVertexAttribPointer(i, m_Offset[i], GL_FLOAT, GL_FALSE, m_Step, (void*)Offset);
 			glEnableVertexAttribArray(i);
 			Offset += m_Offset[i] * sizeof(float);
 		}

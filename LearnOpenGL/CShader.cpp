@@ -75,6 +75,49 @@ void CShader::setFloat(const std::string& vName, float vValue) const
     glUniform1f(glGetUniformLocation(ID, vName.c_str()), vValue);
 }
 
+// ------------------------------------------------------------------------
+void CShader::setVec2(const std::string& name, const Eigen::Vector2f& value) const
+{
+    glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, value.data());
+}
+void CShader::setVec2(const std::string& name, float x, float y) const
+{
+    glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
+}
+// ------------------------------------------------------------------------
+void CShader::setVec3(const std::string& name, const Eigen::Vector3f& value) const
+{
+    glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, value.data());
+}
+void CShader::setVec3(const std::string& name, float x, float y, float z) const
+{
+    glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
+}
+// ------------------------------------------------------------------------
+void CShader::setVec4(const std::string& name, const Eigen::Vector4f& value) const
+{
+    glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, value.data());
+}
+void CShader::setVec4(const std::string& name, float x, float y, float z, float w) const
+{
+    glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
+}
+// ------------------------------------------------------------------------
+void CShader::setMat2(const std::string& name, const Eigen::Matrix2f& mat) const
+{
+    glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, mat.data());
+}
+// ------------------------------------------------------------------------
+void CShader::setMat3(const std::string& name, const Eigen::Matrix3f& mat) const
+{
+    glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, mat.data());
+}
+// ------------------------------------------------------------------------
+void CShader::setMat4(const std::string& name, const Eigen::Matrix4f& mat) const
+{
+    glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, mat.data());
+}
+
 void CShader::checkCompileErrors(unsigned int vShader, std::string vType)
 {
     int Success;

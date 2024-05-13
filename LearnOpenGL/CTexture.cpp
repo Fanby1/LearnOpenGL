@@ -1,7 +1,8 @@
 #include "CTexture.h"
 
-CTexture::CTexture(const CImage& vImage)
+CTexture::CTexture(const CImage& vImage, GLuint vTextureIndex)
 {
+    glActiveTexture(vTextureIndex);
     glGenTextures(1, &m_Texture);
     glBindTexture(GL_TEXTURE_2D, m_Texture);
     // set the texture wrapping/filtering options (on the currently bound texture object)
@@ -10,7 +11,11 @@ CTexture::CTexture(const CImage& vImage)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load and generate the texture
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, vImage.getWidth(), vImage.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, vImage.getData());
+    unsigned long RGBA = GL_RGB;
+    if (vImage.getNRChannels() == 4) {
+        RGBA = GL_RGBA;
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, RGBA, vImage.getWidth(), vImage.getHeight(), 0, RGBA, GL_UNSIGNED_BYTE, vImage.getData());
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 

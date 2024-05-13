@@ -7,7 +7,7 @@ class CTexture
 private:
 	GLuint m_Texture = 0;
 public:
-	CTexture(const CImage& vImage);
+	CTexture(const CImage& vImage, GLuint vTextureIndex);
 	void bind();
 	GLuint getTexture() const;
 };

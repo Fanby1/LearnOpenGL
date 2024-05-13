@@ -27,10 +27,10 @@ float MixVertices[] = {
 
 float TextureVertices[] = {
     // positions          // colors           // texture coords
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,   // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f    // top left 
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
 };
 unsigned int IndicesFirst[] = {  // note that we start from 0!
     0, 1, 3,   // first triangle
@@ -125,11 +125,61 @@ static void renderTexture(CWindow& vWindow) {
     Rectangle->addVAO(RectangleVAO, TextureShader);
 
     CImage Image("./Assert/container.jpg");
-    CTexture Texture(Image);
+    CTexture Texture(Image, GL_TEXTURE0);
     Texture.bind();
     
     vWindow.addObject(Rectangle);
 
+    vWindow.render();
+}
+
+static void renderTransform(CWindow& vWindow) {
+    auto TransformShader = std::make_shared<CShader>("./Shader/transform.vs", "./Shader/transform.fs");
+    TransformShader->use();
+    TransformShader->setInt("texture1", 0);
+    TransformShader->setInt("texture2", 1);
+
+    float Vertices[] = {
+        // positions          // texture coords
+         0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
+    };
+
+    unsigned int Indices[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
+    CImage Container("./Assert/container.jpg");
+    CTexture Texture_0(Container, GL_TEXTURE0);
+    CImage Awesomeface("./Assert/awesomeface.png");
+    CTexture Texture_1(Awesomeface, GL_TEXTURE1);
+
+    Texture_0.bind();
+    Texture_1.bind();
+
+    // bind textures on corresponding texture units
+    // glActiveTexture(GL_TEXTURE0);
+    // glBindTexture(GL_TEXTURE_2D, Texture_0.getTexture());
+    // glActiveTexture(GL_TEXTURE1);
+    // glBindTexture(GL_TEXTURE_2D, Texture_1.getTexture());
+
+    std::vector<unsigned int> Offset = { 3,0,2 };
+    auto TransformVBO = std::make_shared<CVertexBufferObject>(Vertices, sizeof(Vertices), VERTEX_TYPE_VERTEX_BIT | VERTEX_TYPE_TEXTURE_BIT, Offset);
+    auto TransformEBO = std::make_shared<CElementBufferObject>(Indices, sizeof(Indices));
+    auto TransformVAO = std::make_shared<CVertexArrayObject>();
+
+    TransformVAO->addVBO(TransformVBO);
+    TransformVAO->setEBO(TransformEBO);
+
+    auto Transform = std::make_shared<CObject>();
+    Transform->addVAO(TransformVAO, TransformShader);
+
+    Eigen::Matrix4f Mat = Eigen::Matrix4f::Identity();
+    TransformShader->setMat4("transform", Mat);
+
+    vWindow.addObject(Transform);
     vWindow.render();
 }
 
@@ -141,5 +191,6 @@ int main() {
     
     // renderOrangeAndYellow(Window);
     // renderMix(Window);
-    renderTexture(Window);
+    // renderTexture(Window);
+    renderTransform(Window);
 }

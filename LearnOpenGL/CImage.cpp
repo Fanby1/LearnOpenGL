@@ -2,6 +2,7 @@
 
 CImage::CImage(const char* vPath)
 {
+	stbi_set_flip_vertically_on_load(true);
 	m_Data = stbi_load(vPath, &m_Width, &m_Height, &m_NRChannels, 0);
 }
 
