@@ -58,6 +58,7 @@ CShader::CShader(const char* vVertexPath, const char* vFragmentPath)
 void CShader::use()
 {
     glUseProgram(ID);
+    setMat4("transform", m_Transform);
 }
 
 void CShader::setBool(const std::string& vName, bool vValue) const

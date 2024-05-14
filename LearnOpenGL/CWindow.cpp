@@ -45,12 +45,7 @@ void CWindow::render()
         // draw our first triangle
         // ..:: Drawing code (in render loop) :: ..
         for (auto& Object : m_Objects) {
-            for (auto& It : *Object) {
-                glUseProgram(It.second->ID);
-                glBindVertexArray(It.first->getID());
-                glDrawElements(GL_TRIANGLES, It.first->getEBO()->getSize(), GL_UNSIGNED_INT, 0);
-                glBindVertexArray(0);
-            }
+            Object->render();
         }
         // glBindVertexArray(0); // no need to unbind it every time 
 

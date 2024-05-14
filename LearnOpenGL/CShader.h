@@ -10,6 +10,7 @@ class CShader
 {
 public:
     unsigned int ID;
+    Eigen::Matrix4f m_Transform = Eigen::Matrix4f::Identity();
     CShader(const char* vVertexPath, const char* vFragmentPath);
     void use();
     void setBool(const std::string& vName, bool vValue) const;

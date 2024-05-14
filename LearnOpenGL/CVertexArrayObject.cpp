@@ -62,3 +62,8 @@ std::set<std::shared_ptr<CVertexBufferObject>> CVertexArrayObject::getVBOs() con
 {
 	return m_VBOs;
 }
+
+void CVertexArrayObject::bind() const
+{
+	glBindVertexArray(m_ID);
+}

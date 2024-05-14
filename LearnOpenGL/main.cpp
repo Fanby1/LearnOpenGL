@@ -1,6 +1,9 @@
+#define _USE_MATH_DEFINES
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <cmath>
 #include "CWindow.h"
 #include "CShader.h"
 #include "CObject.h"
@@ -159,12 +162,6 @@ static void renderTransform(CWindow& vWindow) {
     Texture_0.bind();
     Texture_1.bind();
 
-    // bind textures on corresponding texture units
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, Texture_0.getTexture());
-    // glActiveTexture(GL_TEXTURE1);
-    // glBindTexture(GL_TEXTURE_2D, Texture_1.getTexture());
-
     std::vector<unsigned int> Offset = { 3,0,2 };
     auto TransformVBO = std::make_shared<CVertexBufferObject>(Vertices, sizeof(Vertices), VERTEX_TYPE_VERTEX_BIT | VERTEX_TYPE_TEXTURE_BIT, Offset);
     auto TransformEBO = std::make_shared<CElementBufferObject>(Indices, sizeof(Indices));
@@ -175,9 +172,6 @@ static void renderTransform(CWindow& vWindow) {
 
     auto Transform = std::make_shared<CObject>();
     Transform->addVAO(TransformVAO, TransformShader);
-
-    Eigen::Matrix4f Mat = Eigen::Matrix4f::Identity();
-    TransformShader->setMat4("transform", Mat);
 
     vWindow.addObject(Transform);
     vWindow.render();

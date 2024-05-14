@@ -23,6 +23,7 @@ public:
 	GLuint getID() const;
 	std::shared_ptr<CElementBufferObject> getEBO() const;
 	std::set<std::shared_ptr<CVertexBufferObject>> getVBOs() const;
+	void bind() const;
 
 };
 
