@@ -1,5 +1,11 @@
 #include "CShader.h"
 
+void CShader::__computeTransformMatrix()
+{
+    m_Transform = m_Projection * m_View * m_Model;
+    m_ComputeTransformFlag = false;
+}
+
 CShader::CShader(const char* vVertexPath, const char* vFragmentPath)
 {
     // 1. retrieve the Vertex/Fragment source code from filePath
@@ -58,7 +64,28 @@ CShader::CShader(const char* vVertexPath, const char* vFragmentPath)
 void CShader::use()
 {
     glUseProgram(ID);
+    if (m_ComputeTransformFlag) {
+        __computeTransformMatrix();
+    }
     setMat4("transform", m_Transform);
+}
+
+void CShader::setModel(Eigen::Matrix4f vModelMatrix)
+{
+    m_Model = vModelMatrix;
+    m_ComputeTransformFlag = true;
+}
+
+void CShader::setView(Eigen::Matrix4f vVeiwMatrix)
+{
+    m_View = vVeiwMatrix;
+    m_ComputeTransformFlag = true;
+}
+
+void CShader::setProjection(Eigen::Matrix4f vProjectionMatrix)
+{
+    m_Projection = vProjectionMatrix;
+    m_ComputeTransformFlag = true;
 }
 
 void CShader::setBool(const std::string& vName, bool vValue) const

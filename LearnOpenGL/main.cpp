@@ -11,6 +11,7 @@
 #include "CVertexArrayObject.h"
 #include "CVertexBufferObject.h"
 #include "CElementBufferObject.h"
+#include "CCamera.h"
 
 // set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
@@ -173,7 +174,17 @@ static void renderTransform(CWindow& vWindow) {
     auto Transform = std::make_shared<CObject>();
     Transform->addVAO(TransformVAO, TransformShader);
 
+    CCamera Camera;
+    Camera.setCameraPosition({ 0, 0, 3});
+    // Camera.setCameraTarget({ 0,0,0 });
+    Camera.setFarPlane(100);
+    Camera.setNearPlane(0.1);
+    Camera.setAspectRatio(800.0 / 600.0);
+    Camera.setFeildOfView(45.0);
+    TransformShader->setProjection(Camera.getProjectionMatrix());
+    TransformShader->setView(Camera.getViewMatrix());
     vWindow.addObject(Transform);
+    glEnable(GL_DEPTH_TEST);
     vWindow.render();
 }
 

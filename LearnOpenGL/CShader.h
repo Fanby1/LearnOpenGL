@@ -8,11 +8,20 @@
 
 class CShader
 {
+private:
+    Eigen::Matrix4f m_Transform = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f m_Model = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f m_View = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f m_Projection = Eigen::Matrix4f::Identity();
+    bool m_ComputeTransformFlag = true;
+    void __computeTransformMatrix();
 public:
     unsigned int ID;
-    Eigen::Matrix4f m_Transform = Eigen::Matrix4f::Identity();
     CShader(const char* vVertexPath, const char* vFragmentPath);
     void use();
+    void setModel(Eigen::Matrix4f vModelMatrix);
+    void setView(Eigen::Matrix4f vVeiwMatrix);
+    void setProjection(Eigen::Matrix4f vProjectionMatrix);
     void setBool(const std::string& vName, bool vValue) const;
     void setInt(const std::string& vName, int vValue) const;
     void setFloat(const std::string& vName, float vValue) const;

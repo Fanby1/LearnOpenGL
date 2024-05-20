@@ -4,8 +4,8 @@ void CObject::__rotation(std::shared_ptr<CShader> vShader)
 {
 	auto Current = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> Elapsed = Current - m_Start;  // Calculate elapsed time
-	double Angle = M_PI * Elapsed.count();
-	Eigen::Vector3f Axis(0, 0, 1);
+	double Angle = M_PI * Elapsed.count() * 0.1;
+	Eigen::Vector3f Axis(0, 1, 0);
 
 	Eigen::AngleAxisf RotationVector(Angle, Axis);
 	Eigen::Matrix3f RotationMatrix = RotationVector.toRotationMatrix();
@@ -13,9 +13,9 @@ void CObject::__rotation(std::shared_ptr<CShader> vShader)
 
 	Eigen::Matrix4f Mat = Eigen::Matrix4f::Identity();
 	Mat.block<3, 3>(0, 0) = RotationMatrix * ScaleMatrix;
-	Mat(0, 3) = 0.5 * cos(Angle);
-	Mat(1, 3) = 0.5 * sin(Angle);
-	vShader->m_Transform = Mat;
+	Mat(0, 3) = 0.5 * cos(-Angle);
+	Mat(1, 3) = 0.5 * sin(-Angle);
+	vShader->setModel(Mat);
 }
 
 void CObject::addVAO(std::shared_ptr<CVertexArrayObject> vVAO, std::shared_ptr<CShader> vShader)

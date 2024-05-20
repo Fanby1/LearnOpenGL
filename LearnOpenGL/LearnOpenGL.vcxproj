@@ -22,6 +22,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CCamera.h" />
     <ClInclude Include="CElementBufferObject.h" />
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CObject.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CElementBufferObject.cpp" />
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CObject.cpp" />
