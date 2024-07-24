@@ -113,6 +113,33 @@ static void renderMix(CWindow& vWindow) {
     vWindow.render();
 }
 
+static void renderMixSquare(CWindow& vWindow) {
+    auto MixShader = std::make_shared<CShader>("./Shader/mix.vs", "./Shader/mix.fs");
+
+    std::vector<unsigned int> Offset = { 3,3 };
+    unsigned int Index[] = { 0,1,2, 0,2,3 };
+    float MixSquareVertices[] = {
+		// positions         // colors
+		 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // top right
+		 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom right
+		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   // bottom left
+		-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f    // top left 
+	};
+    auto MixVBO = std::make_shared<CVertexBufferObject>(MixSquareVertices, sizeof(MixSquareVertices), VERTEX_TYPE_VERTEX_BIT | VERTEX_TYPE_COLOR_BIT, Offset);
+    auto MixEBO = std::make_shared<CElementBufferObject>(Index, sizeof(Index));
+    auto MixVAO = std::make_shared<CVertexArrayObject>();
+
+    MixVAO->addVBO(MixVBO);
+    MixVAO->setEBO(MixEBO);
+
+    auto Mix = std::make_shared<CObject>();
+    Mix->addVAO(MixVAO, MixShader);
+
+    vWindow.addObject(Mix);
+
+    vWindow.render();
+}
+
 static void renderTexture(CWindow& vWindow) {
     auto TextureShader = std::make_shared<CShader>("./Shader/texture.vs", "./Shader/texture.fs");
 
@@ -176,7 +203,6 @@ static void renderTransform(CWindow& vWindow) {
 
     CCamera Camera;
     Camera.setCameraPosition({ 0, 0, 3});
-    // Camera.setCameraTarget({ 0,0,0 });
     Camera.setFarPlane(100);
     Camera.setNearPlane(0.1);
     Camera.setAspectRatio(800.0 / 600.0);
@@ -196,6 +222,7 @@ int main() {
     
     // renderOrangeAndYellow(Window);
     // renderMix(Window);
+    renderMixSquare(Window);
     // renderTexture(Window);
-    renderTransform(Window);
+    // renderTransform(Window);
 }
