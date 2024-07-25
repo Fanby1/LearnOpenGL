@@ -1,4 +1,6 @@
 #include "CRenderableObject.h"
+#include <iostream>
+#include <fstream>
 
 std::vector<unsigned int> CRenderableObject::__createOffset(unsigned int vType)
 {

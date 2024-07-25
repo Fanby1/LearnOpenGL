@@ -2,13 +2,14 @@
 #include "CObject.h"
 #include <set>
 #include "CWindowConfig.h"
+#include "CStuff.h"
 
 class CWindow
 {
 
 public:
 	CWindow();
-	int initWindow(CWindowConfig vConfig);
+	int initWindow(const CWindowConfig& vConfig);
 	void setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs);
 	void deleteStuff(std::shared_ptr<CStuff> vStuff);
 	void addStuff(std::shared_ptr<CStuff> vStuff);

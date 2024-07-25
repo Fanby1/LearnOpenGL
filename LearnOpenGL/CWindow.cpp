@@ -22,7 +22,7 @@ CWindow::CWindow()
     //pos: left+up
     m_PosX = MaxWidth >> 2;
     m_PosY = MaxHeight >> 2;
-    m_Objects.clear();
+    m_Stuffs.clear();
 }
 
 int CWindow::__clampData(const int& vData, const int& vFloor, const int& vCeil)
