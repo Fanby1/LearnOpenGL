@@ -214,6 +214,30 @@ static void renderTransform(CWindow& vWindow) {
     vWindow.render();
 }
 
+static void renderCube(CWindow& vWindow) {
+    auto TransformShader = std::make_shared<CShader>("./Shader/transform.vs", "./Shader/transform.fs");
+    TransformShader->use();
+    CImage Container("./Assert/container.jpg");
+    CTexture Texture_0(Container, GL_TEXTURE0);
+    CImage Awesomeface("./Assert/awesomeface.png");
+    CTexture Texture_1(Awesomeface, GL_TEXTURE1);
+
+    Texture_0.bind();
+    Texture_1.bind();
+    auto Cube = std::make_shared<CObject>("./cube.txt", TransformShader);
+    CCamera Camera;
+    Camera.setCameraPosition({ 0, 0, 3 });
+    Camera.setFarPlane(100);
+    Camera.setNearPlane(0.1);
+    Camera.setAspectRatio(800.0 / 600.0);
+    Camera.setFeildOfView(45.0);
+    TransformShader->setProjection(Camera.getProjectionMatrix());
+    TransformShader->setView(Camera.getViewMatrix());
+    vWindow.addObject(Cube);
+    glEnable(GL_DEPTH_TEST);
+    vWindow.render();
+}
+
 
 int main() {
     initGLFW();
@@ -222,7 +246,8 @@ int main() {
     
     // renderOrangeAndYellow(Window);
     // renderMix(Window);
-    renderMixSquare(Window);
+    // renderMixSquare(Window);
     // renderTexture(Window);
     // renderTransform(Window);
+    renderCube(Window);
 }

@@ -46,6 +46,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="std_image.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="cube.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

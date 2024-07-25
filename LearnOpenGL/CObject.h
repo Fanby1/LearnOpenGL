@@ -25,7 +25,12 @@ private:
 	std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>> m_VAOs;
 	std::chrono::steady_clock::time_point m_Start = std::chrono::high_resolution_clock::now();
 	void __rotation(std::shared_ptr<CShader> vShader);
+	std::vector<unsigned int> __createOffset(unsigned int vType);
+	std::vector<float> __readFloatArrayFromFile(std::ifstream& vFile);
+	
 public:
+	CObject() = default;
+	CObject(const std::string& vPath, std::shared_ptr<CShader> vShader);
 	void addVAO(std::shared_ptr<CVertexArrayObject> vVAO, std::shared_ptr<CShader> vShader);
 	void deleteVAO(std::shared_ptr<CVertexArrayObject> vVAO);
 	void clearVAO();

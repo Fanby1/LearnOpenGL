@@ -10,6 +10,7 @@ CVertexBufferObject::CVertexBufferObject(float* vVertices, size_t vSize, unsigne
 	m_Type = vType;
 	m_Offset = vOffset;
 	m_Step = std::accumulate(m_Offset.begin(), m_Offset.end(), 0) * sizeof(float);
+	m_Size = vSize / m_Step;
 }
 
 GLuint CVertexBufferObject::getID() const
@@ -25,6 +26,11 @@ unsigned int CVertexBufferObject::getType() const
 const std::vector<unsigned int>& CVertexBufferObject::getOffset() const
 {
 	return m_Offset;
+}
+
+const unsigned int CVertexBufferObject::getSize() const
+{
+	return m_Size;
 }
 
 const void CVertexBufferObject::bind() const
