@@ -1,15 +1,7 @@
 #pragma once
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <set>
 #include "CObject.h"
-#include "CShader.h"
+#include <set>
 #include "CWindowConfig.h"
-
-/********************************/
-//TODO: add CWindowConfig. inside todo just show interface.
-
-/********************************/
 
 class CWindow
 {

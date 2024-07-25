@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include "HiveLogger.h"
 
 
 void CObject::__transform(std::shared_ptr<CShader> vShader)
@@ -73,10 +74,10 @@ std::vector<float> CObject::__readFloatArrayFromFile(std::ifstream& vFile) {
 				Result.push_back(std::stof(Value));
 			}
 			catch (const std::invalid_argument& e) {
-				std::cerr << "Invalid number in file: " << Value << std::endl;
+				HIVE_LOG_ERROR("Invalid number in file: {}", Value);
 			}
 			catch (const std::out_of_range& e) {
-				std::cerr << "Number out of range in file: " << Value << std::endl;
+				HIVE_LOG_ERROR("Number out of range in file: {}", Value);
 			}
 		}
 	}
@@ -89,7 +90,7 @@ CObject::CObject(const std::string& vPath, std::shared_ptr<CShader> vShader)
 {
 	std::ifstream File(vPath);
 	if (!File.is_open()) {
-		std::cerr << "Failed to open file: " << vPath << std::endl;
+		HIVE_LOG_ERROR("Failed to open file: {}", vPath);
 	}
 	std::string Mode;
 	unsigned int Type = 0;
@@ -101,10 +102,10 @@ CObject::CObject(const std::string& vPath, std::shared_ptr<CShader> vShader)
 				Type = std::stoi(NumberStr);
 			}
 			catch (const std::invalid_argument& e) {
-				std::cerr << "Invalid number format: " << e.what() << std::endl;
+				HIVE_LOG_ERROR("Invalid number format: {}", e.what());
 			}
 			catch (const std::out_of_range& e) {
-				std::cerr << "Number out of range: " << e.what() << std::endl;
+				HIVE_LOG_ERROR("Number out of range: {}", e.what());
 			}
 		}
 	}

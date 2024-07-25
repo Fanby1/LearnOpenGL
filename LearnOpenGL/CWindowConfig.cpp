@@ -6,12 +6,16 @@ CWindowConfig::CWindowConfig(const std::string& vFilePath)
 {
 	m_FilePath = vFilePath; 
 	__defineAttributesV();
+	m_Width = m_Height = m_PosX = m_PosY = m_MajVer = m_MinVer = -1;
+	m_isCore = true;
 	m_isInit = false;
+	m_Title = "";
 }
 
 void CWindowConfig::init()
 {
-	if (m_FilePath.empty() || m_isInit) {
+	if (m_FilePath.empty() || m_isInit) 
+	{
 		__logNoExist("**EVERYTHING**");
 		m_isInit |= false;
 	}
