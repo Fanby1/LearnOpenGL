@@ -48,11 +48,11 @@
     <ClInclude Include="CCamera.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="glad.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -86,5 +86,12 @@
     <ClCompile Include="CCamera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="cube.txt" />
+    <Text Include="light.txt" />
   </ItemGroup>
 </Project>

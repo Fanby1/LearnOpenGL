@@ -1,6 +1,7 @@
 #include "CWindow.h"
 #include <iostream>
 #include <Windows.h>
+#include "HiveLogger.h"
 
 CWindow::CWindow() {
     int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
@@ -41,12 +42,13 @@ int CWindow::initWindow(CWindowConfig vConfig)
     {
         ///**/HIVE_LOG_ERR("Failed to create GLFW window");
         glfwTerminate();
-        return;
+        return -1;
     }
 
     glfwSetWindowPos(m_pWindow, m_PosX, m_PosY);
     glfwMakeContextCurrent(m_pWindow);
     glfwSetFramebufferSizeCallback(m_pWindow, _framebuffer_size_callback);
+    return 0;
 }
 
 void CWindow::setObject(std::set<std::shared_ptr<CObject>>&& vObjects)
@@ -66,8 +68,6 @@ void CWindow::addObject(std::shared_ptr<CObject> vObject)
 
 void CWindow::render()
 {
-    //TODO: add log
-    if (!m_isSetPara) return;
     while (!glfwWindowShouldClose(m_pWindow))
     {
         // input

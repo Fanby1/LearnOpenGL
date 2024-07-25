@@ -256,7 +256,9 @@ static void renderCube(CWindow& vWindow) {
 
 int main() {
     initGLFW();
-    CWindow Window(800, 600);
+    CWindow Window;
+    CWindowConfig AConfig;
+    Window.initWindow(AConfig);
     initGLAD();
     
     // renderOrangeAndYellow(Window);

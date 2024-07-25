@@ -166,6 +166,17 @@
     <Import Project="D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets" Condition="Exists('D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets')" />
     <Import Project="D:\vc_packages\glfw.3.4.0\build\native\glfw.targets" Condition="Exists('D:\vc_packages\glfw.3.4.0\build\native\glfw.targets')" />
     <Import Project="D:\vc_packages\glad.1.0.0\build\glad.targets" Condition="Exists('D:\vc_packages\glad.1.0.0\build\glad.targets')" />
+    <Import Project="D:\vc_packages\boost.1.85.0\build\boost.targets" Condition="Exists('D:\vc_packages\boost.1.85.0\build\boost.targets')" />
+    <Import Project="D:\vc_packages\boost_chrono-vc143.1.85.0\build\boost_chrono-vc143.targets" Condition="Exists('D:\vc_packages\boost_chrono-vc143.1.85.0\build\boost_chrono-vc143.targets')" />
+    <Import Project="D:\vc_packages\boost_serialization-vc143.1.85.0\build\boost_serialization-vc143.targets" Condition="Exists('D:\vc_packages\boost_serialization-vc143.1.85.0\build\boost_serialization-vc143.targets')" />
+    <Import Project="D:\vc_packages\boost_thread-vc143.1.85.0\build\boost_thread-vc143.targets" Condition="Exists('D:\vc_packages\boost_thread-vc143.1.85.0\build\boost_thread-vc143.targets')" />
+    <Import Project="D:\vc_packages\hive.HiveCommonDLL.1.0.0\build\hive.HiveCommonDLL.targets" Condition="Exists('D:\vc_packages\hive.HiveCommonDLL.1.0.0\build\hive.HiveCommonDLL.targets')" />
+    <Import Project="D:\vc_packages\boost_atomic-vc143.1.85.0\build\boost_atomic-vc143.targets" Condition="Exists('D:\vc_packages\boost_atomic-vc143.1.85.0\build\boost_atomic-vc143.targets')" />
+    <Import Project="D:\vc_packages\boost_filesystem-vc143.1.85.0\build\boost_filesystem-vc143.targets" Condition="Exists('D:\vc_packages\boost_filesystem-vc143.1.85.0\build\boost_filesystem-vc143.targets')" />
+    <Import Project="D:\vc_packages\boost_log-vc143.1.85.0\build\boost_log-vc143.targets" Condition="Exists('D:\vc_packages\boost_log-vc143.1.85.0\build\boost_log-vc143.targets')" />
+    <Import Project="D:\vc_packages\boost_log_setup-vc143.1.85.0\build\boost_log_setup-vc143.targets" Condition="Exists('D:\vc_packages\boost_log_setup-vc143.1.85.0\build\boost_log_setup-vc143.targets')" />
+    <Import Project="D:\vc_packages\fmt.7.0.1\build\fmt.targets" Condition="Exists('D:\vc_packages\fmt.7.0.1\build\fmt.targets')" />
+    <Import Project="D:\vc_packages\hive.HiveLogger.1.0.0\build\hive.HiveLogger.targets" Condition="Exists('D:\vc_packages\hive.HiveLogger.1.0.0\build\hive.HiveLogger.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -174,5 +185,16 @@
     <Error Condition="!Exists('D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets'))" />
     <Error Condition="!Exists('D:\vc_packages\glfw.3.4.0\build\native\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\glfw.3.4.0\build\native\glfw.targets'))" />
     <Error Condition="!Exists('D:\vc_packages\glad.1.0.0\build\glad.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\glad.1.0.0\build\glad.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\boost.1.85.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\boost.1.85.0\build\boost.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\boost_chrono-vc143.1.85.0\build\boost_chrono-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\boost_chrono-vc143.1.85.0\build\boost_chrono-vc143.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\boost_serialization-vc143.1.85.0\build\boost_serialization-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\boost_serialization-vc143.1.85.0\build\boost_serialization-vc143.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\boost_thread-vc143.1.85.0\build\boost_thread-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\boost_thread-vc143.1.85.0\build\boost_thread-vc143.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\hive.HiveCommonDLL.1.0.0\build\hive.HiveCommonDLL.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\hive.HiveCommonDLL.1.0.0\build\hive.HiveCommonDLL.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\boost_atomic-vc143.1.85.0\build\boost_atomic-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\boost_atomic-vc143.1.85.0\build\boost_atomic-vc143.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\boost_filesystem-vc143.1.85.0\build\boost_filesystem-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\boost_filesystem-vc143.1.85.0\build\boost_filesystem-vc143.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\boost_log-vc143.1.85.0\build\boost_log-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\boost_log-vc143.1.85.0\build\boost_log-vc143.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\boost_log_setup-vc143.1.85.0\build\boost_log_setup-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\boost_log_setup-vc143.1.85.0\build\boost_log_setup-vc143.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\fmt.7.0.1\build\fmt.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\fmt.7.0.1\build\fmt.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\hive.HiveLogger.1.0.0\build\hive.HiveLogger.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\hive.HiveLogger.1.0.0\build\hive.HiveLogger.targets'))" />
   </Target>
 </Project>
