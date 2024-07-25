@@ -1,9 +1,9 @@
 #define _USE_MATH_DEFINES
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <iostream>
 #include <cmath>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include "CWindow.h"
 #include "CShader.h"
 #include "CObject.h"

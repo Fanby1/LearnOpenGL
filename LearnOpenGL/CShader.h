@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <Eigen/Dense>
 
 class CShader
@@ -30,6 +31,6 @@ public:
     void setMat3(const std::string& name, const Eigen::Matrix3f& mat) const;
     void setMat4(const std::string& name, const Eigen::Matrix4f& mat) const;
 private:
-    void checkCompileErrors(unsigned int vShader, std::string vType);
+    void __checkCompileErrors(unsigned int vShader, std::string vType);
 };
 
