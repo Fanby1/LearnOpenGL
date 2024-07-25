@@ -40,8 +40,12 @@ bool CWindow::__isParaErr(const int& vData, const int& vFloor, const int& vCeil,
     }
 }
 
-void CWindow::__checkAndSetConfig(CWindowConfig vConfig) 
+void CWindow::__checkAndSetConfig(const CWindowConfig& vConfig) 
 {
+    if (!vConfig.isInit()) {
+        HIVE_LOG_WARNING("Config Is not initialized! We will use default value.");
+        return;
+    }
     m_isSetPara = true;
     std::string TempTitle = vConfig.getTitle();
     if (!TempTitle.empty()) m_Title = TempTitle;
@@ -64,7 +68,7 @@ void CWindow::__checkAndSetConfig(CWindowConfig vConfig)
     m_isCoreProfile = vConfig.isCore();
 }
 
-int CWindow::initWindow(CWindowConfig vConfig)
+int CWindow::initWindow(const CWindowConfig& vConfig)
 {
     __checkAndSetConfig(vConfig);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_MajVer);

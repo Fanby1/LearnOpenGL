@@ -51,6 +51,9 @@
     <ClInclude Include="CLight.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CWindowConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -87,6 +90,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CWindowConfig.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

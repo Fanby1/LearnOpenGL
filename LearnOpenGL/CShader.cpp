@@ -1,4 +1,9 @@
 #include "CShader.h"
+#include <glad/glad.h>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include "HiveLogger.h"
 
 void CShader::__computeTransformMatrix()
 {
@@ -34,7 +39,7 @@ CShader::CShader(const char* vVertexPath, const char* vFragmentPath)
     }
     catch (std::ifstream::failure& e)
     {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
+        HIVE_LOG_ERROR("ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: {}", e.what());
     }
     const char* VertexShaderCode = VertexCode.c_str();
     const char* FragmentShaderCode = FragmentCode.c_str();
@@ -156,7 +161,8 @@ void CShader::checkCompileErrors(unsigned int vShader, std::string vType)
         if (!Success)
         {
             glGetShaderInfoLog(vShader, 1024, NULL, InfoLog);
-            std::cout << "ERROR::SHADER_COMPILATION_ERROR of vType: " << vType << "\n" << InfoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            HIVE_LOG_ERROR("ERROR::SHADER_COMPILATION_ERROR of vType: {}\n{}", vType, InfoLog);
+            //std::cout << "ERROR::SHADER_COMPILATION_ERROR of vType: " << vType << "\n" << InfoLog << "\n -- --------------------------------------------------- -- " << std::endl;
         }
     }
     else
@@ -165,7 +171,8 @@ void CShader::checkCompileErrors(unsigned int vShader, std::string vType)
         if (!Success)
         {
             glGetProgramInfoLog(vShader, 1024, NULL, InfoLog);
-            std::cout << "ERROR::PROGRAM_LINKING_ERROR of vType: " << vType << "\n" << InfoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            HIVE_LOG_ERROR("ERROR::PROGRAM_LINKING_ERROR of vType: {}\n{}", vType, InfoLog);
+            //std::cout << "ERROR::PROGRAM_LINKING_ERROR of vType: " << vType << "\n" << InfoLog << "\n -- --------------------------------------------------- -- " << std::endl;
         }
     }
 }

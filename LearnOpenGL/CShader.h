@@ -1,9 +1,4 @@
 #pragma once
-#include <glad/glad.h>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <Eigen/Dense>
 
 class CShader

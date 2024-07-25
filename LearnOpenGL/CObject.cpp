@@ -1,4 +1,8 @@
 #include "CObject.h"
+#include <string>
+#include <fstream>
+#include <iostream>
+
 
 void CObject::__transform(std::shared_ptr<CShader> vShader)
 {
