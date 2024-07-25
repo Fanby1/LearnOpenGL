@@ -1,4 +1,5 @@
 #include "CWindow.h"
+#include <algorithm>
 #include <set>
 #include <iostream>
 #include <Windows.h>
@@ -13,7 +14,7 @@ CWindow::CWindow()
     m_MajVer = 4, m_MinVer = 6;
     m_Title = "Default Title";
     m_isCoreProfile = true;
-    m_isSetPara = m_isSetMaj = false;
+    m_isParasSet = m_isMajorVersionValid = false;
 
     int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
     int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -25,17 +26,15 @@ CWindow::CWindow()
     m_Stuffs.clear();
 }
 
-int CWindow::__clampData(const int& vData, const int& vFloor, const int& vCeil)
+CWindow::~CWindow()
 {
-    _ASSERT(vFloor <= vCeil);
-    if (vData >= vFloor && vData <= vCeil) return vData;
-    if (vData < vFloor) return vFloor;
-    else return vCeil;
+    __destroyWindow();
 }
 
-bool CWindow::__isParaErr(const int& vData, const int& vFloor, const int& vCeil, const std::string& vType)
+template<typename T>
+bool CWindow::__isParaErr(const T& vData, const T& vFloor, const T& vCeil, const std::string& vType)
 {
-    if (__clampData(vData, vFloor, vCeil) == vData) return false;
+    if (std::clamp(vData, vFloor, vCeil) == vData) return false;
     else 
     {
         return true;
@@ -45,9 +44,17 @@ bool CWindow::__isParaErr(const int& vData, const int& vFloor, const int& vCeil,
     }
 }
 
+void CWindow::__destroyWindow()
+{
+    if (m_pWindow != nullptr) {
+        glfwDestroyWindow(m_pWindow);
+        m_pWindow = nullptr;
+    }
+}
+
 void CWindow::__checkAndSetConfig(const CWindowConfig& vConfig)
 {
-    m_isSetPara = true;
+    m_isParasSet = true;
     std::string TempTitle = vConfig.getTitle();
     if (TempTitle.empty()) 
     {
@@ -59,9 +66,9 @@ void CWindow::__checkAndSetConfig(const CWindowConfig& vConfig)
     }
     int t = 0;
     t = vConfig.getMajVer();
-    if (!__isParaErr(t, 1, 4, "OpenGL Major Version")) m_isSetMaj = true, m_MajVer = t;
+    if (!__isParaErr(t, 1, 4, "OpenGL Major Version")) m_isMajorVersionValid = true, m_MajVer = t;
     t = vConfig.getMinVer();
-    if (!__isParaErr(t, 1, 6, "OpenGL Minor Version") && m_isSetMaj) m_MinVer = t;
+    if (!__isParaErr(t, 1, 6, "OpenGL Minor Version") && m_isMajorVersionValid) m_MinVer = t;
 
     int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
     int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -81,9 +88,11 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
     if (!vConfig.isInit()) 
     {
         HIVE_LOG_WARNING("Config Is not initialized! We will use default value.");
-        return -1;
     }
-
+    if (m_pWindow != nullptr) {
+        HIVE_LOG_WARNING("Destroied existing window! Please check whether multiplied created window in main.cpp.");
+        __destroyWindow();
+    }
     __checkAndSetConfig(vConfig);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_MajVer);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_MinVer);
@@ -96,6 +105,7 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
         glfwTerminate();
         return -1;
     }
+    HIVE_LOG_INFO("Create GLFW Window successfully.");
     glfwMakeContextCurrent(m_pWindow);
     glfwSetWindowPos(m_pWindow, m_PosX, m_PosY);
     glfwSetFramebufferSizeCallback(m_pWindow, __callbackFrameBufferSize);
@@ -129,7 +139,7 @@ void CWindow::setLight(std::shared_ptr<CLight> vLight)
 
 void CWindow::render()
 {
-    if (!m_isSetPara) 
+    if (!m_isParasSet)
     {
         HIVE_LOG_WARNING("No Config is loaded! We will use default parameters...");
     }

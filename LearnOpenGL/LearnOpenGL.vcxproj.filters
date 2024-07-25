@@ -54,6 +54,12 @@
     <ClInclude Include="CWindowConfig.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CStuff.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CRenderableObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -93,6 +99,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CWindowConfig.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CStuff.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CRenderableObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

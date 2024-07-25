@@ -254,26 +254,20 @@ static void renderCube(CWindow& vWindow) {
 }
 
 static void scala(std::chrono::duration<double> vElapsed, CObject& vObject) {
-    vObject.setScale(0.3);
+    vObject.setScale(0.5);
 }
 
 static void renderPhongCube(CWindow& vWindow) {
+
     auto PhongShader = std::make_shared<CShader>("./Shader/phong.vs", "./Shader/phong.fs");
-    auto LightShader = std::make_shared<CShader>("./Shader/light.vs", "./Shader/light.fs");
     PhongShader->use();
     PhongShader->setInt("texture1", 0);
     PhongShader->setInt("texture2", 1);
-    CImage Container("./Assert/container.jpg");
-    CTexture Texture_0(Container, GL_TEXTURE0);
-    CImage Awesomeface("./Assert/awesomeface.png");
-    CTexture Texture_1(Awesomeface, GL_TEXTURE1);
-    Texture_0.bind();
-    Texture_1.bind();
-
     auto Cube = std::make_shared<CStuff>("./cube.txt", PhongShader);
-    auto Light = std::make_shared<CLight>("./light.txt", LightShader);
-
     Cube->setUpdateMoveFunction(rotate);
+
+    auto LightShader = std::make_shared<CShader>("./Shader/light.vs", "./Shader/light.fs");
+    auto Light = std::make_shared<CLight>("./light.txt", LightShader);
     Light->setUpdateMoveFunction(scala);
 
     auto Camera = std::make_shared<CCamera>();
@@ -286,6 +280,14 @@ static void renderPhongCube(CWindow& vWindow) {
     PhongShader->setView(Camera->getViewMatrix());
     LightShader->setProjection(Camera->getProjectionMatrix());
     LightShader->setView(Camera->getViewMatrix());
+    
+    CImage Container("./Assert/container.jpg");
+    CTexture Texture_0(Container, GL_TEXTURE0);
+    Texture_0.bind();
+    CImage Awesomeface("./Assert/awesomeface.png");
+    CTexture Texture_1(Awesomeface, GL_TEXTURE1);
+    Texture_1.bind();
+
     vWindow.addStuff(Cube);
     vWindow.setLight(Light);
     vWindow.setCamera(Camera);
@@ -296,8 +298,10 @@ static void renderPhongCube(CWindow& vWindow) {
 int main() {
     initGLFW();
     CWindowConfig AConfig("./Assert/Config.xml");
-    AConfig.init();
     CWindow Window;
+    Window.initWindow(AConfig);
+
+    AConfig.init();
     Window.initWindow(AConfig);
     initGLAD();
     

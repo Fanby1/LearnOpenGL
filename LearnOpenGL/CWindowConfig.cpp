@@ -5,6 +5,7 @@
 CWindowConfig::CWindowConfig(const std::string& vFilePath)
 {
 	m_FilePath = vFilePath; 
+	//Due to HiveConfig, must call _defineAttribute() during construction.
 	__defineAttributesV();
 	m_Width = m_Height = m_PosX = m_PosY = m_MajVer = m_MinVer = -1;
 	m_isCore = true;
@@ -16,7 +17,7 @@ void CWindowConfig::init()
 {
 	if (m_FilePath.empty() || m_isInit) 
 	{
-		__logNoExist("**EVERYTHING**");
+		__logNoExist("**EVERY CONFIG**");
 		m_isInit |= false;
 	}
 	__readConfigFromFile();
@@ -31,26 +32,27 @@ void CWindowConfig::__readConfigFromFile()
 
 void CWindowConfig::__defineAttributesV()
 {
-	_defineAttribute("Width", hiveConfig::EConfigDataType::ATTRIBUTE_INT);
-	_defineAttribute("Height", hiveConfig::EConfigDataType::ATTRIBUTE_INT);
+	//Due to HiveConfig, must have a copy&paste.
 	_defineAttribute("Title", hiveConfig::EConfigDataType::ATTRIBUTE_STRING);
+	_defineAttribute("UseCoreProfile", hiveConfig::EConfigDataType::ATTRIBUTE_BOOL);
 	_defineAttribute("MajorVersion", hiveConfig::EConfigDataType::ATTRIBUTE_INT);
 	_defineAttribute("MinorVersion", hiveConfig::EConfigDataType::ATTRIBUTE_INT);
-	_defineAttribute("UseCoreProfile", hiveConfig::EConfigDataType::ATTRIBUTE_BOOL);
+	_defineAttribute("Width", hiveConfig::EConfigDataType::ATTRIBUTE_INT);
+	_defineAttribute("Height", hiveConfig::EConfigDataType::ATTRIBUTE_INT);
 	_defineAttribute("PosX", hiveConfig::EConfigDataType::ATTRIBUTE_INT);
 	_defineAttribute("PosY", hiveConfig::EConfigDataType::ATTRIBUTE_INT);
 }
 
 void CWindowConfig::__setValFromConfig()
 {
+	__setTypeVal<std::string>(m_Title, "Title");
+	__setTypeVal<bool>(m_isCore, "UseCoreProfile");
+	__setTypeVal<int>(m_MajVer, "MajorVersion");
+	__setTypeVal<int>(m_MinVer, "MinorVersion");
 	__setTypeVal<int>(m_Width, "Width");
 	__setTypeVal<int>(m_Height, "Height");
 	__setTypeVal<int>(m_PosX, "PosX");
 	__setTypeVal<int>(m_PosY, "PosY");
-	__setTypeVal<int>(m_MajVer, "MajorVersion");
-	__setTypeVal<int>(m_MinVer, "MinorVersion");
-	__setTypeVal<std::string>(m_Title, "Title");
-	__setTypeVal<bool>(m_isCore, "USE_GLFW_OPENGL_CORE_PROFILE");
 }
 
 template<typename T>
