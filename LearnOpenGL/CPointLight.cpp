@@ -1,11 +1,11 @@
-#include "CLight.h"
+#include "CPointLight.h"
 
-CLight::CLight(const std::string& vPath, std::shared_ptr<CShader> vShader) : CRenderableObject(vPath, vShader)
+CPointLight::CPointLight(const std::string& vPath, std::shared_ptr<CShader> vShader) : CRenderableObject(vPath, vShader)
 {
 	
 }
 
-void CLight::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CLight> vLight)
+void CPointLight::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight)
 {
 	if (__isFunctionSet()) {
 		auto Current = std::chrono::high_resolution_clock::now();

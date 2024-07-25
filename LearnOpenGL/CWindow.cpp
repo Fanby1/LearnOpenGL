@@ -134,9 +134,14 @@ void CWindow::setCamera(std::shared_ptr<CCamera> vCamera)
     m_Camera = vCamera;
 }
 
-void CWindow::setLight(std::shared_ptr<CLight> vLight)
+void CWindow::setLight(std::shared_ptr<CPointLight> vLight)
 {
     m_Light = vLight;
+}
+
+void CWindow::setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight)
+{
+    m_DirectionalLight = vLight;
 }
 
 void CWindow::render()
@@ -155,9 +160,11 @@ void CWindow::render()
 
         // draw our first triangle
         // ..:: Drawing code (in render loop) :: ..
-        m_Light->renderV(m_Camera, m_Light);
+        if (m_Light) {
+            m_Light->renderV(m_Camera, m_Light, m_DirectionalLight);
+        }
         for (auto& Stuff : m_Stuffs) {
-            Stuff->renderV(m_Camera, m_Light);
+            Stuff->renderV(m_Camera, m_Light, m_DirectionalLight);
         }
         // glBindVertexArray(0); // no need to unbind it every time 
 

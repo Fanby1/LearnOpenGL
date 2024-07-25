@@ -1,8 +1,9 @@
 #pragma once
-#include "CObject.h"
 #include <set>
+#include "CObject.h"
 #include "CWindowConfig.h"
 #include "CStuff.h"
+#include "CDirectionalLight.h"
 
 class CWindow
 {
@@ -19,7 +20,8 @@ public:
 	void deleteStuff(std::shared_ptr<CStuff> vStuff);
 	void addStuff(std::shared_ptr<CStuff> vStuff);
 	void setCamera(std::shared_ptr<CCamera> vCamera);
-	void setLight(std::shared_ptr<CLight> vLight);
+	void setLight(std::shared_ptr<CPointLight> vLight);
+	void setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight);
 
 private:
 	GLFWwindow* m_pWindow = nullptr;
@@ -34,7 +36,8 @@ private:
 	
 	std::set<std::shared_ptr<CStuff>> m_Stuffs;
 	std::shared_ptr<CCamera> m_Camera = nullptr;
-	std::shared_ptr<CLight> m_Light = nullptr;
+	std::shared_ptr<CPointLight> m_Light = nullptr;
+	std::shared_ptr<CDirectionalLight> m_DirectionalLight = nullptr;
 
 	void __destroyWindow();
 	template<typename T>

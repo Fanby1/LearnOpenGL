@@ -23,9 +23,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCamera.h" />
+    <ClInclude Include="CDirectionalLight.h" />
     <ClInclude Include="CElementBufferObject.h" />
     <ClInclude Include="CImage.h" />
-    <ClInclude Include="CLight.h" />
+    <ClInclude Include="CPointLight.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CShader.h" />
     <ClInclude Include="CStuff.h" />
@@ -39,9 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCamera.cpp" />
+    <ClCompile Include="CDirectionalLight.cpp" />
     <ClCompile Include="CElementBufferObject.cpp" />
     <ClCompile Include="CImage.cpp" />
-    <ClCompile Include="CLight.cpp" />
+    <ClCompile Include="CPointLight.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CShader.cpp" />
     <ClCompile Include="CStuff.cpp" />

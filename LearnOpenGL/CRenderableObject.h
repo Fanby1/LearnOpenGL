@@ -1,8 +1,9 @@
 #pragma once
 #include "CCamera.h"
 #include "CObject.h"
+#include "CDirectionalLight.h"
 
-class CLight;
+class CPointLight;
 class CRenderableObject :
     public CObject
 {
@@ -19,6 +20,6 @@ public:
 	void setVAO(std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>>&& vVAOs);
 	std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>>::iterator begin();
 	std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>>::iterator end();
-	virtual void renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CLight> vLight) = 0;
+	virtual void renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight) = 0;
 };
 

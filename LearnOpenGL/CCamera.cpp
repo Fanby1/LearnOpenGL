@@ -91,6 +91,18 @@ void CCamera::setCameraPosition(const Eigen::Vector3f& vTargetPostion)
     m_ComputeViewFlag = true;
 }
 
+void CCamera::updateShaderUniforms(const std::shared_ptr<CShader>& vShader)
+{
+    if (__isFunctionSet()) {
+        auto Current = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> Elapsed = Current - m_Start;
+		m_UpdateMoveFunction(Elapsed, *this);
+    }
+
+    vShader->setProjection(getProjectionMatrix());
+    vShader->setView(getViewMatrix());
+}
+
 Eigen::Matrix4f CCamera::getProjectionMatrix()
 {
     if (m_ComputeProjectionFlag) {

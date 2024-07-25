@@ -36,6 +36,7 @@ public:
     void setCameraTarget(const Eigen::Vector3f& vTargetVertix);
     void moveCameraPosition(const Eigen::Vector3f& vPositionDistance);
     void setCameraPosition(const Eigen::Vector3f& vTargetPostion);
+    void updateShaderUniforms(const std::shared_ptr<CShader>& vShader);
     Eigen::Matrix4f getProjectionMatrix();
     Eigen::Matrix4f getViewMatrix();
 };
