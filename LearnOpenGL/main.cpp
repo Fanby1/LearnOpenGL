@@ -214,8 +214,19 @@ static void renderTransform(CWindow& vWindow) {
     vWindow.render();
 }
 
+static void rotate(std::chrono::duration<double> vElapsed, CObject& vObject) {
+    double Angle = M_PI * vElapsed.count() * 0.1;
+    Eigen::Vector3f Axis(0, 1, 0);
+
+    Eigen::AngleAxisf RotationVector(Angle, Axis);
+    Eigen::Matrix3f RotationMatrix = RotationVector.toRotationMatrix();
+    Eigen::Vector3f BeginPosition = { 0.5, 0, 0.5 };
+    vObject.setPosition(RotationMatrix * BeginPosition);
+    //vObject.setScale(std::fmod(vElapsed.count(), 10.0) / 5.0);
+}
+
 static void renderCube(CWindow& vWindow) {
-    auto TransformShader = std::make_shared<CShader>("./Shader/transform.vs", "./Shader/transform.fs");
+    auto TransformShader = std::make_shared<CShader>("./Shader/transform.vs", "./Shader/color.fs");
     TransformShader->use();
     TransformShader->setInt("texture1", 0);
     TransformShader->setInt("texture2", 1);
@@ -223,11 +234,12 @@ static void renderCube(CWindow& vWindow) {
     CTexture Texture_0(Container, GL_TEXTURE0);
     CImage Awesomeface("./Assert/awesomeface.png");
     CTexture Texture_1(Awesomeface, GL_TEXTURE1);
-
     Texture_1.bind();
     Texture_1.bind();
 
+    auto LightShader = std::make_shared<CShader>("./Shader/transform.vs", "./Shader/light.fs");
     auto Cube = std::make_shared<CObject>("./cube.txt", TransformShader);
+    Cube->setUpdateMoveFunction(rotate);
     CCamera Camera;
     Camera.setCameraPosition({ 0, 0, 3 });
     Camera.setFarPlane(100);

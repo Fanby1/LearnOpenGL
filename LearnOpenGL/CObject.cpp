@@ -1,5 +1,13 @@
 #include "CObject.h"
 
+void CObject::__transform(std::shared_ptr<CShader> vShader)
+{
+	Eigen::Matrix4f Mat = Eigen::Matrix4f::Identity();
+	Mat.block<3, 3>(0, 0) *= m_Scale;
+	Mat.block<3, 1>(0, 3) = m_Position.block<3, 1>(0, 3);
+	vShader->setModel(Mat);
+}
+
 void CObject::__rotation(std::shared_ptr<CShader> vShader)
 {
 	auto Current = std::chrono::high_resolution_clock::now();
@@ -134,10 +142,40 @@ std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>>::iterato
 	return m_VAOs.end();
 }
 
+void CObject::setUpdateMoveFunction(std::function<void(std::chrono::duration<double>, CObject&)> vFunction)
+{
+	m_UpdateMoveFunction = vFunction;
+}
+
+void CObject::move(Eigen::Vector3f vDisplacement)
+{
+	m_Position.block<3, 1>(0, 3) += vDisplacement;
+}
+
+void CObject::setPosition(Eigen::Vector3f vNewPosition)
+{
+	m_Position.block<3, 1>(0, 3) = vNewPosition;
+}
+
+void CObject::scale(float vScale)
+{
+	m_Scale *= vScale;
+}
+
+void CObject::setScale(float vScale)
+{
+	m_Scale = vScale;
+}
+
 void CObject::render()
 {
+	if(__isFunctionSet()) {
+		auto Current = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> Elapsed = Current - m_Start;
+		m_UpdateMoveFunction(Elapsed, *this);
+	}
 	for (auto& It : m_VAOs) {
-		__rotation(It.second);
+		__transform(It.second);
 		It.second->use();
 		It.first->bind();
 		if (It.first->getEBO() != nullptr) {
