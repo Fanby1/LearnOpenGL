@@ -11,12 +11,15 @@ public:
 	CWindow();
 	~CWindow();
 	int initWindow(const CWindowConfig& vConfig);
-	void setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs);
+	void render();
+	const int getWidth() { return m_Width; }
+	const int getHeight() { return m_Height; }
+
+	//neverused void setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs);
 	void deleteStuff(std::shared_ptr<CStuff> vStuff);
 	void addStuff(std::shared_ptr<CStuff> vStuff);
 	void setCamera(std::shared_ptr<CCamera> vCamera);
 	void setLight(std::shared_ptr<CLight> vLight);
-	void render();
 
 private:
 	GLFWwindow* m_pWindow = nullptr;
@@ -30,8 +33,8 @@ private:
 	bool m_isCoreProfile, m_isParasSet, m_isMajorVersionValid;
 	
 	std::set<std::shared_ptr<CStuff>> m_Stuffs;
-	std::shared_ptr<CCamera> m_Camera;
-	std::shared_ptr<CLight> m_Light;
+	std::shared_ptr<CCamera> m_Camera = nullptr;
+	std::shared_ptr<CLight> m_Light = nullptr;
 
 	void __destroyWindow();
 	template<typename T>

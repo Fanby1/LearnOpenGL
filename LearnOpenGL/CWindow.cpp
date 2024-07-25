@@ -37,10 +37,10 @@ bool CWindow::__isParaErr(const T& vData, const T& vFloor, const T& vCeil, const
     if (std::clamp(vData, vFloor, vCeil) == vData) return false;
     else 
     {
-        return true;
         HIVE_LOG_WARNING("Window gets wrong paramter {}, we will use default parameter.", vType);
         if (vType == "OpenGL Major Version") 
             HIVE_LOG_WARNING("Because your OpenGL Major Version is wrong, we will not use the provided Minor Version.");
+        return true;
     }
 }
 
@@ -89,6 +89,7 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
     {
         HIVE_LOG_WARNING("Config Is not initialized! We will use default value.");
     }
+    glfwInit();
     if (m_pWindow != nullptr) {
         HIVE_LOG_WARNING("Destroied existing window! Please check whether multiplied created window in main.cpp.");
         __destroyWindow();
@@ -112,10 +113,11 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
     return 0;
 }
 
-void CWindow::setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs)
-{
-    m_Stuffs = vStuffs;
-}
+//never used
+//void CWindow::setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs)
+//{
+//    m_Stuffs = vStuffs;
+//}
 
 void CWindow::deleteStuff(std::shared_ptr<CStuff> vStuff)
 {

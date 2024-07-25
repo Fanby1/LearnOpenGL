@@ -19,6 +19,15 @@
 
 class CObject
 {
+public:
+	CObject() = default;
+	void setUpdateMoveFunction(std::function<void(std::chrono::duration<double>, CObject&)> vFunction);
+	void move(Eigen::Vector3f vDisplacement);
+	void setPosition(Eigen::Vector3f vNewPosition);
+	void scale(float vScale);
+	void setScale(float vScale);
+	Eigen::Vector3f getPosition();
+
 protected:
 	Eigen::Vector3f m_Position = { 0,0,0 };
 	float m_Scale = 1.0f;
@@ -34,14 +43,4 @@ protected:
 	std::chrono::steady_clock::time_point m_Start = std::chrono::high_resolution_clock::now();
 	void __transform(std::shared_ptr<CShader> vShader);
 	void __rotation(std::shared_ptr<CShader> vShader);
-	
-	
-public:
-	CObject() = default;
-	void setUpdateMoveFunction(std::function<void(std::chrono::duration<double>, CObject&)> vFunction);
-	void move(Eigen::Vector3f vDisplacement);
-	void setPosition(Eigen::Vector3f vNewPosition);
-	void scale(float vScale);
-	void setScale(float vScale);
-	Eigen::Vector3f getPosition();
 };
