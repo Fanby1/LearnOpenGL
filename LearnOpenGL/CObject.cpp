@@ -1,4 +1,9 @@
 #include "CObject.h"
+#include <string>
+#include <fstream>
+#include <iostream>
+#include "HiveLogger.h"
+
 
 void CObject::__transform(std::shared_ptr<CShader> vShader)
 {
@@ -26,7 +31,84 @@ void CObject::__rotation(std::shared_ptr<CShader> vShader)
 	vShader->setModel(Mat);
 }
 
+	while (std::getline(vFile, Line)) {
+		std::stringstream ss(Line);
+		std::string Value;
+		
+		while (std::getline(ss, Value, ',')) {
+			try {
+				Result.push_back(std::stof(Value));
+			}
+			catch (const std::invalid_argument& e) {
+				HIVE_LOG_ERROR("Invalid number in file: {}", Value);
+			}
+			catch (const std::out_of_range& e) {
+				HIVE_LOG_ERROR("Number out of range in file: {}", Value);
+			}
+		}
+	}
 
+
+CObject::CObject(const std::string& vPath, std::shared_ptr<CShader> vShader)
+{
+	std::ifstream File(vPath);
+	if (!File.is_open()) {
+		HIVE_LOG_ERROR("Failed to open file: {}", vPath);
+	}
+	std::string Mode;
+	unsigned int Type = 0;
+	if (std::getline(File, Mode)) {
+		std::size_t Position = Mode.find(":");
+		if (Position != std::string::npos) {
+			std::string NumberStr = Mode.substr(Position + 1);
+			try {
+				Type = std::stoi(NumberStr);
+			}
+			catch (const std::invalid_argument& e) {
+				HIVE_LOG_ERROR("Invalid number format: {}", e.what());
+			}
+			catch (const std::out_of_range& e) {
+				HIVE_LOG_ERROR("Number out of range: {}", e.what());
+			}
+		}
+	}
+	std::vector<float> Vertices = __readFloatArrayFromFile(File);
+	std::vector<unsigned int> Offset = __createOffset(Type);
+	auto VBO = std::make_shared<CVertexBufferObject>(Vertices.data(), sizeof(float) * Vertices.size(), Type, Offset);
+	auto VAO = std::make_shared<CVertexArrayObject>();
+	VAO->addVBO(VBO);
+	addVAO(VAO, vShader);
+}
+
+void CObject::addVAO(std::shared_ptr<CVertexArrayObject> vVAO, std::shared_ptr<CShader> vShader)
+{
+	m_VAOs[vVAO] = vShader;
+}
+
+void CObject::deleteVAO(std::shared_ptr<CVertexArrayObject> vVAO)
+{
+	m_VAOs.erase(vVAO);
+}
+
+void CObject::clearVAO()
+{
+	m_VAOs.clear();
+}
+
+void CObject::setVAO(std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>>&& vVAOs)
+{
+	m_VAOs = vVAOs;
+}
+
+std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>>::iterator CObject::begin()
+{
+	return m_VAOs.begin();
+}
+
+std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>>::iterator CObject::end()
+{
+	return m_VAOs.end();
+}
 
 void CObject::setUpdateMoveFunction(std::function<void(std::chrono::duration<double>, CObject&)> vFunction)
 {

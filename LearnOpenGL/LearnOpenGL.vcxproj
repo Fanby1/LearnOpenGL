@@ -34,6 +34,7 @@
     <ClInclude Include="CVertexBufferObject.h" />
     <ClInclude Include="CWindow.h" />
     <ClInclude Include="CRenderableObject.h" />
+    <ClInclude Include="CWindowConfig.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +49,7 @@
     <ClCompile Include="CVertexArrayObject.cpp" />
     <ClCompile Include="CVertexBufferObject.cpp" />
     <ClCompile Include="CWindow.cpp" />
+    <ClCompile Include="CWindowConfig.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CRenderableObject.cpp" />
     <ClCompile Include="std_image.cpp" />
@@ -181,6 +183,10 @@
     <Import Project="D:\vc_packages\boost_log_setup-vc143.1.85.0\build\boost_log_setup-vc143.targets" Condition="Exists('D:\vc_packages\boost_log_setup-vc143.1.85.0\build\boost_log_setup-vc143.targets')" />
     <Import Project="D:\vc_packages\fmt.7.0.1\build\fmt.targets" Condition="Exists('D:\vc_packages\fmt.7.0.1\build\fmt.targets')" />
     <Import Project="D:\vc_packages\hive.HiveLogger.1.0.0\build\hive.HiveLogger.targets" Condition="Exists('D:\vc_packages\hive.HiveLogger.1.0.0\build\hive.HiveLogger.targets')" />
+    <Import Project="D:\vc_packages\hive.HiveUtilityDLL.1.0.0\build\hive.HiveUtilityDLL.targets" Condition="Exists('D:\vc_packages\hive.HiveUtilityDLL.1.0.0\build\hive.HiveUtilityDLL.targets')" />
+    <Import Project="D:\vc_packages\inteltbb.redist.win.2021.12.0.496\build\native\inteltbb.redist.win.targets" Condition="Exists('D:\vc_packages\inteltbb.redist.win.2021.12.0.496\build\native\inteltbb.redist.win.targets')" />
+    <Import Project="D:\vc_packages\inteltbb.devel.win.2021.12.0.496\build\native\inteltbb.devel.win.targets" Condition="Exists('D:\vc_packages\inteltbb.devel.win.2021.12.0.496\build\native\inteltbb.devel.win.targets')" />
+    <Import Project="D:\vc_packages\hive.HiveConfigDLL.1.0.0\build\hive.HiveConfigDLL.targets" Condition="Exists('D:\vc_packages\hive.HiveConfigDLL.1.0.0\build\hive.HiveConfigDLL.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -200,5 +206,9 @@
     <Error Condition="!Exists('D:\vc_packages\boost_log_setup-vc143.1.85.0\build\boost_log_setup-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\boost_log_setup-vc143.1.85.0\build\boost_log_setup-vc143.targets'))" />
     <Error Condition="!Exists('D:\vc_packages\fmt.7.0.1\build\fmt.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\fmt.7.0.1\build\fmt.targets'))" />
     <Error Condition="!Exists('D:\vc_packages\hive.HiveLogger.1.0.0\build\hive.HiveLogger.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\hive.HiveLogger.1.0.0\build\hive.HiveLogger.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\hive.HiveUtilityDLL.1.0.0\build\hive.HiveUtilityDLL.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\hive.HiveUtilityDLL.1.0.0\build\hive.HiveUtilityDLL.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\inteltbb.redist.win.2021.12.0.496\build\native\inteltbb.redist.win.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\inteltbb.redist.win.2021.12.0.496\build\native\inteltbb.redist.win.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\inteltbb.devel.win.2021.12.0.496\build\native\inteltbb.devel.win.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\inteltbb.devel.win.2021.12.0.496\build\native\inteltbb.devel.win.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\hive.HiveConfigDLL.1.0.0\build\hive.HiveConfigDLL.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\hive.HiveConfigDLL.1.0.0\build\hive.HiveConfigDLL.targets'))" />
   </Target>
 </Project>

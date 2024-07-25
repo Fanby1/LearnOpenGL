@@ -1,9 +1,9 @@
 #define _USE_MATH_DEFINES
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <iostream>
 #include <cmath>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include "CWindow.h"
 #include "CShader.h"
 #include "CObject.h"
@@ -12,6 +12,7 @@
 #include "CVertexBufferObject.h"
 #include "CElementBufferObject.h"
 #include "CCamera.h"
+#include "HiveLogger.h"
 
 // set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
@@ -54,18 +55,17 @@ static void initGLAD() {
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        HIVE_LOG_ERROR("Failed to initialize GLAD");
     }
 }
 
 
 static void initGLFW() {
+    
     // glfw: initialize and configure
     // ------------------------------
+    // TODO: use the func in dllmain
     glfwInit();
-    //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
 static void renderOrangeAndYellow(CWindow& vWindow) {
@@ -295,8 +295,9 @@ static void renderPhongCube(CWindow& vWindow) {
 
 int main() {
     initGLFW();
+    CWindowConfig AConfig("./Assert/Config.xml");
+    AConfig.init();
     CWindow Window;
-    CWindowConfig AConfig;
     Window.initWindow(AConfig);
     initGLAD();
     

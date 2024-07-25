@@ -1,4 +1,10 @@
 #include "CShader.h"
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include "HiveLogger.h"
 
 void CShader::__computeTransformMatrix()
 {
@@ -34,7 +40,7 @@ CShader::CShader(const char* vVertexPath, const char* vFragmentPath)
     }
     catch (std::ifstream::failure& e)
     {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
+        HIVE_LOG_ERROR("ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: {}", e.what());
     }
     const char* VertexShaderCode = VertexCode.c_str();
     const char* FragmentShaderCode = FragmentCode.c_str();
@@ -44,18 +50,18 @@ CShader::CShader(const char* vVertexPath, const char* vFragmentPath)
     Vertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(Vertex, 1, &VertexShaderCode, NULL);
     glCompileShader(Vertex);
-    checkCompileErrors(Vertex, "VERTEX");
+    __checkCompileErrors(Vertex, "VERTEX");
     // Fragment CShader
     Fragment = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(Fragment, 1, &FragmentShaderCode, NULL);
     glCompileShader(Fragment);
-    checkCompileErrors(Fragment, "FRAGMENT");
+    __checkCompileErrors(Fragment, "FRAGMENT");
     // shader Program
     ID = glCreateProgram();
     glAttachShader(ID, Vertex);
     glAttachShader(ID, Fragment);
     glLinkProgram(ID);
-    checkCompileErrors(ID, "PROGRAM");
+    __checkCompileErrors(ID, "PROGRAM");
     // delete the shaders as they're linked into our program now and no longer necessary
     glDeleteShader(Vertex);
     glDeleteShader(Fragment);
@@ -149,7 +155,7 @@ void CShader::setMat4(const std::string& name, const Eigen::Matrix4f& mat) const
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, mat.data());
 }
 
-void CShader::checkCompileErrors(unsigned int vShader, std::string vType)
+void CShader::__checkCompileErrors(unsigned int vShader, std::string vType)
 {
     int Success;
     char InfoLog[1024];
@@ -159,7 +165,7 @@ void CShader::checkCompileErrors(unsigned int vShader, std::string vType)
         if (!Success)
         {
             glGetShaderInfoLog(vShader, 1024, NULL, InfoLog);
-            std::cout << "ERROR::SHADER_COMPILATION_ERROR of vType: " << vType << "\n" << InfoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            HIVE_LOG_ERROR("ERROR::SHADER_COMPILATION_ERROR of vType: {}\n{}", vType, InfoLog);
         }
     }
     else
@@ -168,7 +174,7 @@ void CShader::checkCompileErrors(unsigned int vShader, std::string vType)
         if (!Success)
         {
             glGetProgramInfoLog(vShader, 1024, NULL, InfoLog);
-            std::cout << "ERROR::PROGRAM_LINKING_ERROR of vType: " << vType << "\n" << InfoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            HIVE_LOG_ERROR("ERROR::PROGRAM_LINKING_ERROR of vType: {}\n{}", vType, InfoLog);
         }
     }
 }

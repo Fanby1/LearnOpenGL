@@ -1,14 +1,18 @@
 #include "CWindow.h"
+#include <set>
 #include <iostream>
 #include <Windows.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include "CShader.h"
 #include "HiveLogger.h"
 
 CWindow::CWindow() 
 {
-    m_Title = "Default Title";
-    m_MajVer = 4, m_MinVer = 6;
-    m_isCoreProfile = true;
     m_pWindow = nullptr;
+    m_MajVer = 4, m_MinVer = 6;
+    m_Title = "Default Title";
+    m_isCoreProfile = true;
     m_isSetPara = m_isSetMaj = false;
 
     int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
@@ -18,6 +22,7 @@ CWindow::CWindow()
     //pos: left+up
     m_PosX = MaxWidth >> 2;
     m_PosY = MaxHeight >> 2;
+    m_Objects.clear();
 }
 
 int CWindow::__clampData(const int& vData, const int& vFloor, const int& vCeil)
@@ -40,11 +45,18 @@ bool CWindow::__isParaErr(const int& vData, const int& vFloor, const int& vCeil,
     }
 }
 
-void CWindow::__checkAndSetConfig(CWindowConfig vConfig) 
+void CWindow::__checkAndSetConfig(const CWindowConfig& vConfig)
 {
     m_isSetPara = true;
     std::string TempTitle = vConfig.getTitle();
-    if (!TempTitle.empty()) m_Title = TempTitle;
+    if (TempTitle.empty()) 
+    {
+        HIVE_LOG_WARNING("Empty title provided! We will use default title.");
+    }
+    else 
+    {
+        m_Title = TempTitle;
+    }
     int t = 0;
     t = vConfig.getMajVer();
     if (!__isParaErr(t, 1, 4, "OpenGL Major Version")) m_isSetMaj = true, m_MajVer = t;
@@ -64,12 +76,19 @@ void CWindow::__checkAndSetConfig(CWindowConfig vConfig)
     m_isCoreProfile = vConfig.isCore();
 }
 
-int CWindow::initWindow(CWindowConfig vConfig)
+int CWindow::initWindow(const CWindowConfig& vConfig)
 {
+    if (!vConfig.isInit()) 
+    {
+        HIVE_LOG_WARNING("Config Is not initialized! We will use default value.");
+        return -1;
+    }
+
     __checkAndSetConfig(vConfig);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_MajVer);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_MinVer);
     glfwWindowHint(GLFW_OPENGL_PROFILE, m_isCoreProfile ? GLFW_OPENGL_CORE_PROFILE : GLFW_OPENGL_COMPAT_PROFILE);
+    
     m_pWindow = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), NULL, NULL);
     if (m_pWindow == NULL)
     {
@@ -110,7 +129,8 @@ void CWindow::setLight(std::shared_ptr<CLight> vLight)
 
 void CWindow::render()
 {
-    if (!m_isSetPara) {
+    if (!m_isSetPara) 
+    {
         HIVE_LOG_WARNING("No Config is loaded! We will use default parameters...");
     }
     while (!glfwWindowShouldClose(m_pWindow))

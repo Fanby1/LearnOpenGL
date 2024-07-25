@@ -1,26 +1,7 @@
 #pragma once
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "CObject.h"
 #include <set>
-#include "CStuff.h"
-#include "CShader.h"
-#include "CLight.h"
-#include "CCamera.h"
-
-/********************************/
-//TODO: add CWindowConfig. inside todo just show interface.
-class CWindowConfig {
-public:
-	int getWidth() { return 800; }
-	int getHeight() { return 600; }
-	int getPosX() { return 400; }
-	int getPosY() { return 200; }
-	std::string getTitle() { return "default title"; }
-	int getMajVer() { return 4; }
-	int getMinVer() { return 6; }
-	bool isCore() { return true; }
-};
-/********************************/
+#include "CWindowConfig.h"
 
 class CWindow
 {
@@ -52,7 +33,7 @@ private:
 
 	int __clampData(const int& vData, const int& vFloor, const int& vCeil);
 	bool  __isParaErr(const int& vData, const int& vFloor, const int& vCeil, const std::string& vType);
-	void __checkAndSetConfig(CWindowConfig vConfig);
+	void __checkAndSetConfig(const CWindowConfig& vConfig);
 	void __processInput();
 	static void __callbackFrameBufferSize(GLFWwindow* vWindow, int vWidth, int vHeight);
 };
