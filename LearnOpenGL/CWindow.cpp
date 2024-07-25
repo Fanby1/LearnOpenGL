@@ -3,8 +3,8 @@
 #include <Windows.h>
 #include "HiveLogger.h"
 
-CWindow::CWindow() {
-
+CWindow::CWindow() 
+{
     m_Title = "Default Title";
     m_MajVer = 4, m_MinVer = 6;
     m_isCoreProfile = true;
@@ -19,31 +19,37 @@ CWindow::CWindow() {
     m_PosX = MaxWidth >> 2;
     m_PosY = MaxHeight >> 2;
 }
+
 int CWindow::__clampData(const int& vData, const int& vFloor, const int& vCeil)
 {
-    //std::cout << vData << ' ' << vFloor << ' ' << vCeil << '\n';
     _ASSERT(vFloor <= vCeil);
     if (vData >= vFloor && vData <= vCeil) return vData;
     if (vData < vFloor) return vFloor;
     else return vCeil;
 }
+
 bool CWindow::__isParaErr(const int& vData, const int& vFloor, const int& vCeil, const std::string& vType)
 {
     if (__clampData(vData, vFloor, vCeil) == vData) return false;
-    else {
+    else 
+    {
         return true;
         HIVE_LOG_WARNING("Window gets wrong paramter {}, we will use default parameter.", vType);
+        if (vType == "OpenGL Major Version") 
+            HIVE_LOG_WARNING("Because your OpenGL Major Version is wrong, we will not use the provided Minor Version.");
     }
 }
-void CWindow::__checkAndSetConfig(CWindowConfig vConfig) {
+
+void CWindow::__checkAndSetConfig(CWindowConfig vConfig) 
+{
     m_isSetPara = true;
     std::string TempTitle = vConfig.getTitle();
     if (!TempTitle.empty()) m_Title = TempTitle;
     int t = 0;
     t = vConfig.getMajVer();
-    if (!__isParaErr(t, 1, 4, "PosY")) m_isSetMaj = true, m_MajVer = t;
+    if (!__isParaErr(t, 1, 4, "OpenGL Major Version")) m_isSetMaj = true, m_MajVer = t;
     t = vConfig.getMinVer();
-    if (!__isParaErr(t, 1, 6, "PosY") && m_isSetMaj) m_MinVer = t;
+    if (!__isParaErr(t, 1, 6, "OpenGL Minor Version") && m_isSetMaj) m_MinVer = t;
 
     int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
     int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -73,7 +79,7 @@ int CWindow::initWindow(CWindowConfig vConfig)
     }
     glfwMakeContextCurrent(m_pWindow);
     glfwSetWindowPos(m_pWindow, m_PosX, m_PosY);
-    glfwSetFramebufferSizeCallback(m_pWindow, _framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(m_pWindow, __callbackFrameBufferSize);
     return 0;
 }
 
@@ -101,7 +107,7 @@ void CWindow::render()
     {
         // input
         // -----
-        _processInput();
+        __processInput();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -124,7 +130,7 @@ void CWindow::render()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void CWindow::_processInput()
+void CWindow::__processInput()
 {
     if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(m_pWindow, true);
@@ -132,7 +138,7 @@ void CWindow::_processInput()
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
-void CWindow::_framebuffer_size_callback(GLFWwindow* window, int vWidth, int vHeight)
+void CWindow::__callbackFrameBufferSize(GLFWwindow* window, int vWidth, int vHeight)
 {
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.

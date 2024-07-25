@@ -46,7 +46,7 @@ private:
 	int __clampData(const int& vData, const int& vFloor, const int& vCeil);
 	bool  __isParaErr(const int& vData, const int& vFloor, const int& vCeil, const std::string& vType);
 	void __checkAndSetConfig(CWindowConfig vConfig);
-	void _processInput();
-	static void _framebuffer_size_callback(GLFWwindow* vWindow, int vWidth, int vHeight);
+	void __processInput();
+	static void __callbackFrameBufferSize(GLFWwindow* vWindow, int vWidth, int vHeight);
 };
 
