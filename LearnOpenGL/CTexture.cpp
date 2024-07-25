@@ -20,7 +20,7 @@ CTexture::CTexture(const CImage& vImage, GLuint vTextureUnit)
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void CTexture::bind()
+void CTexture::bind() const
 {
     glActiveTexture(m_TextureUnit);
     glBindTexture(GL_TEXTURE_2D, m_Texture);

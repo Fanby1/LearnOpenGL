@@ -9,7 +9,7 @@ private:
 	GLuint m_TextureUnit = 0;
 public:
 	CTexture(const CImage& vImage, GLuint vTextureUnit);
-	void bind();
+	void bind() const;
 	GLuint getTexture() const;
 };
 

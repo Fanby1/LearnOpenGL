@@ -217,13 +217,16 @@ static void renderTransform(CWindow& vWindow) {
 static void renderCube(CWindow& vWindow) {
     auto TransformShader = std::make_shared<CShader>("./Shader/transform.vs", "./Shader/transform.fs");
     TransformShader->use();
+    TransformShader->setInt("texture1", 0);
+    TransformShader->setInt("texture2", 1);
     CImage Container("./Assert/container.jpg");
     CTexture Texture_0(Container, GL_TEXTURE0);
     CImage Awesomeface("./Assert/awesomeface.png");
     CTexture Texture_1(Awesomeface, GL_TEXTURE1);
 
-    Texture_0.bind();
     Texture_1.bind();
+    Texture_1.bind();
+
     auto Cube = std::make_shared<CObject>("./cube.txt", TransformShader);
     CCamera Camera;
     Camera.setCameraPosition({ 0, 0, 3 });
