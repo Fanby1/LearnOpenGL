@@ -28,10 +28,12 @@
     <ClInclude Include="CLight.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CShader.h" />
+    <ClInclude Include="CStuff.h" />
     <ClInclude Include="CTexture.h" />
     <ClInclude Include="CVertexArrayObject.h" />
     <ClInclude Include="CVertexBufferObject.h" />
     <ClInclude Include="CWindow.h" />
+    <ClInclude Include="CRenderableObject.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
@@ -41,11 +43,13 @@
     <ClCompile Include="CLight.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CShader.cpp" />
+    <ClCompile Include="CStuff.cpp" />
     <ClCompile Include="CTexture.cpp" />
     <ClCompile Include="CVertexArrayObject.cpp" />
     <ClCompile Include="CVertexBufferObject.cpp" />
     <ClCompile Include="CWindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="CRenderableObject.cpp" />
     <ClCompile Include="std_image.cpp" />
   </ItemGroup>
   <ItemGroup>

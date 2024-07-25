@@ -2,7 +2,8 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <Eigen/Dense>
-class CCamera
+#include "CObject.h"
+class CCamera : public CObject
 {
 private:
     float m_FeildOfView = 90.0f;  // Field of View, in degrees
@@ -12,7 +13,7 @@ private:
     bool m_ComputeProjectionFlag = true;
     bool m_ComputeViewFlag = true;
 
-    Eigen::Vector3f m_CameraPosition{ 0, 0, 5 };
+    Eigen::Vector3f m_Position{ 0, 0, 5 };
     Eigen::Vector3f m_CameraTarget{ 0, 0, 0 };
     Eigen::Vector3f m_UpVector{ 0, 1, 0 };
 

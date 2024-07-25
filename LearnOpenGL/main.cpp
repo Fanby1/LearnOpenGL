@@ -83,11 +83,11 @@ static void renderOrangeAndYellow(CWindow& vWindow) {
     
     VAOOrange->addVBO(VBO);
     VAOOrange->setEBO(EBOOrange);
-    auto TriangleOrange = std::make_shared<CObject>(), TriangleYellow = std::make_shared<CObject>();
+    auto TriangleOrange = std::make_shared<CStuff>(), TriangleYellow = std::make_shared<CStuff>();
     TriangleOrange->addVAO(VAOOrange, OrangeShader);
     TriangleYellow->addVAO(VAOYellow, YelloShader);
 
-    vWindow.setObject({ TriangleOrange, TriangleYellow });
+    vWindow.setStuff({ TriangleOrange, TriangleYellow });
     
     vWindow.render();
     
@@ -105,10 +105,10 @@ static void renderMix(CWindow& vWindow) {
     MixVAO->addVBO(MixVBO);
     MixVAO->setEBO(MixEBO);
 
-    auto Mix = std::make_shared<CObject>();
+    auto Mix = std::make_shared<CStuff>();
     Mix->addVAO(MixVAO, MixShader);
     
-    vWindow.addObject(Mix);
+    vWindow.addStuff(Mix);
 
     vWindow.render();
 }
@@ -132,10 +132,10 @@ static void renderMixSquare(CWindow& vWindow) {
     MixVAO->addVBO(MixVBO);
     MixVAO->setEBO(MixEBO);
 
-    auto Mix = std::make_shared<CObject>();
+    auto Mix = std::make_shared<CStuff>();
     Mix->addVAO(MixVAO, MixShader);
 
-    vWindow.addObject(Mix);
+    vWindow.addStuff(Mix);
 
     vWindow.render();
 }
@@ -152,14 +152,14 @@ static void renderTexture(CWindow& vWindow) {
     RectangleVAO->addVBO(RectangleVBO);
     RectangleVAO->setEBO(RectangleEBO);
 
-    auto Rectangle = std::make_shared<CObject>();
+    auto Rectangle = std::make_shared<CStuff>();
     Rectangle->addVAO(RectangleVAO, TextureShader);
 
     CImage Image("./Assert/container.jpg");
     CTexture Texture(Image, GL_TEXTURE0);
     Texture.bind();
     
-    vWindow.addObject(Rectangle);
+    vWindow.addStuff(Rectangle);
 
     vWindow.render();
 }
@@ -198,7 +198,7 @@ static void renderTransform(CWindow& vWindow) {
     TransformVAO->addVBO(TransformVBO);
     TransformVAO->setEBO(TransformEBO);
 
-    auto Transform = std::make_shared<CObject>();
+    auto Transform = std::make_shared<CStuff>();
     Transform->addVAO(TransformVAO, TransformShader);
 
     CCamera Camera;
@@ -209,7 +209,7 @@ static void renderTransform(CWindow& vWindow) {
     Camera.setFeildOfView(45.0);
     TransformShader->setProjection(Camera.getProjectionMatrix());
     TransformShader->setView(Camera.getViewMatrix());
-    vWindow.addObject(Transform);
+    vWindow.addStuff(Transform);
     glEnable(GL_DEPTH_TEST);
     vWindow.render();
 }
@@ -234,11 +234,11 @@ static void renderCube(CWindow& vWindow) {
     CTexture Texture_0(Container, GL_TEXTURE0);
     CImage Awesomeface("./Assert/awesomeface.png");
     CTexture Texture_1(Awesomeface, GL_TEXTURE1);
-    Texture_1.bind();
+    Texture_0.bind();
     Texture_1.bind();
 
     auto LightShader = std::make_shared<CShader>("./Shader/transform.vs", "./Shader/light.fs");
-    auto Cube = std::make_shared<CObject>("./cube.txt", TransformShader);
+    auto Cube = std::make_shared<CStuff>("./cube.txt", TransformShader);
     Cube->setUpdateMoveFunction(rotate);
     CCamera Camera;
     Camera.setCameraPosition({ 0, 0, 3 });
@@ -248,11 +248,50 @@ static void renderCube(CWindow& vWindow) {
     Camera.setFeildOfView(45.0);
     TransformShader->setProjection(Camera.getProjectionMatrix());
     TransformShader->setView(Camera.getViewMatrix());
-    vWindow.addObject(Cube);
+    vWindow.addStuff(Cube);
     glEnable(GL_DEPTH_TEST);
     vWindow.render();
 }
 
+static void scala(std::chrono::duration<double> vElapsed, CObject& vObject) {
+    vObject.setScale(0.3);
+}
+
+static void renderPhongCube(CWindow& vWindow) {
+    auto PhongShader = std::make_shared<CShader>("./Shader/phong.vs", "./Shader/phong.fs");
+    auto LightShader = std::make_shared<CShader>("./Shader/light.vs", "./Shader/light.fs");
+    PhongShader->use();
+    PhongShader->setInt("texture1", 0);
+    PhongShader->setInt("texture2", 1);
+    CImage Container("./Assert/container.jpg");
+    CTexture Texture_0(Container, GL_TEXTURE0);
+    CImage Awesomeface("./Assert/awesomeface.png");
+    CTexture Texture_1(Awesomeface, GL_TEXTURE1);
+    Texture_0.bind();
+    Texture_1.bind();
+
+    auto Cube = std::make_shared<CStuff>("./cube.txt", PhongShader);
+    auto Light = std::make_shared<CLight>("./light.txt", LightShader);
+
+    Cube->setUpdateMoveFunction(rotate);
+    Light->setUpdateMoveFunction(scala);
+
+    auto Camera = std::make_shared<CCamera>();
+    Camera->setCameraPosition({ 0, 0, 3 });
+    Camera->setFarPlane(100);
+    Camera->setNearPlane(0.1);
+    Camera->setAspectRatio(800.0 / 600.0);
+    Camera->setFeildOfView(45.0);
+    PhongShader->setProjection(Camera->getProjectionMatrix());
+    PhongShader->setView(Camera->getViewMatrix());
+    LightShader->setProjection(Camera->getProjectionMatrix());
+    LightShader->setView(Camera->getViewMatrix());
+    vWindow.addStuff(Cube);
+    vWindow.setLight(Light);
+    vWindow.setCamera(Camera);
+    glEnable(GL_DEPTH_TEST);
+    vWindow.render();
+}
 
 int main() {
     initGLFW();
@@ -266,5 +305,6 @@ int main() {
     // renderMixSquare(Window);
     // renderTexture(Window);
     // renderTransform(Window);
-    renderCube(Window);
+    // renderCube(Window);
+    renderPhongCube(Window);
 }

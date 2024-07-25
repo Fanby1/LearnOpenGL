@@ -2,8 +2,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <set>
-#include "CObject.h"
+#include "CStuff.h"
 #include "CShader.h"
+#include "CLight.h"
+#include "CCamera.h"
 
 /********************************/
 //TODO: add CWindowConfig. inside todo just show interface.
@@ -26,13 +28,15 @@ class CWindow
 public:
 	CWindow();
 	int initWindow(CWindowConfig vConfig);
-	void setObject(std::set<std::shared_ptr<CObject>>&& vObjects);
-	void deleteObejct(std::shared_ptr<CObject> vObject);
-	void addObject(std::shared_ptr<CObject> vObject);
+	void setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs);
+	void deleteStuff(std::shared_ptr<CStuff> vStuff);
+	void addStuff(std::shared_ptr<CStuff> vStuff);
+	void setCamera(std::shared_ptr<CCamera> vCamera);
+	void setLight(std::shared_ptr<CLight> vLight);
 	void render();
 
 private:
-	GLFWwindow* m_pWindow;
+	GLFWwindow* m_pWindow = nullptr;
 
 	int m_MajVer, m_MinVer;
 	int m_Width, m_Height;
@@ -42,7 +46,10 @@ private:
 	//m_isSetPara only guarantee class is set, not for any variable.
 	bool m_isCoreProfile, m_isSetPara, m_isSetMaj;
 	
-	std::set<std::shared_ptr<CObject>> m_Objects;
+	std::set<std::shared_ptr<CStuff>> m_Stuffs;
+	std::shared_ptr<CCamera> m_Camera;
+	std::shared_ptr<CLight> m_Light;
+
 	int __clampData(const int& vData, const int& vFloor, const int& vCeil);
 	bool  __isParaErr(const int& vData, const int& vFloor, const int& vCeil, const std::string& vType);
 	void __checkAndSetConfig(CWindowConfig vConfig);

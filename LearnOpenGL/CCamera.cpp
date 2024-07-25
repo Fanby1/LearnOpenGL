@@ -17,7 +17,7 @@ void CCamera::__computeProjection()
 
 void CCamera::__computeView()
 {
-    Eigen::Vector3f Z = (m_CameraPosition - m_CameraTarget).normalized();  // The "forward" vector.
+    Eigen::Vector3f Z = (m_Position - m_CameraTarget).normalized();  // The "forward" vector.
     Eigen::Vector3f X = m_UpVector.cross(Z).normalized();  // The "right" vector.
     Eigen::Vector3f Y = Z.cross(X);  // The "up" vector.
 
@@ -29,9 +29,9 @@ void CCamera::__computeView()
     m_View.block<3, 1>(0, 2) = Z;
 
     // Set the translation part of the matrix
-    m_View(0, 3) = -X.dot(m_CameraPosition);
-    m_View(1, 3) = -Y.dot(m_CameraPosition);
-    m_View(2, 3) = -Z.dot(m_CameraPosition);
+    m_View(0, 3) = -X.dot(m_Position);
+    m_View(1, 3) = -Y.dot(m_Position);
+    m_View(2, 3) = -Z.dot(m_Position);
 
     m_ComputeViewFlag = false;
 }
@@ -62,7 +62,7 @@ void CCamera::setFarPlane(float vFarPlane)
 
 void CCamera::rotateUpVector(float vRadian)
 {
-    Eigen::AngleAxisf RotationMatrix(vRadian, (m_CameraTarget - m_CameraPosition).normalized());
+    Eigen::AngleAxisf RotationMatrix(vRadian, (m_CameraTarget - m_Position).normalized());
     m_UpVector = RotationMatrix * Eigen::Vector3f(0,1,0);
     m_ComputeViewFlag = true;
 }
@@ -81,13 +81,13 @@ void CCamera::setCameraTarget(const Eigen::Vector3f& vTargetVertix)
 
 void CCamera::moveCameraPosition(const Eigen::Vector3f& vPositionDistance)
 {
-    m_CameraPosition = vPositionDistance;
+    m_Position = vPositionDistance;
     m_ComputeViewFlag = true;
 }
 
 void CCamera::setCameraPosition(const Eigen::Vector3f& vTargetPostion)
 {
-    m_CameraPosition = vTargetPostion;
+    m_Position = vTargetPostion;
     m_ComputeViewFlag = true;
 }
 

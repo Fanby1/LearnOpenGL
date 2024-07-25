@@ -67,6 +67,9 @@ void CShader::use()
     if (m_ComputeTransformFlag) {
         __computeTransformMatrix();
     }
+    setMat4("model", m_Model);
+    setMat4("view", m_View);
+    setMat4("projection", m_Projection);
     setMat4("transform", m_Transform);
 }
 

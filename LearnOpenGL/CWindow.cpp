@@ -83,19 +83,29 @@ int CWindow::initWindow(CWindowConfig vConfig)
     return 0;
 }
 
-void CWindow::setObject(std::set<std::shared_ptr<CObject>>&& vObjects)
+void CWindow::setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs)
 {
-    m_Objects = vObjects;
+    m_Stuffs = vStuffs;
 }
 
-void CWindow::deleteObejct(std::shared_ptr<CObject> vObject)
+void CWindow::deleteStuff(std::shared_ptr<CStuff> vStuff)
 {
-    m_Objects.erase(vObject);
+    m_Stuffs.erase(vStuff);
 }
 
-void CWindow::addObject(std::shared_ptr<CObject> vObject)
+void CWindow::addStuff(std::shared_ptr<CStuff> vStuff)
 {
-    m_Objects.insert(vObject);
+    m_Stuffs.insert(vStuff);
+}
+
+void CWindow::setCamera(std::shared_ptr<CCamera> vCamera)
+{
+    m_Camera = vCamera;
+}
+
+void CWindow::setLight(std::shared_ptr<CLight> vLight)
+{
+    m_Light = vLight;
 }
 
 void CWindow::render()
@@ -113,8 +123,9 @@ void CWindow::render()
 
         // draw our first triangle
         // ..:: Drawing code (in render loop) :: ..
-        for (auto& Object : m_Objects) {
-            Object->render();
+        m_Light->renderV(m_Camera, m_Light);
+        for (auto& Stuff : m_Stuffs) {
+            Stuff->renderV(m_Camera, m_Light);
         }
         // glBindVertexArray(0); // no need to unbind it every time 
 
