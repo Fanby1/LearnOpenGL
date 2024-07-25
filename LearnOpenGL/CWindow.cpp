@@ -4,49 +4,75 @@
 #include "HiveLogger.h"
 
 CWindow::CWindow() {
-    int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
-    int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
-    m_Width = MaxWidth >> 1;
-    m_Height = MaxHeight >> 1;
-    m_PosX = MaxWidth >> 2;
-    m_PosY = MaxHeight >> 2;
+
     m_Title = "Default Title";
     m_MajVer = 4, m_MinVer = 6;
     m_isCoreProfile = true;
     m_pWindow = nullptr;
     m_isSetPara = m_isSetMaj = false;
+
+    int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
+    int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
+    m_Width = MaxWidth >> 1;
+    m_Height = MaxHeight >> 1;
+    //pos: left+up
+    m_PosX = MaxWidth >> 2;
+    m_PosY = MaxHeight >> 2;
 }
-int __clampData(int vData, int vCeil, int vFloor) {
+int CWindow::__clampData(const int& vData, const int& vFloor, const int& vCeil)
+{
+    //std::cout << vData << ' ' << vFloor << ' ' << vCeil << '\n';
+    _ASSERT(vFloor <= vCeil);
     if (vData >= vFloor && vData <= vCeil) return vData;
     if (vData < vFloor) return vFloor;
     else return vCeil;
 }
-bool __isParaErr(int vData, int vCeil, int vFloor,std::string vType) {
-    if (__clampData(vData, vCeil, vFloor) == vData) return false;
+bool CWindow::__isParaErr(const int& vData, const int& vFloor, const int& vCeil, const std::string& vType)
+{
+    if (__clampData(vData, vFloor, vCeil) == vData) return false;
     else {
         return true;
-        HIVE_LOG_WARNING("Window gets wrong paramter {}, we will use default ones.");
+        HIVE_LOG_WARNING("Window gets wrong paramter {}, we will use default parameter.", vType);
     }
+}
+void CWindow::__checkAndSetConfig(CWindowConfig vConfig) {
+    m_isSetPara = true;
+    std::string TempTitle = vConfig.getTitle();
+    if (!TempTitle.empty()) m_Title = TempTitle;
+    int t = 0;
+    t = vConfig.getMajVer();
+    if (!__isParaErr(t, 1, 4, "PosY")) m_isSetMaj = true, m_MajVer = t;
+    t = vConfig.getMinVer();
+    if (!__isParaErr(t, 1, 6, "PosY") && m_isSetMaj) m_MinVer = t;
+
+    int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
+    int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
+    t = vConfig.getWidth();
+    if (!__isParaErr(t, 0, MaxWidth, "Width")) m_Width = t;
+    t = vConfig.getHeight();
+    if (!__isParaErr(t, 0, MaxHeight, "Height")) m_Height = t;
+    t = vConfig.getPosX();
+    if (!__isParaErr(t, 0, MaxWidth - m_Width, "PosX")) m_PosX = t;
+    t = vConfig.getPosY();
+    if (!__isParaErr(t, 0, MaxHeight - m_Height, "PosY")) m_PosY = t;
+    m_isCoreProfile = vConfig.isCore();
 }
 
 int CWindow::initWindow(CWindowConfig vConfig)
 {
-    int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
-    int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
-    
+    __checkAndSetConfig(vConfig);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_MajVer);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_MinVer);
     glfwWindowHint(GLFW_OPENGL_PROFILE, m_isCoreProfile ? GLFW_OPENGL_CORE_PROFILE : GLFW_OPENGL_COMPAT_PROFILE);
     m_pWindow = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), NULL, NULL);
     if (m_pWindow == NULL)
     {
-        ///**/HIVE_LOG_ERR("Failed to create GLFW window");
+        HIVE_LOG_ERROR("Failed to create GLFW window!");
         glfwTerminate();
         return -1;
     }
-
-    glfwSetWindowPos(m_pWindow, m_PosX, m_PosY);
     glfwMakeContextCurrent(m_pWindow);
+    glfwSetWindowPos(m_pWindow, m_PosX, m_PosY);
     glfwSetFramebufferSizeCallback(m_pWindow, _framebuffer_size_callback);
     return 0;
 }
@@ -68,6 +94,9 @@ void CWindow::addObject(std::shared_ptr<CObject> vObject)
 
 void CWindow::render()
 {
+    if (!m_isSetPara) {
+        HIVE_LOG_WARNING("No Config is loaded! We will use default parameters...");
+    }
     while (!glfwWindowShouldClose(m_pWindow))
     {
         // input
