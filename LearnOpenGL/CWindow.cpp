@@ -1,20 +1,52 @@
 #include "CWindow.h"
 #include <iostream>
+#include <Windows.h>
 
+CWindow::CWindow() {
+    int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
+    int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
+    m_Width = MaxWidth >> 1;
+    m_Height = MaxHeight >> 1;
+    m_PosX = MaxWidth >> 2;
+    m_PosY = MaxHeight >> 2;
+    m_Title = "Default Title";
+    m_MajVer = 4, m_MinVer = 6;
+    m_isCoreProfile = true;
+    m_pWindow = nullptr;
+    m_isSetPara = m_isSetMaj = false;
+}
+int __clampData(int vData, int vCeil, int vFloor) {
+    if (vData >= vFloor && vData <= vCeil) return vData;
+    if (vData < vFloor) return vFloor;
+    else return vCeil;
+}
+bool __isParaErr(int vData, int vCeil, int vFloor,std::string vType) {
+    if (__clampData(vData, vCeil, vFloor) == vData) return false;
+    else {
+        return true;
+        HIVE_LOG_WARNING("Window gets wrong paramter {}, we will use default ones.");
+    }
+}
 
-CWindow::CWindow(unsigned int vWidth, unsigned int vHeight): m_Width(vWidth), m_Height(vHeight)
+int CWindow::initWindow(CWindowConfig vConfig)
 {
-    // glfw window creation
-    // --------------------
-    m_Window = glfwCreateWindow(m_Width, m_Height, "LearnOpenGL", NULL, NULL);
-    if (m_Window == NULL)
+    int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
+    int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
+    
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_MajVer);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_MinVer);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, m_isCoreProfile ? GLFW_OPENGL_CORE_PROFILE : GLFW_OPENGL_COMPAT_PROFILE);
+    m_pWindow = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), NULL, NULL);
+    if (m_pWindow == NULL)
     {
-        std::cout << "Failed to create GLFW window" << std::endl;
+        ///**/HIVE_LOG_ERR("Failed to create GLFW window");
         glfwTerminate();
         return;
     }
-    glfwMakeContextCurrent(m_Window);
-    glfwSetFramebufferSizeCallback(m_Window, _framebuffer_size_callback);
+
+    glfwSetWindowPos(m_pWindow, m_PosX, m_PosY);
+    glfwMakeContextCurrent(m_pWindow);
+    glfwSetFramebufferSizeCallback(m_pWindow, _framebuffer_size_callback);
 }
 
 void CWindow::setObject(std::set<std::shared_ptr<CObject>>&& vObjects)
@@ -34,7 +66,9 @@ void CWindow::addObject(std::shared_ptr<CObject> vObject)
 
 void CWindow::render()
 {
-    while (!glfwWindowShouldClose(m_Window))
+    //TODO: add log
+    if (!m_isSetPara) return;
+    while (!glfwWindowShouldClose(m_pWindow))
     {
         // input
         // -----
@@ -51,7 +85,7 @@ void CWindow::render()
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
-        glfwSwapBuffers(m_Window);
+        glfwSwapBuffers(m_pWindow);
         glfwPollEvents();
     }
     // glfw: terminate, clearing all previously allocated GLFW resources.
@@ -63,8 +97,8 @@ void CWindow::render()
 // ---------------------------------------------------------------------------------------------------------
 void CWindow::_processInput()
 {
-    if (glfwGetKey(m_Window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(m_Window, true);
+    if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(m_pWindow, true);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
