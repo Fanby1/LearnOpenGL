@@ -161,6 +161,7 @@
     <Import Project="D:\vc_packages\glad.1.0.0\build\glad.targets" Condition="Exists('D:\vc_packages\glad.1.0.0\build\glad.targets')" />
     <Import Project="D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets" Condition="Exists('D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets')" />
     <Import Project="D:\vc_packages\glm.1.0.1\build\native\glm.targets" Condition="Exists('D:\vc_packages\glm.1.0.1\build\native\glm.targets')" />
+    <Import Project="D:\vc_packages\TinyGLTF.2.9.0\build\TinyGLTF.targets" Condition="Exists('D:\vc_packages\TinyGLTF.2.9.0\build\TinyGLTF.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -185,5 +186,6 @@
     <Error Condition="!Exists('D:\vc_packages\glad.1.0.0\build\glad.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\glad.1.0.0\build\glad.targets'))" />
     <Error Condition="!Exists('D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\Eigen3.3.3.9\build\native\Eigen3.targets'))" />
     <Error Condition="!Exists('D:\vc_packages\glm.1.0.1\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\glm.1.0.1\build\native\glm.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\TinyGLTF.2.9.0\build\TinyGLTF.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\TinyGLTF.2.9.0\build\TinyGLTF.targets'))" />
   </Target>
 </Project>

@@ -47,3 +47,7 @@ void CGLTFObject::__printAttributes(const tinygltf::Primitive& vPrimitive)
         HIVE_LOG_INFO("        {}", Attr.first);
     }
 }
+
+void CGLTFObject::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight)
+{
+}
