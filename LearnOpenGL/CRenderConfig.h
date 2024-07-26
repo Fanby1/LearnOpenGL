@@ -7,11 +7,11 @@ class CRenderConfig : protected hiveConfig::CHiveConfig
 public:
 	CRenderConfig(const std::string& vFilePath = "");
 	~CRenderConfig() = default;
-	const bool isInit() { return m_isInit; }
+	bool isInit() const { return m_isInit; }
 	void init();
-	const std::string getVertexShaderPath() { return m_VertexShaderPath; }
-	const std::string getFragmentShaderPath() { return m_FragmentShaderPath; }
-	const bool isUsingPerVertexShading() { return m_UsePerVertexShading; }
+	std::string getVertexShaderPath() const { return m_VertexShaderPath; }
+	std::string getFragmentShaderPath() const { return m_FragmentShaderPath; }
+	bool isUsingPerVertexShading() const { return m_UsePerVertexShading; }
 
 private:
 	std::string m_FilePath = "";

@@ -13,8 +13,8 @@ public:
 	~CWindow();
 	int initWindow(const CWindowConfig& vConfig);
 	void render();
-	const int getWidth() { return m_Width; }
-	const int getHeight() { return m_Height; }
+	int getWidth() const { return m_Width; }
+	int getHeight() const { return m_Height; }
 
 	//neverused void setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs);
 	void deleteStuff(std::shared_ptr<CStuff> vStuff);
