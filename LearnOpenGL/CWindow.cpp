@@ -1,12 +1,19 @@
 #include "CWindow.h"
+#include <iostream>
 #include <algorithm>
 #include <set>
-#include <iostream>
 #include <Windows.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "CShader.h"
+#include "CObject.h"
+#include "CTexture.h"
+#include "CVertexArrayObject.h"
+#include "CVertexBufferObject.h"
+#include "CElementBufferObject.h"
+#include "CCamera.h"
 #include "HiveLogger.h"
+#include "CRenderConfig.h"
 
 CWindow::CWindow() 
 {
@@ -144,12 +151,44 @@ void CWindow::setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight)
     m_DirectionalLight = vLight;
 }
 
-void CWindow::render()
+void CWindow::render(const std::string& VSPath,const std::string& FSPath, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
 {
     if (!m_isParasSet)
     {
         HIVE_LOG_WARNING("No Config is loaded! We will use default parameters...");
     }
+
+    auto DirectialLightShader = std::make_shared<CShader>(VSPath.c_str(), FSPath.c_str());
+    //force use config(in debug):
+    //auto DirectialLightShader = std::make_shared<CShader>(vRConfig.getVertexShaderPath().c_str(), vRConfig.getFragmentShaderPath().c_str());
+    DirectialLightShader->use();
+    DirectialLightShader->setInt("material.diffuse", 0);
+    DirectialLightShader->setInt("material.specular", 1);
+    CImage Container("./assets/container2.png");
+    CTexture Texture_0(Container, GL_TEXTURE0);
+    Texture_0.bind();
+    CImage Specular("./assets/container2_specular.png");
+    CTexture Texture_1(Specular, GL_TEXTURE1);
+    Texture_1.bind();
+    DirectialLightShader->setFloat("material.shininess", 64.0f);
+
+    auto Cube = std::make_shared<CStuff>("./cube.txt", DirectialLightShader);
+    // Cube->setUpdateMoveFunction(scala);
+    auto DirectionalLight = std::make_shared<CDirectionalLight>();
+    DirectionalLight->setUpdateMoveFunction(vFunction);
+
+    auto Camera = std::make_shared<CCamera>();
+    Camera->setCameraPosition({ 0, 0, 3 });
+    Camera->setFarPlane(100);
+    Camera->setNearPlane(0.1);
+    Camera->setAspectRatio(1.0 * m_Width / m_Height);
+    Camera->setFeildOfView(45.0);
+    addStuff(Cube);
+    setDirectionalLight(DirectionalLight);
+    setCamera(Camera);
+    glEnable(GL_DEPTH_TEST);
+
+
     while (!glfwWindowShouldClose(m_pWindow))
     {
         // input

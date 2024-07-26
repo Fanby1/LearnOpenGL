@@ -12,7 +12,7 @@ public:
 	CWindow();
 	~CWindow();
 	int initWindow(const CWindowConfig& vConfig);
-	void render();
+	void render(const std::string& VSPath, const std::string& FSPath, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction);
 	int getWidth() const { return m_Width; }
 	int getHeight() const { return m_Height; }
 
