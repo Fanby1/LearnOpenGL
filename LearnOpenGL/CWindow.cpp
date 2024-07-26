@@ -21,7 +21,7 @@ CWindow::CWindow()
     m_MajVer = 4, m_MinVer = 6;
     m_Title = "Default Title";
     m_isCoreProfile = true;
-    m_isParasSet = m_isMajorVersionValid = false;
+    m_isWindowParasSet = m_isMajorVersionValid = false;
 
     int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
     int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -61,7 +61,7 @@ void CWindow::__destroyWindow()
 
 void CWindow::__checkAndSetConfig(const CWindowConfig& vConfig)
 {
-    m_isParasSet = true;
+    m_isWindowParasSet = true;
     std::string TempTitle = vConfig.getTitle();
     if (TempTitle.empty()) 
     {
@@ -120,47 +120,13 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
     return 0;
 }
 
-//never used
-//void CWindow::setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs)
-//{
-//    m_Stuffs = vStuffs;
-//}
-
-void CWindow::deleteStuff(std::shared_ptr<CStuff> vStuff)
+void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
 {
-    m_Stuffs.erase(vStuff);
-}
-
-void CWindow::addStuff(std::shared_ptr<CStuff> vStuff)
-{
-    m_Stuffs.insert(vStuff);
-}
-
-void CWindow::setCamera(std::shared_ptr<CCamera> vCamera)
-{
-    m_Camera = vCamera;
-}
-
-void CWindow::setLight(std::shared_ptr<CPointLight> vLight)
-{
-    m_Light = vLight;
-}
-
-void CWindow::setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight)
-{
-    m_DirectionalLight = vLight;
-}
-
-void CWindow::render(const std::string& VSPath,const std::string& FSPath, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
-{
-    if (!m_isParasSet)
-    {
-        HIVE_LOG_WARNING("No Config is loaded! We will use default parameters...");
-    }
+    std::string VSPath = vConfig.isInit() ? vConfig.getVertexShaderPath() : "./Shader/directionalLight.vs";
+    std::string FSPath = vConfig.isInit() ? vConfig.getFragmentShaderPath() : "./Shader/directionalLight.fs";
+    bool UsePerVertexShading = vConfig.isInit() ? vConfig.isUsingPerVertexShading() : false;
 
     auto DirectialLightShader = std::make_shared<CShader>(VSPath.c_str(), FSPath.c_str());
-    //force use config(in debug):
-    //auto DirectialLightShader = std::make_shared<CShader>(vRConfig.getVertexShaderPath().c_str(), vRConfig.getFragmentShaderPath().c_str());
     DirectialLightShader->use();
     DirectialLightShader->setInt("material.diffuse", 0);
     DirectialLightShader->setInt("material.specular", 1);
@@ -178,47 +144,44 @@ void CWindow::render(const std::string& VSPath,const std::string& FSPath, std::f
     DirectionalLight->setUpdateMoveFunction(vFunction);
 
     auto Camera = std::make_shared<CCamera>();
-    Camera->setCameraPosition({ 0, 0, 3 });
+    Camera->setCameraPosition({ 0, 1, 3 });
     Camera->setFarPlane(100);
     Camera->setNearPlane(0.1);
     Camera->setAspectRatio(1.0 * m_Width / m_Height);
     Camera->setFeildOfView(45.0);
-    addStuff(Cube);
-    setDirectionalLight(DirectionalLight);
-    setCamera(Camera);
+    __addStuff(Cube);
+    __setDirectionalLight(DirectionalLight);
+    __setCamera(Camera);
     glEnable(GL_DEPTH_TEST);
 
+    __render();
+}
+
+void CWindow::__render()
+{
+    if (!m_isWindowParasSet)
+    {
+        HIVE_LOG_WARNING("No Window Config is loaded! We will use default parameters...");
+    }
 
     while (!glfwWindowShouldClose(m_pWindow))
     {
-        // input
-        // -----
         __processInput();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // draw our first triangle
-        // ..:: Drawing code (in render loop) :: ..
         if (m_Light) {
             m_Light->renderV(m_Camera, m_Light, m_DirectionalLight);
         }
         for (auto& Stuff : m_Stuffs) {
             Stuff->renderV(m_Camera, m_Light, m_DirectionalLight);
         }
-        // glBindVertexArray(0); // no need to unbind it every time 
-
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
         glfwSwapBuffers(m_pWindow);
         glfwPollEvents();
     }
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
     glfwTerminate();
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
 void CWindow::__processInput()
 {
     if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -232,4 +195,35 @@ void CWindow::__callbackFrameBufferSize(GLFWwindow* window, int vWidth, int vHei
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, vWidth, vHeight);
+}
+
+//never used
+//void CWindow::setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs)
+//{
+//    m_Stuffs = vStuffs;
+//}
+
+//void CWindow::deleteStuff(std::shared_ptr<CStuff> vStuff)
+//{
+//    m_Stuffs.erase(vStuff);
+//}
+
+void CWindow::__addStuff(std::shared_ptr<CStuff> vStuff)
+{
+    m_Stuffs.insert(vStuff);
+}
+
+void CWindow::__setCamera(std::shared_ptr<CCamera> vCamera)
+{
+    m_Camera = vCamera;
+}
+
+//void CWindow::setLight(std::shared_ptr<CPointLight> vLight)
+//{
+//    m_Light = vLight;
+//}
+
+void CWindow::__setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight)
+{
+    m_DirectionalLight = vLight;
 }
