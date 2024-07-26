@@ -145,7 +145,7 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
     Texture_1.bind();
     DirectialLightShader->setFloat("material.shininess", 64.0f);
 
-    auto Cube = std::make_shared<CStuff>("./cube.txt", DirectialLightShader);
+    auto Cube = std::make_shared<CStuff>("./assets/cube.txt", DirectialLightShader);
     // Cube->setUpdateMoveFunction(scala);
     auto DirectionalLight = std::make_shared<CDirectionalLight>();
     DirectionalLight->setUpdateMoveFunction(vFunction);

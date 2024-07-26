@@ -4,6 +4,7 @@
 #include <cmath>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <Eigen/Core>
 #include "HiveLogger.h"
 #include "CWindow.h"
 #include "CRenderConfig.h"

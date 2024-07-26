@@ -1,9 +1,10 @@
 #pragma once
 #include <chrono>
+#include "def.h"
 #include <Eigen/Core>
 #include "CShader.h"
 
-class CDirectionalLight
+class GLTRAINVER3_API CDirectionalLight
 {
 public:
 	CDirectionalLight() = default;
