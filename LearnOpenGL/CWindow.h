@@ -27,9 +27,13 @@ private:
 	int m_PosX, m_PosY;
 	std::string m_Title;
 	//m_isSetPara only guarantee class is set, not for any variable.
-	bool m_isCoreProfile, m_isWindowParasSet, m_isMajorVersionValid;
+	bool m_isCoreProfile = true, m_isWindowParasSet = false, m_isMajorVersionValid = false;
+	bool m_ChangeRenderPassIsPressed = false;
 	
+	int m_RenderPassesNum, m_RenderPassNowAtIndex;
 	std::set<std::shared_ptr<CStuff>> m_Stuffs;
+	std::vector<std::shared_ptr<CShader>> m_ShaderPrograms;
+	std::shared_ptr<CStuff> m_RenderStuff = nullptr;
 	std::shared_ptr<CCamera> m_Camera = nullptr;
 	std::shared_ptr<CPointLight> m_Light = nullptr;
 	std::shared_ptr<CDirectionalLight> m_DirectionalLight = nullptr;
@@ -43,7 +47,7 @@ private:
 	void __render();
 
 	//neverused void setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs);
-	//void deleteStuff(std::shared_ptr<CStuff> vStuff);
+	void __deleteStuff(std::shared_ptr<CStuff> vStuff);
 	void __addStuff(std::shared_ptr<CStuff> vStuff);
 	void __setCamera(std::shared_ptr<CCamera> vCamera);
 	//void setLight(std::shared_ptr<CPointLight> vLight);

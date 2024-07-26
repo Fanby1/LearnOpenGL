@@ -41,7 +41,7 @@ public:
 		int id = std::clamp(vRenderPassIndex, 0, (const int)m_RenderPasses.size() - 1);
 		return m_RenderPasses[id]._RenderPassType;
 	}
-
+	int getRenderPassNum() const { return m_RenderPasses.size(); }
 
 private:
 	std::string m_FilePath = "";

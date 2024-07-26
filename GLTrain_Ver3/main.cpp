@@ -21,7 +21,7 @@ static void initGLAD()
 
 static void roateByY(std::chrono::duration<double> vElapsed, CDirectionalLight& vLight)
 {
-    double Angle = M_PI * vElapsed.count() * 0.01;
+    double Angle = M_PI * vElapsed.count() * 0.0001;
     Eigen::Vector3f Axis(0, 1, 1);
     vLight.rotate(Angle, Axis);
 }

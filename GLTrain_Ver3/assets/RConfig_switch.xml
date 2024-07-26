@@ -1,20 +1,20 @@
 <SHADER>
-  vs_shaderererereer
+  pixVS
     <SHADER_SOURCE_FILE> ./Shader/directionalLight.vs </SHADER_SOURCE_FILE>
 </SHADER>
 
 <SHADER>
-  fs_shader
+  pixFS
     <SHADER_SOURCE_FILE> ./Shader/directionalLight.fs </SHADER_SOURCE_FILE>
 </SHADER>
 
 <SHADER>
-  vs_shader
+  vtxVS
     <SHADER_SOURCE_FILE> ./Shader/perVertexDL.vs </SHADER_SOURCE_FILE>
 </SHADER>
 
 <SHADER>
-  fs_shaderererer
+  vtxFS
     <SHADER_SOURCE_FILE> ./Shader/perVertexDL.fs </SHADER_SOURCE_FILE>
 </SHADER>
 
@@ -22,12 +22,12 @@
   ComplexShading
   <RENDER_PASS>
     pervertex_shading
-        <VERTEX_SHADER> vs_shader </VERTEX_SHADER>
-        <FRAGMENT_SHADER> fs_shaderererer </FRAGMENT_SHADER>
+        <VERTEX_SHADER> vtxVS </VERTEX_SHADER>
+        <FRAGMENT_SHADER> vtxFS </FRAGMENT_SHADER>
   </RENDER_PASS>
   <RENDER_PASS>
     perpixel_shading
-        <VERTEX_SHADER> vs_shaderererereer </VERTEX_SHADER>
-        <FRAGMENT_SHADER> fs_shader </FRAGMENT_SHADER>
+        <VERTEX_SHADER> pixVS </VERTEX_SHADER>
+        <FRAGMENT_SHADER> pixFS </FRAGMENT_SHADER>
   </RENDER_PASS>
 </RENDER_ALGORITHM>
