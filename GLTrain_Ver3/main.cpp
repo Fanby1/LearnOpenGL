@@ -21,7 +21,7 @@ static void initGLAD()
 
 static void roateByY(std::chrono::duration<double> vElapsed, CDirectionalLight& vLight)
 {
-    double Angle = M_PI * vElapsed.count() * 0.001;
+    double Angle = M_PI * vElapsed.count() * 0.01;
     Eigen::Vector3f Axis(0, 1, 1);
     vLight.rotate(Angle, Axis);
 }
@@ -34,7 +34,7 @@ int main() {
     GLFWWindow.initWindow(WConfig);
 
     //CRenderConfig RConfig("./assets/RConfig_vertex.xml");
-    CRenderConfig RConfig("./assets/RConfig_pixel.xml");
+    CRenderConfig RConfig("./assets/RConfig_switch.xml");
     RConfig.init();
     initGLAD();
     GLFWWindow.startRender(RConfig, roateByY);
