@@ -15,13 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GLTrain_Ver3.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CGlfwWindowConfig.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CShaderAlgConfig.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,13 +23,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CGlfwWindowConfig.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CShaderAlgConfig.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

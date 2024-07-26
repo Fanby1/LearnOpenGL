@@ -125,6 +125,7 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
     std::string VSPath = vConfig.isInit() ? vConfig.getVertexShaderPath() : "./Shader/directionalLight.vs";
     std::string FSPath = vConfig.isInit() ? vConfig.getFragmentShaderPath() : "./Shader/directionalLight.fs";
     bool UsePerVertexShading = vConfig.isInit() ? vConfig.isUsingPerVertexShading() : false;
+    HIVE_LOG_INFO("Using render pass: {}", UsePerVertexShading ? "per vertex shading" : "per pixel shading");
 
     auto DirectialLightShader = std::make_shared<CShader>(VSPath.c_str(), FSPath.c_str());
     DirectialLightShader->use();
@@ -144,7 +145,7 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
     DirectionalLight->setUpdateMoveFunction(vFunction);
 
     auto Camera = std::make_shared<CCamera>();
-    Camera->setCameraPosition({ 0, 1, 3 });
+    Camera->setCameraPosition({ 2, 2, 2 });
     Camera->setFarPlane(100);
     Camera->setNearPlane(0.1);
     Camera->setAspectRatio(1.0 * m_Width / m_Height);

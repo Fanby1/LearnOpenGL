@@ -1,0 +1,15 @@
+<SHADER> vs_shader
+  <SHADER_SOURCE_FILE> ./Shader/perVertexDL.vs </SHADER_SOURCE_FILE>
+</SHADER>
+
+
+<SHADER> fs_shaderererer
+  <SHADER_SOURCE_FILE> ./Shader/perVertexDL.fs </SHADER_SOURCE_FILE>
+</SHADER>
+
+<RENDER_ALGORITHM> Per_VERTEX_Shading
+  <RENDER_PASS> pervertex_shading
+    <VERTEX_SHADER> vs_shader </VERTEX_SHADER>
+    <FRAGMENT_SHADER> fs_shaderererer </FRAGMENT_SHADER>
+  </RENDER_PASS>
+</RENDER_ALGORITHM>

@@ -1,26 +1,6 @@
 #include "CDirectionalLight.h"
 #include "iostream"
 
-void CDirectionalLight::setDirection(const Eigen::Vector3f& vDirection)
-{
-	m_Direction = vDirection;
-}
-
-void CDirectionalLight::setAmbient(const Eigen::Vector3f& vAmbient)
-{
-	m_Ambient = vAmbient;
-}
-
-void CDirectionalLight::setDiffuse(const Eigen::Vector3f& vDiffuse)
-{
-	m_Diffuse = vDiffuse;
-}
-
-void CDirectionalLight::setSpecular(const Eigen::Vector3f& vSpecular)
-{
-	m_Specular = vSpecular;
-}
-
 const Eigen::Vector3f& CDirectionalLight::getDirection() const
 {
 	return m_Direction;
@@ -43,6 +23,7 @@ const Eigen::Vector3f& CDirectionalLight::getSpecular() const
 
 void CDirectionalLight::updateShaderUniforms(const std::shared_ptr<CShader>& vShader)
 {
+	if (vShader == nullptr) return;
 	if(__isFunctionSet()) {
 		auto Current = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> Elapsed = Current - m_Start;

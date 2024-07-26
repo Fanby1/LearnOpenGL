@@ -4,15 +4,8 @@
 #include <cmath>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "CWindow.h"
-#include "CShader.h"
-#include "CObject.h"
-#include "CTexture.h"
-#include "CVertexArrayObject.h"
-#include "CVertexBufferObject.h"
-#include "CElementBufferObject.h"
-#include "CCamera.h"
 #include "HiveLogger.h"
+#include "CWindow.h"
 #include "CRenderConfig.h"
 
 //TODO: write glfwINIT() in dllmain.cpp
@@ -39,12 +32,14 @@ int main() {
     CWindow GLFWWindow;
     GLFWWindow.initWindow(WConfig);
 
-    CRenderConfig RConfig("./assets/RConfig.xml");
+    //CRenderConfig RConfig("./assets/RConfig_vertex.xml");
+    CRenderConfig RConfig("./assets/RConfig_pixel.xml");
     RConfig.init();
 
     initGLAD();
 
     GLFWWindow.startRender(RConfig, roateByY);
+    return 0;
 }
 
 //void renderDirectialLight(CWindow& vWindow,const CRenderConfig& vRConfig) 
