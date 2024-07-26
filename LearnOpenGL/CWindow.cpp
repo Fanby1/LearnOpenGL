@@ -96,6 +96,7 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
     {
         HIVE_LOG_WARNING("Config Is not initialized! We will use default value.");
     }
+    
     glfwInit();
     if (m_pWindow != nullptr) {
         HIVE_LOG_WARNING("Destroied existing window! Please check whether multiplied created window in main.cpp.");
@@ -114,9 +115,14 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
         return -1;
     }
     HIVE_LOG_INFO("Create GLFW Window successfully.");
+    
     glfwMakeContextCurrent(m_pWindow);
     glfwSetWindowPos(m_pWindow, m_PosX, m_PosY);
     glfwSetFramebufferSizeCallback(m_pWindow, __callbackFrameBufferSize);
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        HIVE_LOG_ERROR("Failed to initialize GLAD");
+    }
     return 0;
 }
 
