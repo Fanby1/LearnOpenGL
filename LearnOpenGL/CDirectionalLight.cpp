@@ -1,4 +1,5 @@
 #include "CDirectionalLight.h"
+#include "iostream"
 
 void CDirectionalLight::setDirection(const Eigen::Vector3f& vDirection)
 {

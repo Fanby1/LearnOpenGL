@@ -48,9 +48,6 @@
     <ClInclude Include="CCamera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CLight.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CWindowConfig.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -58,6 +55,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CRenderableObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CDirectionalLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CPointLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CRenderConfig.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,9 +101,6 @@
     <ClCompile Include="CCamera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CLight.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CWindowConfig.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -105,6 +108,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CRenderableObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CDirectionalLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CPointLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CRenderConfig.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

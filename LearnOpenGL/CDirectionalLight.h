@@ -22,7 +22,7 @@ public:
 private:
 	std::chrono::steady_clock::time_point m_Start = std::chrono::high_resolution_clock::now();
 	Eigen::Vector3f m_Direction = { -0.2f, -1.0f, -0.3f };
-	Eigen::Vector3f m_Ambient = { 0.2f, 0.2f, 0.2f };
+	Eigen::Vector3f m_Ambient = { 0.8f, 0.8f, 0.8f };
 	Eigen::Vector3f m_Diffuse = { 0.5f, 0.5f, 0.5f };
 	Eigen::Vector3f m_Specular = { 1.0f, 1.0f, 1.0f };
 	// 成员变量，存储 std::function
