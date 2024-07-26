@@ -35,6 +35,11 @@ static void roateByY(std::chrono::duration<double> vElapsed, CDirectionalLight& 
 static void renderDirectialLight(CWindow& vWindow,CRenderConfig& vRConfig) 
 {
     initGLAD();
+    std::string VSPath = vRConfig.isInit() ? vRConfig.getVertexShaderPath() : "./Shader/directionalLight.vs";
+    std::string FSPath = vRConfig.isInit() ? vRConfig.getFragmentShaderPath() : "./Shader/directionalLight.fs";
+    bool UsePerVertexShading = vRConfig.isInit() ? vRConfig.isUsingPerVertexShading() : false;
+
+    //auto DirectialLightShader = std::make_shared<CShader>(VSPath.c_str(), FSPath.c_str());
 	auto DirectialLightShader = std::make_shared<CShader>(vRConfig.getVertexShaderPath().c_str(), vRConfig.getFragmentShaderPath().c_str());
     DirectialLightShader->use();
     DirectialLightShader->setInt("material.diffuse", 0);

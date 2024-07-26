@@ -49,20 +49,20 @@ void CRenderConfig::__setValFromConfig()
 		__logNoExist("Render pass config");
 		return;
 	}
-	m_RenderPass = RenderPassSubconfigs[0]->getName();
+	std::string v = RenderPassSubconfigs[0]->getName();
 	//Messy code is found after getName() due to xml format. Use substring instead.
-	if (m_RenderPass.find("perpixel") != std::string::npos) 
+	if (v.find("perpixel") != std::string::npos) 
 	{
-		m_RenderPass = "perpixel_shading";
+		m_UsePerVertexShading = false;
 	}
-	else if (m_RenderPass.find("pervertex") != std::string::npos) 
+	else if (v.find("pervertex") != std::string::npos) 
 	{
-		m_RenderPass = "pervertex_shading";
+		m_UsePerVertexShading = true;
 	}
 	else
 	{
 		__logNoExist("Render pass value");
-		m_RenderPass = "perpixel_shading";
+		m_UsePerVertexShading = false;
 	}
 
 	std::string VertexShaderName = RenderPassSubconfigs[0]->getAttribute<std::string>("VERTEX_SHADER").value();
