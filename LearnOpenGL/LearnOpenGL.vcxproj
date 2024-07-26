@@ -38,7 +38,10 @@
     <ClInclude Include="CRenderableObject.h" />
     <ClInclude Include="CWindowConfig.h" />
     <ClInclude Include="def.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="stb_image_write.h" />
+    <ClInclude Include="tiny_gltf.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCamera.cpp" />
