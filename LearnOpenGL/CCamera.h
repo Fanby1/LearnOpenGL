@@ -3,6 +3,7 @@
 #include <cmath>
 #include <Eigen/Dense>
 #include "CObject.h"
+
 class CCamera : public CObject
 {
 private:

@@ -1,6 +1,7 @@
 #include "CRenderableObject.h"
 #include <iostream>
 #include <fstream>
+#include "HiveLogger.h"
 
 std::vector<unsigned int> CRenderableObject::__createOffset(unsigned int vType)
 {
@@ -34,25 +35,24 @@ std::vector<unsigned int> CRenderableObject::__createOffset(unsigned int vType)
 
 std::vector<float> CRenderableObject::__readFloatArrayFromFile(std::ifstream& vFile) {
 	std::vector<float> Result;
-	std::string Line;
+	std::string FileBuffer;
 
-	while (std::getline(vFile, Line)) {
-		std::stringstream ss(Line);
-		std::string Value;
+	while (std::getline(vFile, FileBuffer)) {
+		std::stringstream ss(FileBuffer);
+		std::string ValueString;
 
-		while (std::getline(ss, Value, ',')) {
+		while (std::getline(ss, ValueString, ',')) {
 			try {
-				Result.push_back(std::stof(Value));
+				Result.push_back(std::stof(ValueString));
 			}
 			catch (const std::invalid_argument& e) {
-				std::cerr << "Invalid number in file: " << Value << std::endl;
+				HIVE_LOG_ERROR("Invalid number in file: {}", ValueString);
 			}
 			catch (const std::out_of_range& e) {
-				std::cerr << "Number out of range in file: " << Value << std::endl;
+				HIVE_LOG_ERROR("Number out of range in file: {}", ValueString);
 			}
 		}
 	}
-
 	vFile.close();
 	return Result;
 }
@@ -60,28 +60,36 @@ std::vector<float> CRenderableObject::__readFloatArrayFromFile(std::ifstream& vF
 CRenderableObject::CRenderableObject(const std::string& vPath, std::shared_ptr<CShader> vShader)
 {
 	std::ifstream File(vPath);
-	if (!File.is_open()) {
+	if (!File.is_open()) 
+	{
 		std::cerr << "Failed to open file: " << vPath << std::endl;
 	}
 	std::string Mode;
 	unsigned int Type = 0;
-	if (std::getline(File, Mode)) {
+	if (std::getline(File, Mode)) 
+	{
 		std::size_t Position = Mode.find(":");
-		if (Position != std::string::npos) {
-			std::string NumberStr = Mode.substr(Position + 1);
-			try {
-				Type = std::stoi(NumberStr);
+		if (Position != std::string::npos) 
+		{
+			std::string ValueString = Mode.substr(Position + 1);
+			try 
+			{
+				Type = std::stoi(ValueString);
 			}
-			catch (const std::invalid_argument& e) {
-				std::cerr << "Invalid number format: " << e.what() << std::endl;
+			catch (const std::invalid_argument& e) 
+			{
+				HIVE_LOG_ERROR("Invalid number format: {}",e.what());
 			}
-			catch (const std::out_of_range& e) {
-				std::cerr << "Number out of range: " << e.what() << std::endl;
+			catch (const std::out_of_range& e) 
+			{
+				HIVE_LOG_ERROR("Number out of range: {}", e.what());
 			}
 		}
 	}
+
 	std::vector<float> Vertices = __readFloatArrayFromFile(File);
 	std::vector<unsigned int> Offset = __createOffset(Type);
+
 	auto VBO = std::make_shared<CVertexBufferObject>(Vertices.data(), sizeof(float) * Vertices.size(), Type, Offset);
 	auto VAO = std::make_shared<CVertexArrayObject>();
 	VAO->addVBO(VBO);

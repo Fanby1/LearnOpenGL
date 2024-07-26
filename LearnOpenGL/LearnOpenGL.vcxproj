@@ -28,6 +28,7 @@
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CPointLight.h" />
     <ClInclude Include="CObject.h" />
+    <ClInclude Include="CRenderConfig.h" />
     <ClInclude Include="CShader.h" />
     <ClInclude Include="CStuff.h" />
     <ClInclude Include="CTexture.h" />
@@ -45,6 +46,7 @@
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CPointLight.cpp" />
     <ClCompile Include="CObject.cpp" />
+    <ClCompile Include="CRenderConfig.cpp" />
     <ClCompile Include="CShader.cpp" />
     <ClCompile Include="CStuff.cpp" />
     <ClCompile Include="CTexture.cpp" />

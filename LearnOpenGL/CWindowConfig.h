@@ -7,6 +7,8 @@ public:
 	CWindowConfig(const std::string& vFilePath = "");
 	~CWindowConfig() = default;
 	// any wtf value is ok, the CWindow will check and provide default.
+	bool isInit() const { return m_isInit; }
+	void init();
 	int getWidth() const { return m_Width; }
 	int getHeight() const { return m_Height; }
 	int getPosX() const { return m_PosX; }
@@ -15,8 +17,6 @@ public:
 	int getMajVer() const { return m_MajVer; }
 	int getMinVer() const { return m_MinVer; }
 	bool isCore() const { return m_isCore; }
-	bool isInit() const { return m_isInit; }
-	void init();
 
 private:
 	std::string m_FilePath = "";
