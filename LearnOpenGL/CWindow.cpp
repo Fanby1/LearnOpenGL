@@ -128,10 +128,10 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
 
 void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
 {
-    std::string VSPath = vConfig.isInit() ? vConfig.getVertexShaderPath() : "./Shader/directionalLight.vs";
-    std::string FSPath = vConfig.isInit() ? vConfig.getFragmentShaderPath() : "./Shader/directionalLight.fs";
-    bool UsePerVertexShading = vConfig.isInit() ? vConfig.isUsingPerVertexShading() : false;
-    HIVE_LOG_INFO("Using render pass: {}", UsePerVertexShading ? "per vertex shading" : "per pixel shading");
+    std::string VSPath = vConfig.isInit(0) ? vConfig.getVertexShaderPath(0) : "./Shader/directionalLight.vs";
+    std::string FSPath = vConfig.isInit(0) ? vConfig.getFragmentShaderPath(0) : "./Shader/directionalLight.fs";
+    CRenderConfig::ERenderPassType UsePerVertexShading = vConfig.getRenderPassType(0);
+    HIVE_LOG_INFO("Using render pass: {}", UsePerVertexShading == CRenderConfig::ERenderPassType::UES_PER_VERTEX_SHADING ? "per vertex shading" : "per pixel shading");
 
     auto DirectialLightShader = std::make_shared<CShader>(VSPath.c_str(), FSPath.c_str());
     DirectialLightShader->use();

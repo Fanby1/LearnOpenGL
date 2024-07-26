@@ -7,18 +7,18 @@ CRenderConfig::CRenderConfig(const std::string& vFilePath)
 {
 	m_FilePath = vFilePath;
 	__defineAttributesV();
+	m_RenderPasses.clear();
+	m_ShaderPathes.clear();
 }
 
 void CRenderConfig::init()
 {
-	if (m_FilePath.empty() || m_isInit)
+	if (m_FilePath.empty())
 	{
-		__logNoExist("**EVERY CONFIG**");
-		m_isInit |= false;
+		__logNoExist("**CONFIG FILE**");
 	}
 	__readConfigFromFile();
 	__setValFromConfig();
-	m_isInit = true;
 }
 
 void CRenderConfig::__defineAttributesV()
@@ -37,77 +37,80 @@ void CRenderConfig::__readConfigFromFile()
 	hiveConfig::hiveParseConfig(m_FilePath, hiveConfig::EConfigType::XML, this);
 }
 
-
 void CRenderConfig::__setValFromConfig()
 {
-	//assert only one render pass provided in config.
-	//if more, only use the first one.
 	std::vector<hiveConfig::CHiveConfig*> RenderPassSubconfigs;
 	extractSpecifiedSubconfigsRecursively("RENDER_PASS", RenderPassSubconfigs);
 	if (RenderPassSubconfigs.empty()) 
 	{
-		__logNoExist("Render pass config");
+		__logNoExist("Render pass subconfig");
 		return;
 	}
-	std::string v = RenderPassSubconfigs[0]->getName();
-	//Messy code is found after getName() due to xml format. Use substring instead.
-	if (v.find("perpixel") != std::string::npos) 
-	{
-		m_UsePerVertexShading = false;
-	}
-	else if (v.find("pervertex") != std::string::npos) 
-	{
-		m_UsePerVertexShading = true;
-	}
-	else
-	{
-		__logNoExist("Render pass value");
-		m_UsePerVertexShading = false;
-	}
-
-	std::string VertexShaderName = RenderPassSubconfigs[0]->getAttribute<std::string>("VERTEX_SHADER").value();
-	std::string FragmentShaderName = RenderPassSubconfigs[0]->getAttribute<std::string>("FRAGMENT_SHADER").value();
 
 	std::vector<hiveConfig::CHiveConfig*> ShadersSubconfigs;
 	extractSpecifiedSubconfigsRecursively("SHADER", ShadersSubconfigs);
-	for (auto i : ShadersSubconfigs) 
+	std::vector<std::string> ShaderNames;
+	ShaderNames.clear();
+	for (const auto& SSubConfig : ShadersSubconfigs) 
 	{
-		//Messy code is found after getName() due to xml format. Use substring instead.
-		std::string t = i->getName();
-		if (t.rfind(VertexShaderName, 0) == 0)
+		std::string SName = SSubConfig->getName();
+		bool ConfigHasPath = SSubConfig->getAttribute<std::string>("SHADER_SOURCE_FILE").has_value();
+		if (!ConfigHasPath)
 		{
-			m_VSPathFound = true;
-			m_VertexShaderPath = i->getAttribute<std::string>("SHADER_SOURCE_FILE").value();
-		} 
-		else if (t.rfind(FragmentShaderName, 0) == 0)
-		{
-			m_FSPathFound = true;
-			m_FragmentShaderPath = i->getAttribute<std::string>("SHADER_SOURCE_FILE").value();
+			__logNoExist("Shader path in subconfig " + SName);
+			continue;
 		}
+		std::string SPath = SSubConfig->getAttribute<std::string>("SHADER_SOURCE_FILE").value();
+		ShaderNames.push_back(SName);
+		m_ShaderPathes.push_back(SPath);
 	}
-
-	if (m_VSPathFound && m_FSPathFound)
+	for (const auto& RSubconfig : RenderPassSubconfigs) 
 	{
-		HIVE_LOG_INFO("Render Config is set from file {}", m_FilePath);
-		m_isInit = true;
-	}
-	else
-	{
-		HIVE_LOG_WARNING("Renderer Config is not initialized!");
-		if (!m_VSPathFound) __logNoExist("Vertex shader path");
-		if (!m_FSPathFound) __logNoExist("Fragment shader path");
-		m_isInit = false;
-	}
-}
+		SRenderPass RenderPass;
+		std::string RName = RSubconfig->getName();
+		//Messy code is found after getName() due to xml format. Use substring instead.
+		if (RName.find("perpixel") != std::string::npos)
+		{
+			RenderPass._RenderPassType = ERenderPassType::USE_PER_PIXEL_SHADING;
+		}
+		else if (RName.find("pervertex") != std::string::npos)
+		{
+			RenderPass._RenderPassType = ERenderPassType::UES_PER_VERTEX_SHADING;
+		}
+		else
+		{
+			__logNoExist("Render pass type");
+		}
 
-template<typename T>
-void CRenderConfig::__setTypeVal(T& vMemberName, const std::string& vVarName)
-{
-	std::optional<T> s;
-	s.reset();
-	s = getAttribute<T>(vVarName);
-	if (!s.has_value()) __logNoExist(vVarName);
-	else vMemberName = s.value();
+		std::string VertexShaderName = RSubconfig->getAttribute<std::string>("VERTEX_SHADER").value();
+		std::string FragmentShaderName = RSubconfig->getAttribute<std::string>("FRAGMENT_SHADER").value();
+		HIVE_LOG_DEBUG(VertexShaderName + " v||f " + FragmentShaderName);
+		for (int i = 0; i < ShaderNames.size(); ++i) 
+		{
+			if (ShaderNames[i].rfind(VertexShaderName, 0) == 0)
+			{
+				RenderPass._VSIndex = i;
+			}
+			else if (ShaderNames[i].rfind(FragmentShaderName, 0) == 0)
+			{
+				RenderPass._FSIndex = i;
+			}
+		}
+		if (RenderPass._VSIndex >= 0 && RenderPass._FSIndex >= 0)
+		{
+			HIVE_LOG_INFO("Render pass {} in file {} is loaded.", RName, m_FilePath);
+			RenderPass._isInit = true;
+		}
+		else
+		{
+			HIVE_LOG_WARNING("Renderer pass {} is not initialized!", RName);
+			if (RenderPass._VSIndex < 0) __logNoExist("Vertex shader path of " + RName);
+			if (RenderPass._FSIndex < 0) __logNoExist("Fragment shader path of " + RName);
+			RenderPass._isInit = false;
+		}
+		m_RenderPasses.push_back(RenderPass);
+	}
+	return;
 }
 
 void CRenderConfig::__logNoExist(const std::string vVarName)
