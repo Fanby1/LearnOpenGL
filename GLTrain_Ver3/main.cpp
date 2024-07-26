@@ -8,6 +8,7 @@
 #include "HiveLogger.h"
 #include "CWindow.h"
 #include "CRenderConfig.h"
+#include "CGLTFObject.h"
 
 //TODO: write glfwINIT() in dllmain.cpp
 
@@ -25,7 +26,7 @@ static void roateByY(std::chrono::duration<double> vElapsed, CDirectionalLight& 
     Eigen::Vector3f Axis(0, 1, 1);
     vLight.rotate(Angle, Axis);
 }
-
+/*
 int main() {
     CWindowConfig WConfig("./assets/WConfig.xml");
     WConfig.init();
@@ -40,6 +41,13 @@ int main() {
     GLFWWindow.startRender(RConfig, roateByY);
     return 0;
 }
+*/
+int main() {  
+    CWindowConfig WConfig("./assets/WConfig.xml");
+    WConfig.init();
 
-// int main() {  
-// }
+    CWindow GLFWWindow;
+    GLFWWindow.initWindow(WConfig);
+    CGLTFObject Obeject;
+    Obeject.loadModelFromGLTF("./assets/dragon.gltf");
+}

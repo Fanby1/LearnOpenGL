@@ -3,7 +3,9 @@
 CImage::CImage(const char* vPath)
 {
 	stbi_set_flip_vertically_on_load(true);
-	m_Data = stbi_load(vPath, &m_Width, &m_Height, &m_NRChannels, 0);
+	int Format;
+	m_Data = stbi_load(vPath, &m_Width, &m_Height, &Format, 0);
+	m_NRChannels = Format;
 }
 
 CImage::~CImage()
@@ -11,7 +13,7 @@ CImage::~CImage()
 	stbi_image_free(m_Data);
 }
 
-unsigned char* CImage::getData() const
+const unsigned char* CImage::getData() const
 {
 	return m_Data;
 }
@@ -26,5 +28,14 @@ int CImage::getHeight() const {
 
 int CImage::getNRChannels() const {
 	return m_NRChannels;
+}
+
+void CImage::loadTextureFromImage(const tinygltf::Image& vImage)
+{
+    m_Width = vImage.width;
+    m_Height = vImage.height;
+    m_NRChannels = vImage.component;
+	m_Data = new unsigned char[vImage.image.size()];
+	memcpy(m_Data, vImage.image.data(), vImage.image.size());
 }
 

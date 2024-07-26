@@ -11,13 +11,13 @@
 #include <GLFW/glfw3.h>
 #include "CVertexArrayObject.h"
 #include "CShader.h"
-
+#include "def.h"
 #define VERTEX_TYPE_VERTEX_BIT 1
 #define VERTEX_TYPE_COLOR_BIT 2
 #define VERTEX_TYPE_TEXTURE_BIT 4
 #define VERTEX_TYPE_NORMAL_BIT 8
 
-class CObject
+class GLTRAINVER3_API CObject
 {
 public:
 	CObject() = default;
