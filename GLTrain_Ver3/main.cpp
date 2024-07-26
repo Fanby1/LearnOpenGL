@@ -40,3 +40,6 @@ int main() {
     GLFWWindow.startRender(RConfig, roateByY);
     return 0;
 }
+
+// int main() {  
+// }

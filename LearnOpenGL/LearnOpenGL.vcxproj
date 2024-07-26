@@ -25,6 +25,7 @@
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CDirectionalLight.h" />
     <ClInclude Include="CElementBufferObject.h" />
+    <ClInclude Include="CGLTFObject.h" />
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CPointLight.h" />
     <ClInclude Include="CObject.h" />
@@ -38,15 +39,12 @@
     <ClInclude Include="CRenderableObject.h" />
     <ClInclude Include="CWindowConfig.h" />
     <ClInclude Include="def.h" />
-    <ClInclude Include="json.hpp" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="stb_image_write.h" />
-    <ClInclude Include="tiny_gltf.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CDirectionalLight.cpp" />
     <ClCompile Include="CElementBufferObject.cpp" />
+    <ClCompile Include="CGLTFObject.cpp" />
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CPointLight.cpp" />
     <ClCompile Include="CObject.cpp" />
@@ -60,7 +58,6 @@
     <ClCompile Include="CWindowConfig.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="CRenderableObject.cpp" />
-    <ClCompile Include="std_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cube.txt" />
@@ -201,6 +198,7 @@
     <Import Project="D:\vc_packages\inteltbb.redist.win.2021.12.0.496\build\native\inteltbb.redist.win.targets" Condition="Exists('D:\vc_packages\inteltbb.redist.win.2021.12.0.496\build\native\inteltbb.redist.win.targets')" />
     <Import Project="D:\vc_packages\inteltbb.devel.win.2021.12.0.496\build\native\inteltbb.devel.win.targets" Condition="Exists('D:\vc_packages\inteltbb.devel.win.2021.12.0.496\build\native\inteltbb.devel.win.targets')" />
     <Import Project="D:\vc_packages\hive.HiveConfigDLL.1.0.0\build\hive.HiveConfigDLL.targets" Condition="Exists('D:\vc_packages\hive.HiveConfigDLL.1.0.0\build\hive.HiveConfigDLL.targets')" />
+    <Import Project="D:\vc_packages\TinyGLTF.2.9.0\build\TinyGLTF.targets" Condition="Exists('D:\vc_packages\TinyGLTF.2.9.0\build\TinyGLTF.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -224,5 +222,6 @@
     <Error Condition="!Exists('D:\vc_packages\inteltbb.redist.win.2021.12.0.496\build\native\inteltbb.redist.win.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\inteltbb.redist.win.2021.12.0.496\build\native\inteltbb.redist.win.targets'))" />
     <Error Condition="!Exists('D:\vc_packages\inteltbb.devel.win.2021.12.0.496\build\native\inteltbb.devel.win.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\inteltbb.devel.win.2021.12.0.496\build\native\inteltbb.devel.win.targets'))" />
     <Error Condition="!Exists('D:\vc_packages\hive.HiveConfigDLL.1.0.0\build\hive.HiveConfigDLL.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\hive.HiveConfigDLL.1.0.0\build\hive.HiveConfigDLL.targets'))" />
+    <Error Condition="!Exists('D:\vc_packages\TinyGLTF.2.9.0\build\TinyGLTF.targets')" Text="$([System.String]::Format('$(ErrorText)', 'D:\vc_packages\TinyGLTF.2.9.0\build\TinyGLTF.targets'))" />
   </Target>
 </Project>

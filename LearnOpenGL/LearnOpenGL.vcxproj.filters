@@ -30,9 +30,6 @@
     <ClInclude Include="CTexture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -69,13 +66,7 @@
     <ClInclude Include="def.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="tiny_gltf.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="json.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="stb_image_write.h">
+    <ClInclude Include="CGLTFObject.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -90,9 +81,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CTexture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="std_image.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CImage.cpp">
@@ -129,6 +117,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CGLTFObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
