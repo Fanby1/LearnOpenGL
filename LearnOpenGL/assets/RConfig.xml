@@ -1,10 +1,10 @@
 <SHADER> shader_perpixel_shading_vs
-  <SHADER_SOURCE_FILE> ./Shader/directionalLight.vs </SHADER_SOURCE_FILE>
+  <SHADER_SOURCE_FILE> ./Shader/perVertexDL.vs </SHADER_SOURCE_FILE>
 </SHADER>
 
 
 <SHADER> shader_perpixel_shading_fs
-  <SHADER_SOURCE_FILE> ./Shader/directionalLight.fs </SHADER_SOURCE_FILE>
+  <SHADER_SOURCE_FILE> ./Shader/perVertexDL.fs </SHADER_SOURCE_FILE>
 </SHADER>
 
 <RENDER_ALGORITHM> PerpixelShading
