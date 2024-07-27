@@ -54,13 +54,14 @@ void CRenderConfig::__setValFromConfig()
 	for (const auto& SSubConfig : ShadersSubconfigs) 
 	{
 		std::string SName = SSubConfig->getName();
+		std::string SPath = SSubConfig->getAttribute<std::string>("SHADER_SOURCE_FILE").value();
+		SName.erase(SName.find_last_of(' '));
 		bool ConfigHasPath = SSubConfig->getAttribute<std::string>("SHADER_SOURCE_FILE").has_value();
 		if (!ConfigHasPath)
 		{
 			__logNoExist("Shader path in subconfig " + SName);
 			continue;
 		}
-		std::string SPath = SSubConfig->getAttribute<std::string>("SHADER_SOURCE_FILE").value();
 		ShaderNames.push_back(SName);
 		m_ShaderPathes.push_back(SPath);
 	}
@@ -68,6 +69,7 @@ void CRenderConfig::__setValFromConfig()
 	{
 		SRenderPass RenderPass;
 		std::string RName = RSubconfig->getName();
+		RName.erase(RName.find_first_of(' '));
 		//Messy code is found after getName() due to xml format. Use substring instead.
 		if (RName.find("perpixel") != std::string::npos)
 		{
@@ -84,14 +86,15 @@ void CRenderConfig::__setValFromConfig()
 
 		std::string VertexShaderName = RSubconfig->getAttribute<std::string>("VERTEX_SHADER").value();
 		std::string FragmentShaderName = RSubconfig->getAttribute<std::string>("FRAGMENT_SHADER").value();
-		HIVE_LOG_DEBUG(VertexShaderName + " v||f " + FragmentShaderName);
+		//HIVE_LOG_DEBUG(VertexShaderName + " v||f " + FragmentShaderName);
 		for (int i = 0; i < ShaderNames.size(); ++i) 
 		{
-			if (ShaderNames[i].rfind(VertexShaderName, 0) == 0)
+			//HIVE_LOG_INFO(ShaderNames[i]);
+			if (ShaderNames[i] == VertexShaderName)
 			{
 				RenderPass._VSIndex = i;
 			}
-			else if (ShaderNames[i].rfind(FragmentShaderName, 0) == 0)
+			else if (ShaderNames[i] == FragmentShaderName)
 			{
 				RenderPass._FSIndex = i;
 			}

@@ -31,6 +31,10 @@ CWindow::CWindow()
     m_PosX = MaxWidth >> 2;
     m_PosY = MaxHeight >> 2;
     m_Stuffs.clear();
+    m_ShaderPrograms.clear();
+    m_RenderPassesNum = -1;
+    m_RenderPassNowAtIndex = 0;
+    m_ChangeRenderPassIsPressed = false;
 }
 
 CWindow::~CWindow()
@@ -128,27 +132,12 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
 
 void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
 {
-    std::string VSPath = vConfig.isInit(0) ? vConfig.getVertexShaderPath(0) : "./Shader/directionalLight.vs";
-    std::string FSPath = vConfig.isInit(0) ? vConfig.getFragmentShaderPath(0) : "./Shader/directionalLight.fs";
-    CRenderConfig::ERenderPassType UsePerVertexShading = vConfig.getRenderPassType(0);
-    HIVE_LOG_INFO("Using render pass: {}", UsePerVertexShading == CRenderConfig::ERenderPassType::UES_PER_VERTEX_SHADING ? "per vertex shading" : "per pixel shading");
-
-    auto DirectialLightShader = std::make_shared<CShader>(VSPath.c_str(), FSPath.c_str());
-    DirectialLightShader->use();
-    DirectialLightShader->setInt("material.diffuse", 0);
-    DirectialLightShader->setInt("material.specular", 1);
     CImage Container("./assets/container2.png");
     CTexture Texture_0(Container, GL_TEXTURE0);
     Texture_0.bind();
     CImage Specular("./assets/container2_specular.png");
     CTexture Texture_1(Specular, GL_TEXTURE1);
     Texture_1.bind();
-    DirectialLightShader->setFloat("material.shininess", 64.0f);
-
-    auto Cube = std::make_shared<CStuff>("./assets/cube.txt", DirectialLightShader);
-    // Cube->setUpdateMoveFunction(scala);
-    auto DirectionalLight = std::make_shared<CDirectionalLight>();
-    DirectionalLight->setUpdateMoveFunction(vFunction);
 
     auto Camera = std::make_shared<CCamera>();
     Camera->setCameraPosition({ 2, 2, 2 });
@@ -156,11 +145,35 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
     Camera->setNearPlane(0.1);
     Camera->setAspectRatio(1.0 * m_Width / m_Height);
     Camera->setFeildOfView(45.0);
-    __addStuff(Cube);
-    __setDirectionalLight(DirectionalLight);
     __setCamera(Camera);
-    glEnable(GL_DEPTH_TEST);
 
+   
+    m_RenderPassesNum = vConfig.getRenderPassNum();
+    m_RenderPassNowAtIndex = 0;
+    for (int i = 0; i < m_RenderPassesNum; ++i)
+    {
+        bool isRConfigValid = vConfig.isInit(i);
+        std::string VSPath = isRConfigValid ? vConfig.getVertexShaderPath(i) : "./Shader/directionalLight.vs";
+        std::string FSPath = isRConfigValid ? vConfig.getFragmentShaderPath(i) : "./Shader/directionalLight.fs";
+        CRenderConfig::ERenderPassType UsePerVertexShading = vConfig.getRenderPassType(i);
+        HIVE_LOG_INFO("Number {} render pass will use {}", i, 
+            UsePerVertexShading == CRenderConfig::ERenderPassType::UES_PER_VERTEX_SHADING ? "per vertex shading" : "per pixel shading");
+        auto ShaderProgram = std::make_shared<CShader>(VSPath.c_str(), FSPath.c_str());
+        ShaderProgram->use();
+        ShaderProgram->setInt("material.diffuse", 0);
+        ShaderProgram->setInt("material.specular", 1);
+        ShaderProgram->setFloat("material.shininess", 64.0f);
+        m_ShaderPrograms.push_back(ShaderProgram);
+    }
+    m_RenderStuff = std::make_shared<CStuff>("./assets/cube.txt", m_ShaderPrograms[0]);
+    // Cube->setUpdateMoveFunction(scala);
+    __addStuff(m_RenderStuff);
+
+    auto DirectionalLight = std::make_shared<CDirectionalLight>();
+    DirectionalLight->setUpdateMoveFunction(vFunction);
+    __setDirectionalLight(DirectionalLight);
+
+    glEnable(GL_DEPTH_TEST);
     __render();
 }
 
@@ -173,6 +186,7 @@ void CWindow::__render()
 
     while (!glfwWindowShouldClose(m_pWindow))
     {
+        glfwPollEvents();
         __processInput();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -184,7 +198,6 @@ void CWindow::__render()
             Stuff->renderV(m_Camera, m_Light, m_DirectionalLight);
         }
         glfwSwapBuffers(m_pWindow);
-        glfwPollEvents();
     }
     glfwTerminate();
 }
@@ -193,6 +206,19 @@ void CWindow::__processInput()
 {
     if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(m_pWindow, true);
+
+    if (glfwGetKey(m_pWindow, GLFW_KEY_T) == GLFW_PRESS && !m_ChangeRenderPassIsPressed)
+    {
+        __deleteStuff(m_RenderStuff);
+        m_RenderPassNowAtIndex = (m_RenderPassNowAtIndex + 1) % m_RenderPassesNum;
+        m_RenderStuff = std::make_shared<CStuff>("./assets/cube.txt", m_ShaderPrograms[m_RenderPassNowAtIndex]);
+        __addStuff(m_RenderStuff);
+        m_ChangeRenderPassIsPressed = true;
+    }
+    if (glfwGetKey(m_pWindow, GLFW_KEY_T) == GLFW_RELEASE)
+    {
+        m_ChangeRenderPassIsPressed = false;
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -210,10 +236,10 @@ void CWindow::__callbackFrameBufferSize(GLFWwindow* window, int vWidth, int vHei
 //    m_Stuffs = vStuffs;
 //}
 
-//void CWindow::deleteStuff(std::shared_ptr<CStuff> vStuff)
-//{
-//    m_Stuffs.erase(vStuff);
-//}
+void CWindow::__deleteStuff(std::shared_ptr<CStuff> vStuff)
+{
+    m_Stuffs.erase(vStuff);
+}
 
 void CWindow::__addStuff(std::shared_ptr<CStuff> vStuff)
 {
