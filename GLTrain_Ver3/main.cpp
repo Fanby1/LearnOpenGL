@@ -21,26 +21,11 @@ static void initGLAD()
 
 static void roateByY(std::chrono::duration<double> vElapsed, CDirectionalLight& vLight)
 {
-    double Angle = M_PI * 3e-4;
-    Eigen::Vector3f Axis(0, 1, 1);//normalized during process
+    double Angle = M_PI * 1e-3;
+    Eigen::Vector3f Axis(0, 1, -1);//normalized during process
     vLight.rotate(Angle, Axis);
 }
-/*
-int main() {
-    CWindowConfig WConfig("./assets/WConfig.xml");
-    WConfig.init();
-
-    CWindow GLFWWindow;
-    GLFWWindow.initWindow(WConfig);
-
-    //CRenderConfig RConfig("./assets/RConfig_vertex.xml");
-    CRenderConfig RConfig("./assets/RConfig_switch.xml");
-    RConfig.init();
-    initGLAD();
-    GLFWWindow.startRender(RConfig, roateByY);
-    return 0;
-}
-*/
+`
 int main() {  
     CWindowConfig WConfig("./assets/WConfig.xml");
     WConfig.init();

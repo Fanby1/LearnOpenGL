@@ -6,10 +6,10 @@
 #include "CWindowConfig.h"
 #include "CStuff.h"
 #include "CDirectionalLight.h"
+#include "CGLTFObject.h"
 
 class GLTRAINVER3_API CWindow
 {
-
 public:
 	CWindow();
 	~CWindow();
@@ -26,14 +26,14 @@ private:
 	//pos: left+up
 	int m_PosX, m_PosY;
 	std::string m_Title;
-	//m_isSetPara only guarantee class is set, not for any variable.
-	bool m_isCoreProfile = true, m_isWindowParasSet = false, m_isMajorVersionValid = false;
+	//m_WindowConfigIsSet only guarantee class is set, not for any variable.
+	bool m_UsingCoreProfile = true, m_WindowConfigIsSet = false, m_GLMajorVerIsValid = false;
 	bool m_ChangeRenderPassIsPressed = false;
 	
 	int m_RenderPassesNum, m_RenderPassNowAtIndex;
 	std::set<std::shared_ptr<CRenderableObject>> m_RenderableObjects;
 	std::vector<std::shared_ptr<CShader>> m_ShaderPrograms;
-	std::shared_ptr<CRenderableObject> m_RenderStuff = nullptr;
+	std::shared_ptr<CGLTFObject> m_RenderStuff = nullptr;
 	std::shared_ptr<CCamera> m_Camera = nullptr;
 	std::shared_ptr<CPointLight> m_Light = nullptr;
 	std::shared_ptr<CDirectionalLight> m_DirectionalLight = nullptr;
@@ -46,12 +46,9 @@ private:
 	static void __callbackFrameBufferSize(GLFWwindow* vWindow, int vWidth, int vHeight);
 	void __render();
 
-	//neverused void setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs);
 	void __deleteRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject);
 	void __addRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject);
 	void __setCamera(std::shared_ptr<CCamera> vCamera);
-	//void setLight(std::shared_ptr<CPointLight> vLight);
 	void __setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight);
-
 };
 

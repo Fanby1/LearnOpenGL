@@ -23,7 +23,6 @@ void CRenderConfig::init()
 
 void CRenderConfig::__defineAttributesV()
 {
-	////Due to HiveConfig, must have a copy&paste.
 	_defineAttribute("SHADER", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
 	_defineAttribute("SHADER_SOURCE_FILE", hiveConfig::EConfigDataType::ATTRIBUTE_STRING);
 	_defineAttribute("RENDER_ALGORITHM", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
@@ -86,10 +85,9 @@ void CRenderConfig::__setValFromConfig()
 
 		std::string VertexShaderName = RSubconfig->getAttribute<std::string>("VERTEX_SHADER").value();
 		std::string FragmentShaderName = RSubconfig->getAttribute<std::string>("FRAGMENT_SHADER").value();
-		//HIVE_LOG_DEBUG(VertexShaderName + " v||f " + FragmentShaderName);
+
 		for (int i = 0; i < ShaderNames.size(); ++i) 
 		{
-			//HIVE_LOG_INFO(ShaderNames[i]);
 			if (ShaderNames[i] == VertexShaderName)
 			{
 				RenderPass._VSIndex = i;
