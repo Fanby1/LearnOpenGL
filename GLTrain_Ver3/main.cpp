@@ -50,4 +50,7 @@ int main() {
     GLFWWindow.initWindow(WConfig);
     CGLTFObject Obeject;
     Obeject.loadModelFromGLTF("./assets/dragon.gltf");
+    CRenderConfig RConfig("./assets/RConfig_switch.xml");
+    RConfig.init();
+    GLFWWindow.startRender(RConfig, roateByY);
 }

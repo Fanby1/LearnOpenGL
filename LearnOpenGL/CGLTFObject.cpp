@@ -2,6 +2,9 @@
 #include <HiveLogger.h>
 #include <Singleton.h>
 #include <tiny_gltf.h>
+#include <vector>
+#include "CVertexBufferObject.h";
+#include "CVertexArrayObject.h"
 
 
 void CGLTFObject::loadModelFromGLTF(const std::string& vPath)
@@ -34,20 +37,78 @@ void CGLTFObject::loadModelFromGLTF(const std::string& vPath)
         HIVE_LOG_INFO("Mesh {} name: {}", i, Mesh.name);
         for (size_t j = 0; j < Mesh.primitives.size(); ++j) {
             const tinygltf::Primitive& Primitive = Mesh.primitives[j];
-            HIVE_LOG_INFO("    Primitive {}", j);
-            __printAttributes(Primitive);
+            HIVE_LOG_INFO("  Primitive {}", j);
+            __printAndLoadAttributes(Model, Primitive);
         }
     }
     __printTextureInfo(Model);
     __loadTextures(Model);
 }
 
-void CGLTFObject::__printAttributes(const tinygltf::Primitive& vPrimitive) 
+void CGLTFObject::__printAndLoadAttributes(const tinygltf::Model& vModel, const tinygltf::Primitive& vPrimitive)
 {
-    HIVE_LOG_INFO("    Attributes:");
-    for (const auto& Attr : vPrimitive.attributes) {
-        HIVE_LOG_INFO("        {}", Attr.first);
+    HIVE_LOG_INFO("  Attributes:");
+    unsigned long TotalVertex = 0;
+    unsigned long TotalVertexLength = 0;
+    std::vector<float> GLFormatData;
+    for (const auto& Attr : vPrimitive.attributes) 
+    {
+        int AccessorIndex = Attr.second;
+        const tinygltf::Accessor& Accessor = vModel.accessors[AccessorIndex];
+        const tinygltf::BufferView& BufferView = vModel.bufferViews[Accessor.bufferView];
+        const tinygltf::Buffer& Buffer = vModel.buffers[BufferView.buffer];
+
+        HIVE_LOG_INFO("    {}", Attr.first);
+        HIVE_LOG_INFO("    Accessor: {}", AccessorIndex);
+        HIVE_LOG_INFO("    ByteOffset: {}",Accessor.byteOffset);
+        HIVE_LOG_INFO("    Count: {}", Accessor.count);
+        HIVE_LOG_INFO("    Type: {}", Accessor.type);
+        __printBufferView(vModel, Accessor.bufferView);
+        TotalVertex = Accessor.count;
+        TotalVertexLength += Accessor.type;
     }
+    GLFormatData.resize(TotalVertex * TotalVertexLength);
+    for (const auto& Attr : vPrimitive.attributes)
+    {
+        int AccessorIndex = Attr.second;
+        const tinygltf::Accessor& Accessor = vModel.accessors[AccessorIndex];
+        const tinygltf::BufferView& BufferView = vModel.bufferViews[Accessor.bufferView];
+        const tinygltf::Buffer& Buffer = vModel.buffers[BufferView.buffer];
+        auto DataBegin = __getDataPointer(vModel, Accessor);
+        int Offset = 0;
+        if (Attr.first == "NORMAL") 
+        {
+            Offset = 5;
+        }
+        else if (Attr.first == "TEXCOORD_0") 
+        {
+            Offset = 3;
+        }
+        __rearrangeArray(DataBegin, Accessor.count * Accessor.type, Accessor.type, GLFormatData, TotalVertexLength, Offset);
+    }
+    std::vector<unsigned int> Offset = { 3,0,2,3 };
+    auto VBO = std::make_shared<CVertexBufferObject>(GLFormatData.data(), GLFormatData.size() * sizeof(float), VERTEX_TYPE_VERTEX_BIT | VERTEX_TYPE_TEXTURE_BIT | VERTEX_TYPE_NORMAL_BIT, Offset);
+    auto VAO = std::make_shared<CVertexArrayObject>();
+    VAO->addVBO(VBO);
+    addVAO(VAO, m_Shader);
+}
+
+
+const float* CGLTFObject::__getDataPointer(const tinygltf::Model& vModel, const tinygltf::Accessor& vAccessor) {
+    const tinygltf::BufferView& BufferView = vModel.bufferViews[vAccessor.bufferView];
+    const tinygltf::Buffer& Buffer = vModel.buffers[BufferView.buffer];
+    auto Point = Buffer.data.data() + BufferView.byteOffset + vAccessor.byteOffset;
+    return reinterpret_cast<const float*>(Point);
+}
+
+void CGLTFObject::__printBufferView(const tinygltf::Model& vModel, int vBufferViewIndex) {
+    const tinygltf::BufferView& BufferView = vModel.bufferViews[vBufferViewIndex];
+    const tinygltf::Buffer& Buffer = vModel.buffers[BufferView.buffer];
+
+    HIVE_LOG_INFO("      BufferView: {}", vBufferViewIndex);
+    HIVE_LOG_INFO("        ByteOffset: {}" ,BufferView.byteOffset);
+    HIVE_LOG_INFO("        ByteLength: {}", BufferView.byteLength);
+    HIVE_LOG_INFO("        Buffer Data Size: {} bytes", Buffer.data.size());
 }
 
 void CGLTFObject::__printTextureInfo(const tinygltf::Model& vModel) {
@@ -94,4 +155,40 @@ void CGLTFObject::__loadTextures(const tinygltf::Model& vModel) {
 
 void CGLTFObject::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight)
 {
+    if (__isFunctionSet()) {
+        auto Current = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> Elapsed = Current - m_Start;
+        m_UpdateMoveFunction(Elapsed, *this);
+    }
+    Eigen::Vector3f LightPosition = { 0,0,0 };
+    if (vLight) {
+        Eigen::Vector3f LightPosition = vLight->getPosition();
+    }
+    for (auto& It : m_VAOs) {
+        __transform(It.second);
+        It.second->use();
+        if (vCamera) {
+            vCamera->updateShaderUniforms(It.second);
+        }
+        It.second->setVec3("viewPos", vCamera->getPosition());
+        if (vLight) {
+            It.second->setVec3("lightPos", LightPosition);
+            It.second->setVec3("lightColor", { 1,1,1 });
+        }
+        if (vDirectionalLight) {
+            vDirectionalLight->updateShaderUniforms(It.second);
+        }
+
+        It.first->bind();
+        if (It.first->getEBO() != nullptr) {
+            glDrawElements(GL_TRIANGLES, It.first->getEBO()->getSize(), GL_UNSIGNED_INT, 0);
+        }
+        else {
+            auto VBOs = It.first->getVBOs();
+            auto VBO = VBOs.begin();
+            auto size = VBO->get()->getSize();
+            glDrawArrays(GL_TRIANGLES, 0, VBO->get()->getSize());
+        }
+        glBindVertexArray(0);
+    }
 }
