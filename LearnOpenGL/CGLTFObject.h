@@ -15,7 +15,8 @@ public:
     CGLTFObject() = default;
     CGLTFObject(const std::string& vPath, std::shared_ptr<CShader> vShader);
     void loadModelFromGLTF(const std::string& vPath);
-    void setShader(std::shared_ptr<CShader> vShader) {
+    void setShader(std::shared_ptr<CShader> vShader) 
+    {
 		m_Shader = vShader;
 	}
 private:
@@ -43,6 +44,5 @@ void CGLTFObject::__rearrangeArray(const T* vArray, size_t vLength, size_t vStep
             vTargetArray[Index] = *Position;
         }
         Index += vInterval - vStep;
-        
     }
 }

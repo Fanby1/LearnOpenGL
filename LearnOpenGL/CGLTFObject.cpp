@@ -38,15 +38,18 @@ void CGLTFObject::loadModelFromGLTF(const std::string& vPath)
 
     // 输出模型信息
     HIVE_LOG_INFO("Model loaded successfully: {}", vPath);
-    //HIVE_LOG_INFO("Number of meshes: {}", Model.meshes.size());
-    for (size_t i = 0; i < Model.meshes.size(); ++i) {
+    HIVE_LOG_INFO("Number of meshes: {}", Model.meshes.size());
+    for (size_t i = 0; i < Model.meshes.size(); ++i) 
+    {
         const tinygltf::Mesh& Mesh = Model.meshes[i];
         //HIVE_LOG_INFO("Mesh {} name: {}", i, Mesh.name);
         
-        for (size_t j = 0; j < Mesh.primitives.size(); ++j) {
+        for (size_t j = 0; j < Mesh.primitives.size(); ++j) 
+        {
             const tinygltf::Primitive& Primitive = Mesh.primitives[j];
-            if (Primitive.indices >= 0) {
-                //HIVE_LOG_INFO("EBO {}", Primitive.indices);
+            if (Primitive.indices >= 0) 
+            {
+                HIVE_LOG_INFO("EBO {}", Primitive.indices);
             }
             //HIVE_LOG_INFO("  Primitive {}", j);
             __printAndLoadAttributes(Model, Primitive);
@@ -109,14 +112,16 @@ void CGLTFObject::__printAndLoadAttributes(const tinygltf::Model& vModel, const 
 }
 
 
-const unsigned char* CGLTFObject::__getDataPointer(const tinygltf::Model& vModel, const tinygltf::Accessor& vAccessor) {
+const unsigned char* CGLTFObject::__getDataPointer(const tinygltf::Model& vModel, const tinygltf::Accessor& vAccessor) 
+{
     const tinygltf::BufferView& BufferView = vModel.bufferViews[vAccessor.bufferView];
     const tinygltf::Buffer& Buffer = vModel.buffers[BufferView.buffer];
     auto Point = Buffer.data.data() + BufferView.byteOffset + vAccessor.byteOffset;
     return Point;
 }
 
-void CGLTFObject::__printBufferView(const tinygltf::Model& vModel, int vBufferViewIndex) {
+void CGLTFObject::__printBufferView(const tinygltf::Model& vModel, int vBufferViewIndex) 
+{
     const tinygltf::BufferView& BufferView = vModel.bufferViews[vBufferViewIndex];
     const tinygltf::Buffer& Buffer = vModel.buffers[BufferView.buffer];
 
@@ -126,10 +131,14 @@ void CGLTFObject::__printBufferView(const tinygltf::Model& vModel, int vBufferVi
     HIVE_LOG_INFO("        Buffer Data Size: {} bytes", Buffer.data.size());
 }
 
-void CGLTFObject::__extractIndices(const tinygltf::Model& vModel, std::vector<unsigned int>& vIndices) {
-    for (const auto& Mesh : vModel.meshes) {
-        for (const auto& Primitive : Mesh.primitives) {
-            if (Primitive.indices >= 0) { // Check if the primitive has vIndices
+void CGLTFObject::__extractIndices(const tinygltf::Model& vModel, std::vector<unsigned int>& vIndices) 
+{
+    for (const auto& Mesh : vModel.meshes) 
+    {
+        for (const auto& Primitive : Mesh.primitives) 
+        {
+            if (Primitive.indices >= 0) 
+            { // Check if the primitive has vIndices
                 const tinygltf::Accessor& Accessor = vModel.accessors[Primitive.indices];
                 const unsigned char* dataPtr = __getDataPointer(vModel, Accessor);
 
@@ -154,25 +163,30 @@ void CGLTFObject::__extractIndices(const tinygltf::Model& vModel, std::vector<un
     }
 }
 
-void CGLTFObject::__printTextureInfo(const tinygltf::Model& vModel) {
+void CGLTFObject::__printTextureInfo(const tinygltf::Model& vModel) 
+{
     // 检查模型是否包含纹理
-    if (vModel.textures.empty()) {
+    if (vModel.textures.empty()) 
+    {
         HIVE_LOG_WARNING("Model does not contain any textures.");
         return;
     }
 
     HIVE_LOG_INFO("Model contains the following textures:");
 
-    for (size_t i = 0; i < vModel.textures.size(); ++i) {
+    for (size_t i = 0; i < vModel.textures.size(); ++i) 
+    {
         const tinygltf::Texture& Texture = vModel.textures[i];
         HIVE_LOG_INFO("Texture {} :", i);
         HIVE_LOG_INFO("  Name: ", Texture.name );
 
         // 检查纹理是否引用了图像
-        if (Texture.source < 0 || Texture.source >= vModel.images.size()) {
+        if (Texture.source < 0 || Texture.source >= vModel.images.size()) 
+        {
             HIVE_LOG_INFO("  This Texture does not reference a valid image.");
         }
-        else {
+        else 
+        {
             const tinygltf::Image& image = vModel.images[Texture.source];
             HIVE_LOG_INFO("  Image width: {}", image.width);
             HIVE_LOG_INFO("  Image height: {}", image.height);
@@ -183,9 +197,11 @@ void CGLTFObject::__printTextureInfo(const tinygltf::Model& vModel) {
 }
 
 // 加载模型中的所有纹理
-void CGLTFObject::__loadTextures(const tinygltf::Model& vModel) {
+void CGLTFObject::__loadTextures(const tinygltf::Model& vModel) 
+{
     GLuint Index = 0;
-    for (const auto& Texture : vModel.textures) {
+    for (const auto& Texture : vModel.textures) 
+    {
         const auto& Img = vModel.images[Texture.source];
         auto Image = std::make_shared<CImage>();
         Image->loadTextureFromImage(Img);
@@ -198,40 +214,48 @@ void CGLTFObject::__loadTextures(const tinygltf::Model& vModel) {
 
 void CGLTFObject::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight)
 {
-    if (__isFunctionSet()) {
+    if (__isFunctionSet()) 
+    {
         auto Current = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> Elapsed = Current - m_Start;
         m_UpdateMoveFunction(Elapsed, *this);
     }
     Eigen::Vector3f LightPosition = { 0,0,0 };
-    if (vLight) {
+    if (vLight) 
+    {
         Eigen::Vector3f LightPosition = vLight->getPosition();
     }
-    for (auto& It : m_VAOs) {
+    for (auto& It : m_VAOs) 
+    {
         __transform(It.second);
         It.second->use();
         m_Textures[0]->bind();
         m_Textures[1]->bind();
-        if (vCamera) {
+        if (vCamera) 
+        {
             vCamera->updateShaderUniforms(It.second);
         }
         It.second->setVec3("viewPos", vCamera->getPosition());
-        if (vLight) {
+        if (vLight) 
+        {
             It.second->setVec3("lightPos", LightPosition);
             It.second->setVec3("lightColor", { 1,1,1 });
         }
-        if (vDirectionalLight) {
+        if (vDirectionalLight) 
+        {
             vDirectionalLight->updateShaderUniforms(It.second);
         }
 
         It.first->bind();
-        if (It.first->getEBO() != nullptr) {
+        if (It.first->getEBO() != nullptr) 
+        {
             glDrawElements(GL_TRIANGLES, It.first->getEBO()->getSize(), GL_UNSIGNED_INT, 0);
         }
-        else {
+        else 
+        {
             auto VBOs = It.first->getVBOs();
             auto VBO = VBOs.begin();
-            auto size = VBO->get()->getSize();
+            auto Size = VBO->get()->getSize();
             glDrawArrays(GL_TRIANGLES, 0, VBO->get()->getSize());
         }
         glBindVertexArray(0);
