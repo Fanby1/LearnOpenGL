@@ -8,7 +8,6 @@
 #include "HiveLogger.h"
 #include "CWindow.h"
 #include "CRenderConfig.h"
-#include "CGLTFObject.h"
 
 //TODO: write glfwINIT() in dllmain.cpp
 
@@ -48,8 +47,6 @@ int main() {
 
     CWindow GLFWWindow;
     GLFWWindow.initWindow(WConfig);
-    CGLTFObject Obeject;
-    Obeject.loadModelFromGLTF("./assets/dragon.gltf");
     CRenderConfig RConfig("./assets/RConfig_switch.xml");
     RConfig.init();
     GLFWWindow.startRender(RConfig, roateByY);

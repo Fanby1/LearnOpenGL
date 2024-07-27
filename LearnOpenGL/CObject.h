@@ -17,7 +17,7 @@
 #define VERTEX_TYPE_TEXTURE_BIT 4
 #define VERTEX_TYPE_NORMAL_BIT 8
 
-class GLTRAINVER3_API CObject
+class CObject
 {
 public:
 	CObject() = default;

@@ -4,7 +4,7 @@
 #include "CDirectionalLight.h"
 
 class CPointLight;
-class GLTRAINVER3_API CRenderableObject : public CObject
+class CRenderableObject : public CObject
 {
 public:
 	CRenderableObject() = default;

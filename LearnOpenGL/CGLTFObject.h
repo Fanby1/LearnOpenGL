@@ -8,7 +8,7 @@
 #include "CShader.h"
 #include "CPointLight.h"
 
-class GLTRAINVER3_API CGLTFObject :
+class CGLTFObject :
     public CRenderableObject
 {
 public:
