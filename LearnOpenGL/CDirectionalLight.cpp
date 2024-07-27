@@ -45,5 +45,5 @@ void CDirectionalLight::rotate(float vAngle, const Eigen::Vector3f& vAxis)
 	Eigen::Vector3f Temp = vAxis;
 	Temp.normalize();
 	Eigen::AngleAxisf Rotation(vAngle, Temp);
-	m_Direction = Rotation * m_Direction;
+	m_Direction = Rotation.toRotationMatrix() * m_Direction;
 }
