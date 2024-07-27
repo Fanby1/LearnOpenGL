@@ -13,6 +13,7 @@ class GLTRAINVER3_API CGLTFObject :
 {
 public:
     CGLTFObject() = default;
+    CGLTFObject(const std::string& vPath, std::shared_ptr<CShader> vShader);
     void loadModelFromGLTF(const std::string& vPath);
     void setShader(std::shared_ptr<CShader> vShader) {
 		m_Shader = vShader;
@@ -22,8 +23,9 @@ private:
     std::vector<std::shared_ptr<CImage>> m_Images;
     std::shared_ptr<CShader> m_Shader;
     void __printAndLoadAttributes(const tinygltf::Model& vModel, const tinygltf::Primitive& vPrimitive);
-    const float* __getDataPointer(const tinygltf::Model& vModel, const tinygltf::Accessor& vAccessor);
+    const unsigned char* __getDataPointer(const tinygltf::Model& vModel, const tinygltf::Accessor& vAccessor);
     void __printBufferView(const tinygltf::Model& vModel, int vBufferViewIndex);
+    void __extractIndices(const tinygltf::Model& vModel, std::vector<unsigned int>& vIndices);
     void __printTextureInfo(const tinygltf::Model& vModel);
     void __loadTextures(const tinygltf::Model& vModel);
     void renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight) override;

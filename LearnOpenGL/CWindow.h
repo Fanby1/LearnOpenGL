@@ -31,9 +31,9 @@ private:
 	bool m_ChangeRenderPassIsPressed = false;
 	
 	int m_RenderPassesNum, m_RenderPassNowAtIndex;
-	std::set<std::shared_ptr<CStuff>> m_Stuffs;
+	std::set<std::shared_ptr<CRenderableObject>> m_RenderableObjects;
 	std::vector<std::shared_ptr<CShader>> m_ShaderPrograms;
-	std::shared_ptr<CStuff> m_RenderStuff = nullptr;
+	std::shared_ptr<CRenderableObject> m_RenderStuff = nullptr;
 	std::shared_ptr<CCamera> m_Camera = nullptr;
 	std::shared_ptr<CPointLight> m_Light = nullptr;
 	std::shared_ptr<CDirectionalLight> m_DirectionalLight = nullptr;
@@ -47,8 +47,8 @@ private:
 	void __render();
 
 	//neverused void setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs);
-	void __deleteStuff(std::shared_ptr<CStuff> vStuff);
-	void __addStuff(std::shared_ptr<CStuff> vStuff);
+	void __deleteRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject);
+	void __addRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject);
 	void __setCamera(std::shared_ptr<CCamera> vCamera);
 	//void setLight(std::shared_ptr<CPointLight> vLight);
 	void __setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight);

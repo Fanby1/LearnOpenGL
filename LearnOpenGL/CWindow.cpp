@@ -14,6 +14,7 @@
 #include "CCamera.h"
 #include "HiveLogger.h"
 #include "CRenderConfig.h"
+#include "CGLTFObject.h"
 
 CWindow::CWindow() 
 {
@@ -30,7 +31,7 @@ CWindow::CWindow()
     //pos: left+up
     m_PosX = MaxWidth >> 2;
     m_PosY = MaxHeight >> 2;
-    m_Stuffs.clear();
+    m_RenderableObjects.clear();
     m_ShaderPrograms.clear();
     m_RenderPassesNum = -1;
     m_RenderPassNowAtIndex = 0;
@@ -132,15 +133,15 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
 
 void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
 {
-    CImage Container("./assets/container2.png");
-    CTexture Texture_0(Container, GL_TEXTURE0);
-    Texture_0.bind();
-    CImage Specular("./assets/container2_specular.png");
-    CTexture Texture_1(Specular, GL_TEXTURE1);
-    Texture_1.bind();
+    // CImage Container("./assets/container2.png");
+    // CTexture Texture_0(Container, GL_TEXTURE0);
+    // Texture_0.bind();
+    // CImage Specular("./assets/container2_specular.png");
+    // CTexture Texture_1(Specular, GL_TEXTURE1);
+    // Texture_1.bind();
 
     auto Camera = std::make_shared<CCamera>();
-    Camera->setCameraPosition({ 2, 2, 2 });
+    Camera->setCameraPosition({ 20, 0, 0});
     Camera->setFarPlane(100);
     Camera->setNearPlane(0.1);
     Camera->setAspectRatio(1.0 * m_Width / m_Height);
@@ -165,9 +166,9 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
         ShaderProgram->setFloat("material.shininess", 64.0f);
         m_ShaderPrograms.push_back(ShaderProgram);
     }
-    m_RenderStuff = std::make_shared<CStuff>("./assets/cube.txt", m_ShaderPrograms[0]);
+    m_RenderStuff = std::make_shared<CGLTFObject>("./assets/dragon.gltf", m_ShaderPrograms[0]);
     // Cube->setUpdateMoveFunction(scala);
-    __addStuff(m_RenderStuff);
+    __addRenderableObject(m_RenderStuff);
 
     auto DirectionalLight = std::make_shared<CDirectionalLight>();
     DirectionalLight->setUpdateMoveFunction(vFunction);
@@ -194,8 +195,8 @@ void CWindow::__render()
         if (m_Light) {
             m_Light->renderV(m_Camera, m_Light, m_DirectionalLight);
         }
-        for (auto& Stuff : m_Stuffs) {
-            Stuff->renderV(m_Camera, m_Light, m_DirectionalLight);
+        for (auto& RenderableObject : m_RenderableObjects) {
+            RenderableObject->renderV(m_Camera, m_Light, m_DirectionalLight);
         }
         glfwSwapBuffers(m_pWindow);
     }
@@ -209,10 +210,10 @@ void CWindow::__processInput()
 
     if (glfwGetKey(m_pWindow, GLFW_KEY_T) == GLFW_PRESS && !m_ChangeRenderPassIsPressed)
     {
-        __deleteStuff(m_RenderStuff);
+        __deleteRenderableObject(m_RenderStuff);
         m_RenderPassNowAtIndex = (m_RenderPassNowAtIndex + 1) % m_RenderPassesNum;
-        m_RenderStuff = std::make_shared<CStuff>("./assets/cube.txt", m_ShaderPrograms[m_RenderPassNowAtIndex]);
-        __addStuff(m_RenderStuff);
+        m_RenderStuff = std::make_shared<CGLTFObject>("./assets/dragon.gltf", m_ShaderPrograms[m_RenderPassNowAtIndex]);
+        __addRenderableObject(m_RenderStuff);
         m_ChangeRenderPassIsPressed = true;
     }
     if (glfwGetKey(m_pWindow, GLFW_KEY_T) == GLFW_RELEASE)
@@ -231,19 +232,19 @@ void CWindow::__callbackFrameBufferSize(GLFWwindow* window, int vWidth, int vHei
 }
 
 //never used
-//void CWindow::setStuff(std::set<std::shared_ptr<CStuff>>&& vStuffs)
+//void CWindow::setRenderableObject(std::set<std::shared_ptr<CRenderableObject>>&& vRenderableObjects)
 //{
-//    m_Stuffs = vStuffs;
+//    m_RenderableObjects = vRenderableObjects;
 //}
 
-void CWindow::__deleteStuff(std::shared_ptr<CStuff> vStuff)
+void CWindow::__deleteRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject)
 {
-    m_Stuffs.erase(vStuff);
+    m_RenderableObjects.erase(vRenderableObject);
 }
 
-void CWindow::__addStuff(std::shared_ptr<CStuff> vStuff)
+void CWindow::__addRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject)
 {
-    m_Stuffs.insert(vStuff);
+    m_RenderableObjects.insert(vRenderableObject);
 }
 
 void CWindow::__setCamera(std::shared_ptr<CCamera> vCamera)
