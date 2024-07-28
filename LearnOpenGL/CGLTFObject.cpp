@@ -177,7 +177,7 @@ void CGLTFObject::__printTextureInfo(const tinygltf::Model& vModel)
     {
         const tinygltf::Texture& Texture = vModel.textures[i];
         HIVE_LOG_INFO("Texture {} :", i);
-        HIVE_LOG_INFO("  Name: ", Texture.name );
+        HIVE_LOG_INFO("  Name: {}", Texture.name );
 
         // 检查纹理是否引用了图像
         if (Texture.source < 0 || Texture.source >= vModel.images.size()) 
