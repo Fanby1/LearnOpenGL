@@ -14,7 +14,7 @@ class GLTRAINVER3_API CGLTFObject :
 {
 public:
     CGLTFObject() = default;
-    CGLTFObject(const std::string& vPath, std::shared_ptr<CShader> vShader);
+    CGLTFObject(const std::string& vPath);
     void loadModelFromGLTF(const std::string& vPath);
     void setShader(std::shared_ptr<CShader> vShader) 
     {
