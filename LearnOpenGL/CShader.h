@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
 #include <Eigen/Dense>
+#include "def.h"
 
-class CShader
+class GLTRAINVER3_API CShader
 {
 private:
     Eigen::Matrix4f m_Transform = Eigen::Matrix4f::Identity();

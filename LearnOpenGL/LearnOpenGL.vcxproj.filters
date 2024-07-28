@@ -69,6 +69,12 @@
     <ClInclude Include="CGLTFObject.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CGBuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CFramebuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWindow.cpp">
@@ -120,6 +126,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CGLTFObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CGBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CFramebuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

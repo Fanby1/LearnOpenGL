@@ -25,6 +25,8 @@
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CDirectionalLight.h" />
     <ClInclude Include="CElementBufferObject.h" />
+    <ClInclude Include="CFramebuffer.h" />
+    <ClInclude Include="CGBuffer.h" />
     <ClInclude Include="CGLTFObject.h" />
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CPointLight.h" />
@@ -44,6 +46,8 @@
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CDirectionalLight.cpp" />
     <ClCompile Include="CElementBufferObject.cpp" />
+    <ClCompile Include="CFramebuffer.cpp" />
+    <ClCompile Include="CGBuffer.cpp" />
     <ClCompile Include="CGLTFObject.cpp" />
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CPointLight.cpp" />

@@ -7,8 +7,9 @@
 #include "CTexture.h"
 #include "CShader.h"
 #include "CPointLight.h"
+#include "def.h"
 
-class CGLTFObject :
+class GLTRAINVER3_API CGLTFObject :
     public CRenderableObject
 {
 public:
