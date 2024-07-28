@@ -7,9 +7,8 @@
 #include "CVertexArrayObject.h"
 
 
-CGLTFObject::CGLTFObject(const std::string& vPath, std::shared_ptr<CShader> vShader)
+CGLTFObject::CGLTFObject(const std::string& vPath)
 {
-	m_Shader = vShader;
 	loadModelFromGLTF(vPath);
 }
 
@@ -108,7 +107,7 @@ void CGLTFObject::__printAndLoadAttributes(const tinygltf::Model& vModel, const 
     auto VAO = std::make_shared<CVertexArrayObject>();
     VAO->addVBO(VBO);
     VAO->setEBO(EBO);
-    addVAO(VAO, m_Shader);
+    addVAO(VAO);
 }
 
 
@@ -178,7 +177,7 @@ void CGLTFObject::__printTextureInfo(const tinygltf::Model& vModel)
     {
         const tinygltf::Texture& Texture = vModel.textures[i];
         HIVE_LOG_INFO("Texture {} :", i);
-        HIVE_LOG_INFO("  Name: ", Texture.name );
+        HIVE_LOG_INFO("  Name: {}", Texture.name );
 
         // 检查纹理是否引用了图像
         if (Texture.source < 0 || Texture.source >= vModel.images.size()) 
@@ -225,25 +224,25 @@ void CGLTFObject::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPoi
     {
         Eigen::Vector3f LightPosition = vLight->getPosition();
     }
-    for (auto& It : m_VAOs) 
+    for (auto& It : m_VAOToShadersMap) 
     {
-        __transform(It.second);
-        It.second->use();
+        __transform(It.second.m_ForwardShader);
+        It.second.m_ForwardShader->use();
         m_Textures[0]->bind();
         m_Textures[1]->bind();
         if (vCamera) 
         {
-            vCamera->updateShaderUniforms(It.second);
+            vCamera->updateShaderUniforms(It.second.m_ForwardShader); 
+            It.second.m_ForwardShader->setVec3("viewPos", vCamera->getPosition());
         }
-        It.second->setVec3("viewPos", vCamera->getPosition());
         if (vLight) 
         {
-            It.second->setVec3("lightPos", LightPosition);
-            It.second->setVec3("lightColor", { 1,1,1 });
+            It.second.m_ForwardShader->setVec3("lightPos", LightPosition);
+            It.second.m_ForwardShader->setVec3("lightColor", { 1,1,1 });
         }
         if (vDirectionalLight) 
         {
-            vDirectionalLight->updateShaderUniforms(It.second);
+            vDirectionalLight->updateShaderUniforms(It.second.m_ForwardShader);
         }
 
         It.first->bind();

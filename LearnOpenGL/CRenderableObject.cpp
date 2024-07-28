@@ -1,6 +1,7 @@
 #include "CRenderableObject.h"
 #include <iostream>
 #include <fstream>
+#include <ranges>
 #include "HiveLogger.h"
 
 std::vector<unsigned int> CRenderableObject::__createOffset(unsigned int vType)
@@ -71,7 +72,7 @@ std::vector<float> CRenderableObject::__readFloatArrayFromFile(std::ifstream& vF
 	return Result;
 }
 
-CRenderableObject::CRenderableObject(const std::string& vPath, std::shared_ptr<CShader> vShader)
+CRenderableObject::CRenderableObject(const std::string& vPath)
 {
 	std::ifstream File(vPath);
 	if (!File.is_open()) 
@@ -107,36 +108,56 @@ CRenderableObject::CRenderableObject(const std::string& vPath, std::shared_ptr<C
 	auto VBO = std::make_shared<CVertexBufferObject>(Vertices.data(), sizeof(float) * Vertices.size(), Type, Offset);
 	auto VAO = std::make_shared<CVertexArrayObject>();
 	VAO->addVBO(VBO);
-	addVAO(VAO, vShader);
+	addVAO(VAO);
 }
 
-void CRenderableObject::addVAO(std::shared_ptr<CVertexArrayObject> vVAO, std::shared_ptr<CShader> vShader)
+void CRenderableObject::addVAO(std::shared_ptr<CVertexArrayObject> vVAO)
 {
-	m_VAOs[vVAO] = vShader;
+	m_VAOToShadersMap[vVAO] = SShaderMessage();
 }
 
 void CRenderableObject::deleteVAO(std::shared_ptr<CVertexArrayObject> vVAO)
 {
-	m_VAOs.erase(vVAO);
+	m_VAOToShadersMap.erase(vVAO);
 }
 
 void CRenderableObject::clearVAO()
 {
-	m_VAOs.clear();
+	m_VAOToShadersMap.clear();
 }
 
-void CRenderableObject::setVAO(std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>>&& vVAOs)
+void CRenderableObject::setVAOForwardShader(std::shared_ptr<CVertexArrayObject> vVAO, std::shared_ptr<CShader> vShader)
 {
-	m_VAOs = vVAOs;
+	m_VAOToShadersMap[vVAO].m_ForwardShader = vShader;
 }
 
-std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>>::iterator CRenderableObject::begin()
+void CRenderableObject::setVAOGeometryShader(std::shared_ptr<CVertexArrayObject> vVAO, std::shared_ptr<CShader> vShader)
 {
-	return m_VAOs.begin();
+	m_VAOToShadersMap[vVAO].m_GeometryShader = vShader;
 }
 
-std::map<std::shared_ptr<CVertexArrayObject>, std::shared_ptr<CShader>>::iterator CRenderableObject::end()
+void CRenderableObject::setVAOLightingShader(std::shared_ptr<CVertexArrayObject> vVAO, std::shared_ptr<CShader> vShader)
 {
-	return m_VAOs.end();
+	m_VAOToShadersMap[vVAO].m_LightingShader = vShader;
+}
+
+std::vector<std::shared_ptr<CVertexArrayObject>> CRenderableObject::getVAOs()
+{
+	std::vector<std::shared_ptr<CVertexArrayObject>> Keys;
+
+	for (const auto& Key : std::views::keys(m_VAOToShadersMap)) {
+		Keys.push_back(Key);
+	}
+	return Keys;
+}
+
+std::map<std::shared_ptr<CVertexArrayObject>, SShaderMessage>::iterator CRenderableObject::begin()
+{
+	return m_VAOToShadersMap.begin();
+}
+
+std::map<std::shared_ptr<CVertexArrayObject>, SShaderMessage>::iterator CRenderableObject::end()
+{
+	return m_VAOToShadersMap.end();
 }
 

@@ -1,6 +1,6 @@
 #include "CStuff.h"
 
-CStuff::CStuff(const std::string& vPath, std::shared_ptr<CShader> vShader) : CRenderableObject(vPath, vShader)
+CStuff::CStuff(const std::string& vPath) : CRenderableObject(vPath)
 {
 }
 
@@ -17,23 +17,19 @@ void CStuff::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLig
 	{
 		Eigen::Vector3f LightPosition = vLight->getPosition();
 	}
-	for (auto& It : m_VAOs) 
-	{
-		__transform(It.second);
-		It.second->use();
-		if (vCamera) 
-		{
-			vCamera->updateShaderUniforms(It.second);
+	for (auto& It : m_VAOToShadersMap) {
+		__transform(It.second.m_ForwardShader);
+		It.second.m_ForwardShader->use();
+		if (vCamera) {
+			vCamera->updateShaderUniforms(It.second.m_ForwardShader);
+			It.second.m_ForwardShader->setVec3("viewPos", vCamera->getPosition());
 		}
-		It.second->setVec3("viewPos", vCamera->getPosition());
-		if (vLight) 
-		{
-			It.second->setVec3("lightPos", LightPosition);
-			It.second->setVec3("lightColor", { 1,1,1 });
+		if (vLight) {
+			It.second.m_ForwardShader->setVec3("lightPos", LightPosition);
+			It.second.m_ForwardShader->setVec3("lightColor", { 1,1,1 });
 		}
-		if (vDirectionalLight) 
-		{
-			vDirectionalLight->updateShaderUniforms(It.second);
+		if (vDirectionalLight) {
+			vDirectionalLight->updateShaderUniforms(It.second.m_ForwardShader);
 		}
 		
 		It.first->bind();
