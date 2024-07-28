@@ -25,7 +25,7 @@ static void roateByY(std::chrono::duration<double> vElapsed, CDirectionalLight& 
     Eigen::Vector3f Axis(0, 1, -1);//normalized during process
     vLight.rotate(Angle, Axis);
 }
-`
+
 int main() {  
     CWindowConfig WConfig("./assets/WConfig.xml");
     WConfig.init();
