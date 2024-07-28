@@ -21,5 +21,6 @@ void main() {
 	vec3 specular = specular * texture(material.specular, TexCoords).rgb;  
     
 	vec3 result = ambient + diffuse + specular;
+    result.x = 1.0;
     FragColor = vec4(result, 1.0);
 }

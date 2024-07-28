@@ -4,6 +4,14 @@
 // renderTexture(Window);
 // renderTransform(Window);
 // renderCube(Window);
+
+//in window how texture works
+    // CImage Container("./assets/container2.png");
+    // CTexture Texture_0(Container, GL_TEXTURE0);
+    // Texture_0.bind();
+    // CImage Specular("./assets/container2_specular.png");
+    // CTexture Texture_1(Specular, GL_TEXTURE1);
+    // Texture_1.bind();
 #define _USE_MATH_DEFINES
 
 #include <iostream>

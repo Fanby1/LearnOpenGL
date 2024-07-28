@@ -28,6 +28,7 @@ void CGLTFObject::loadModelFromGLTF(const std::string& vPath)
     if (!ErroMessage.empty()) 
     {
         HIVE_LOG_ERROR(ErroMessage);
+        return;
     }
     if (!ReturnFlag) 
     {
@@ -41,7 +42,7 @@ void CGLTFObject::loadModelFromGLTF(const std::string& vPath)
     for (size_t i = 0; i < Model.meshes.size(); ++i) 
     {
         const tinygltf::Mesh& Mesh = Model.meshes[i];
-        HIVE_LOG_INFO("Mesh {} name: {}", i, Mesh.name);
+        //HIVE_LOG_INFO("Mesh {} name: {}", i, Mesh.name);
         
         for (size_t j = 0; j < Mesh.primitives.size(); ++j) 
         {
@@ -50,7 +51,7 @@ void CGLTFObject::loadModelFromGLTF(const std::string& vPath)
             {
                 HIVE_LOG_INFO("EBO {}", Primitive.indices);
             }
-            HIVE_LOG_INFO("  Primitive {}", j);
+            //HIVE_LOG_INFO("  Primitive {}", j);
             __printAndLoadAttributes(Model, Primitive);
         }
     }

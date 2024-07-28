@@ -21,8 +21,8 @@ CWindow::CWindow()
     m_pWindow = nullptr;
     m_MajVer = 4, m_MinVer = 6;
     m_Title = "Default Title";
-    m_isCoreProfile = true;
-    m_isWindowParasSet = m_isMajorVersionValid = false;
+    m_UsingCoreProfile = true;
+    m_WindowConfigIsSet = m_GLMajorVerIsValid = false;
 
     int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
     int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -50,15 +50,18 @@ bool CWindow::__isParaErr(const T& vData, const T& vFloor, const T& vCeil, const
     else 
     {
         HIVE_LOG_WARNING("Window gets wrong paramter {}, we will use default parameter.", vType);
-        if (vType == "OpenGL Major Version") 
+        if (vType == "OpenGL Major Version")
+        {
             HIVE_LOG_WARNING("Because your OpenGL Major Version is wrong, we will not use the provided Minor Version.");
+        }
         return true;
     }
 }
 
 void CWindow::__destroyWindow()
 {
-    if (m_pWindow != nullptr) {
+    if (m_pWindow != nullptr) 
+    {
         glfwDestroyWindow(m_pWindow);
         m_pWindow = nullptr;
     }
@@ -66,7 +69,7 @@ void CWindow::__destroyWindow()
 
 void CWindow::__checkAndSetConfig(const CWindowConfig& vConfig)
 {
-    m_isWindowParasSet = true;
+    m_WindowConfigIsSet = true;
     std::string TempTitle = vConfig.getTitle();
     if (TempTitle.empty()) 
     {
@@ -78,9 +81,9 @@ void CWindow::__checkAndSetConfig(const CWindowConfig& vConfig)
     }
     int t = 0;
     t = vConfig.getMajVer();
-    if (!__isParaErr(t, 1, 4, "OpenGL Major Version")) m_isMajorVersionValid = true, m_MajVer = t;
+    if (!__isParaErr(t, 1, 4, "OpenGL Major Version")) m_GLMajorVerIsValid = true, m_MajVer = t;
     t = vConfig.getMinVer();
-    if (!__isParaErr(t, 1, 6, "OpenGL Minor Version") && m_isMajorVersionValid) m_MinVer = t;
+    if (!__isParaErr(t, 1, 6, "OpenGL Minor Version") && m_GLMajorVerIsValid) m_MinVer = t;
 
     int MaxWidth = GetSystemMetrics(SM_CXSCREEN);
     int MaxHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -92,7 +95,7 @@ void CWindow::__checkAndSetConfig(const CWindowConfig& vConfig)
     if (!__isParaErr(t, 0, MaxWidth - m_Width, "PosX")) m_PosX = t;
     t = vConfig.getPosY();
     if (!__isParaErr(t, 0, MaxHeight - m_Height, "PosY")) m_PosY = t;
-    m_isCoreProfile = vConfig.isCore();
+    m_UsingCoreProfile = vConfig.isCore();
 }
 
 int CWindow::initWindow(const CWindowConfig& vConfig)
@@ -103,14 +106,15 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
     }
     
     glfwInit();
-    if (m_pWindow != nullptr) {
+    if (m_pWindow != nullptr) 
+    {
         HIVE_LOG_WARNING("Destroied existing window! Please check whether multiplied created window in main.cpp.");
         __destroyWindow();
     }
     __checkAndSetConfig(vConfig);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_MajVer);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_MinVer);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, m_isCoreProfile ? GLFW_OPENGL_CORE_PROFILE : GLFW_OPENGL_COMPAT_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, m_UsingCoreProfile ? GLFW_OPENGL_CORE_PROFILE : GLFW_OPENGL_COMPAT_PROFILE);
     
     m_pWindow = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), NULL, NULL);
     if (m_pWindow == NULL)
@@ -133,22 +137,14 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
 
 void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
 {
-    // CImage Container("./assets/container2.png");
-    // CTexture Texture_0(Container, GL_TEXTURE0);
-    // Texture_0.bind();
-    // CImage Specular("./assets/container2_specular.png");
-    // CTexture Texture_1(Specular, GL_TEXTURE1);
-    // Texture_1.bind();
-
     auto Camera = std::make_shared<CCamera>();
-    Camera->setCameraPosition({ 20, 0, 0});
+    Camera->setCameraPosition({0, -20, -20});
     Camera->setFarPlane(100);
     Camera->setNearPlane(0.1);
     Camera->setAspectRatio(1.0 * m_Width / m_Height);
     Camera->setFeildOfView(45.0);
     __setCamera(Camera);
 
-   
     m_RenderPassesNum = vConfig.getRenderPassNum();
     m_RenderPassNowAtIndex = 0;
     for (int i = 0; i < m_RenderPassesNum; ++i)
@@ -167,7 +163,6 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
         m_ShaderPrograms.push_back(ShaderProgram);
     }
     m_RenderStuff = std::make_shared<CGLTFObject>("./assets/dragon.gltf", m_ShaderPrograms[0]);
-    // Cube->setUpdateMoveFunction(scala);
     __addRenderableObject(m_RenderStuff);
 
     auto DirectionalLight = std::make_shared<CDirectionalLight>();
@@ -180,7 +175,7 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
 
 void CWindow::__render()
 {
-    if (!m_isWindowParasSet)
+    if (!m_WindowConfigIsSet)
     {
         HIVE_LOG_WARNING("No Window Config is loaded! We will use default parameters...");
     }
@@ -192,10 +187,12 @@ void CWindow::__render()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if (m_Light) {
+        if (m_Light) 
+        {
             m_Light->renderV(m_Camera, m_Light, m_DirectionalLight);
         }
-        for (auto& RenderableObject : m_RenderableObjects) {
+        for (auto& RenderableObject : m_RenderableObjects) 
+        {
             RenderableObject->renderV(m_Camera, m_Light, m_DirectionalLight);
         }
         glfwSwapBuffers(m_pWindow);
@@ -206,14 +203,19 @@ void CWindow::__render()
 void CWindow::__processInput()
 {
     if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
         glfwSetWindowShouldClose(m_pWindow, true);
+    }
 
     if (glfwGetKey(m_pWindow, GLFW_KEY_T) == GLFW_PRESS && !m_ChangeRenderPassIsPressed)
     {
         __deleteRenderableObject(m_RenderStuff);
+
         m_RenderPassNowAtIndex = (m_RenderPassNowAtIndex + 1) % m_RenderPassesNum;
+        HIVE_LOG_INFO("Switch to render pass number: {}", m_RenderPassNowAtIndex);
         m_RenderStuff = std::make_shared<CGLTFObject>("./assets/dragon.gltf", m_ShaderPrograms[m_RenderPassNowAtIndex]);
         __addRenderableObject(m_RenderStuff);
+
         m_ChangeRenderPassIsPressed = true;
     }
     if (glfwGetKey(m_pWindow, GLFW_KEY_T) == GLFW_RELEASE)
@@ -222,20 +224,10 @@ void CWindow::__processInput()
     }
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
 void CWindow::__callbackFrameBufferSize(GLFWwindow* window, int vWidth, int vHeight)
 {
-    // make sure the viewport matches the new window dimensions; note that width and 
-    // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, vWidth, vHeight);
 }
-
-//never used
-//void CWindow::setRenderableObject(std::set<std::shared_ptr<CRenderableObject>>&& vRenderableObjects)
-//{
-//    m_RenderableObjects = vRenderableObjects;
-//}
 
 void CWindow::__deleteRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject)
 {
@@ -251,11 +243,6 @@ void CWindow::__setCamera(std::shared_ptr<CCamera> vCamera)
 {
     m_Camera = vCamera;
 }
-
-//void CWindow::setLight(std::shared_ptr<CPointLight> vLight)
-//{
-//    m_Light = vLight;
-//}
 
 void CWindow::__setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight)
 {

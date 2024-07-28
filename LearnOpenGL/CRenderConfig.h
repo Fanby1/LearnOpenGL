@@ -8,11 +8,14 @@
 class GLTRAINVER3_API CRenderConfig : protected hiveConfig::CHiveConfig
 {
 public:
-
 	CRenderConfig(const std::string& vFilePath = "");
 	~CRenderConfig() = default;
 	void init();
 
+	int getRenderPassNum() const
+	{
+		return m_RenderPasses.size();
+	}
 	bool isInit(const int& vRenderPassIndex) const 
 	{ 
 		int id = std::clamp(vRenderPassIndex, 0, (const int)m_RenderPasses.size() - 1);
@@ -31,6 +34,7 @@ public:
 		if (m_RenderPasses[id]._FSIndex >= 0) return m_ShaderPathes[m_RenderPasses[id]._FSIndex];
 		else return "";
 	}
+
 	enum class ERenderPassType : unsigned char
 	{
 		USE_PER_PIXEL_SHADING = 0,
@@ -41,16 +45,14 @@ public:
 		int id = std::clamp(vRenderPassIndex, 0, (const int)m_RenderPasses.size() - 1);
 		return m_RenderPasses[id]._RenderPassType;
 	}
-	int getRenderPassNum() const { return m_RenderPasses.size(); }
 
 private:
 	std::string m_FilePath = "";
-
 	struct SRenderPass
 	{
-		ERenderPassType _RenderPassType = ERenderPassType::USE_PER_PIXEL_SHADING;
 		int _VSIndex = -1, _FSIndex = -1;
 		bool _isInit = false;
+		ERenderPassType _RenderPassType = ERenderPassType::USE_PER_PIXEL_SHADING;
 	};
 
 	std::vector<SRenderPass> m_RenderPasses;

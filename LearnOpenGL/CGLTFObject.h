@@ -35,7 +35,7 @@ private:
 };
 template<typename T>
 void CGLTFObject::__rearrangeArray(const T* vArray, size_t vLength, size_t vStep, std::vector<T>& vTargetArray, int vInterval, int vOffset) {
-    // 确保偏移量在有效范围内
+    // make sure transform no excceed
     vOffset = vOffset % vInterval;
     auto Position = vArray;
     int Index = vOffset;
