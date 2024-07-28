@@ -1,8 +1,7 @@
 #pragma once
 #include "CRenderableObject.h"
 #include "CPointLight.h"
-class CStuff :
-    public CRenderableObject
+class CStuff : public CRenderableObject
 {
 public:
     CStuff() = default;

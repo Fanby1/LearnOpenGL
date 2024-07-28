@@ -6,35 +6,43 @@ CStuff::CStuff(const std::string& vPath, std::shared_ptr<CShader> vShader) : CRe
 
 void CStuff::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight)
 {
-	if (__isFunctionSet()) {
+	if (__isFunctionSet()) 
+	{
 		auto Current = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> Elapsed = Current - m_Start;
 		m_UpdateMoveFunction(Elapsed, *this);
 	}
-	Eigen::Vector3f LightPosition = { 0,0,0 };
-	if (vLight) {
+	Eigen::Vector3f LightPosition = { 0, 0, 0 };
+	if (vLight) 
+	{
 		Eigen::Vector3f LightPosition = vLight->getPosition();
 	}
-	for (auto& It : m_VAOs) {
+	for (auto& It : m_VAOs) 
+	{
 		__transform(It.second);
 		It.second->use();
-		if (vCamera) {
+		if (vCamera) 
+		{
 			vCamera->updateShaderUniforms(It.second);
 		}
 		It.second->setVec3("viewPos", vCamera->getPosition());
-		if (vLight) {
+		if (vLight) 
+		{
 			It.second->setVec3("lightPos", LightPosition);
 			It.second->setVec3("lightColor", { 1,1,1 });
 		}
-		if (vDirectionalLight) {
+		if (vDirectionalLight) 
+		{
 			vDirectionalLight->updateShaderUniforms(It.second);
 		}
 		
 		It.first->bind();
-		if (It.first->getEBO() != nullptr) {
+		if (It.first->getEBO() != nullptr) 
+		{
 			glDrawElements(GL_TRIANGLES, It.first->getEBO()->getSize(), GL_UNSIGNED_INT, 0);
 		}
-		else {
+		else 
+		{
 			auto VBOs = It.first->getVBOs();
 			auto VBO = VBOs.begin();
 			auto size = VBO->get()->getSize();

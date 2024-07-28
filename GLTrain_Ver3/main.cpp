@@ -9,24 +9,15 @@
 #include "CWindow.h"
 #include "CRenderConfig.h"
 
-//TODO: write glfwINIT() in dllmain.cpp
-
-static void initGLAD()
-{
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        HIVE_LOG_ERROR("Failed to initialize GLAD");
-    }
-}
-
 static void roateByY(std::chrono::duration<double> vElapsed, CDirectionalLight& vLight)
 {
     double Angle = M_PI * 1e-3;
     Eigen::Vector3f Axis(0, 1, -1);//normalized during process
     vLight.rotate(Angle, Axis);
 }
-`
-int main() {  
+
+int main() 
+{  
     CWindowConfig WConfig("./assets/WConfig.xml");
     WConfig.init();
 
