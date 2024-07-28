@@ -1,6 +1,6 @@
 #include "CPointLight.h"
 
-CPointLight::CPointLight(const std::string& vPath, std::shared_ptr<CShader> vShader) : CRenderableObject(vPath, vShader)
+CPointLight::CPointLight(const std::string& vPath) : CRenderableObject(vPath)
 {
 	
 }
@@ -12,11 +12,15 @@ void CPointLight::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPoi
 		std::chrono::duration<double> Elapsed = Current - m_Start;
 		m_UpdateMoveFunction(Elapsed, *this);
 	}
-	for (auto& It : m_VAOs) 
+	for (auto& It : m_VAOToShadersMap) 
 	{
-		__transform(It.second);
-		It.second->use();
+		__transform(It.second.m_ForwardShader);
+		It.second.m_ForwardShader->use();
 		It.first->bind();
+		if (vCamera) {
+			vCamera->updateShaderUniforms(It.second.m_ForwardShader);
+			It.second.m_ForwardShader->setVec3("viewPos", vCamera->getPosition());
+		}
 		if (It.first->getEBO() != nullptr) 
 		{
 			glDrawElements(GL_TRIANGLES, It.first->getEBO()->getSize(), GL_UNSIGNED_INT, 0);

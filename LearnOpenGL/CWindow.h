@@ -33,7 +33,6 @@ private:
 	int m_RenderPassesNum, m_RenderPassNowAtIndex;
 	std::set<std::shared_ptr<CRenderableObject>> m_RenderableObjects;
 	std::vector<std::shared_ptr<CShader>> m_ShaderPrograms;
-	std::shared_ptr<CGLTFObject> m_RenderStuff = nullptr;
 	std::shared_ptr<CCamera> m_Camera = nullptr;
 	std::shared_ptr<CPointLight> m_Light = nullptr;
 	std::shared_ptr<CDirectionalLight> m_DirectionalLight = nullptr;

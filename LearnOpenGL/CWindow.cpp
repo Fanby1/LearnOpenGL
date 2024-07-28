@@ -162,8 +162,9 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
         ShaderProgram->setFloat("material.shininess", 64.0f);
         m_ShaderPrograms.push_back(ShaderProgram);
     }
-    m_RenderStuff = std::make_shared<CGLTFObject>("./assets/dragon.gltf", m_ShaderPrograms[0]);
-    __addRenderableObject(m_RenderStuff);
+    auto RenderStuff = std::make_shared<CGLTFObject>("./assets/dragon.gltf");
+    RenderStuff->setVAOForwardShader(RenderStuff->getVAOs()[0], m_ShaderPrograms[0]);
+    __addRenderableObject(RenderStuff);
 
     auto DirectionalLight = std::make_shared<CDirectionalLight>();
     DirectionalLight->setUpdateMoveFunction(vFunction);
@@ -209,12 +210,9 @@ void CWindow::__processInput()
 
     if (glfwGetKey(m_pWindow, GLFW_KEY_T) == GLFW_PRESS && !m_ChangeRenderPassIsPressed)
     {
-        __deleteRenderableObject(m_RenderStuff);
-
         m_RenderPassNowAtIndex = (m_RenderPassNowAtIndex + 1) % m_RenderPassesNum;
         HIVE_LOG_INFO("Switch to render pass number: {}", m_RenderPassNowAtIndex);
-        m_RenderStuff = std::make_shared<CGLTFObject>("./assets/dragon.gltf", m_ShaderPrograms[m_RenderPassNowAtIndex]);
-        __addRenderableObject(m_RenderStuff);
+        (*m_RenderableObjects.begin())->setVAOForwardShader((*m_RenderableObjects.begin())->getVAOs()[0], m_ShaderPrograms[m_RenderPassNowAtIndex]);
 
         m_ChangeRenderPassIsPressed = true;
     }
