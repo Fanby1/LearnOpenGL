@@ -5,9 +5,9 @@ CGBuffer::CGBuffer()
 {
 }
 
-CGBuffer::CGBuffer(GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat, 
+CGBuffer::CGBuffer(const std::string& vUniformName, GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat,
 	GLuint vFormat, GLuint vType, unsigned int vWidth, unsigned int vHeight)
-	: m_TextureUnit(vTextureUnit), m_ColorAttachment(vColorAttachment), 
+	: m_UniformName(vUniformName), m_TextureUnit(vTextureUnit), m_ColorAttachment(vColorAttachment),
 	m_InternalFormat(vInternalFormat), m_Format(vFormat), m_Type(vType),
 	m_Width(vWidth), m_Height(vHeight)
 {
@@ -17,6 +17,11 @@ CGBuffer::CGBuffer(GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInterna
 const GLuint CGBuffer::getColorAttachment() const
 {
 	return m_ColorAttachment;
+}
+
+void CGBuffer::setUniformTexture(std::shared_ptr<CShader> vShader) const
+{
+	vShader->setInt(m_UniformName, m_TextureUnit - GL_TEXTURE0);
 }
 
 void CGBuffer::bind() const

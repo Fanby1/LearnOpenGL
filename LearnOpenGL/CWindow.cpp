@@ -278,8 +278,10 @@ void CWindow::__renderGrad(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPo
     for (const auto& GBuffer : GBuffers)
 	{
 		GBuffer->bind();
+        GBuffer->setUniformTexture(LightShader);
 	}
     m_FramBuffer->getDepthBuffer()->bind();
+    m_FramBuffer->getDepthBuffer()->setUniformTexture(LightShader);
     vCamera->updateShaderUniforms(LightShader);
     if (vLight) 
     {

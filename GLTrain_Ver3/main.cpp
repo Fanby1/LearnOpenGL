@@ -68,10 +68,10 @@ int main() {
     
     auto FrameBuffer = std::make_shared<CFramebuffer>(GLFWWindow.getWidth(), GLFWWindow.getHeight());
 
-    FrameBuffer->createAndAddGBuffer(GL_TEXTURE2, GL_COLOR_ATTACHMENT0, GL_RGB16F, GL_RGB, GL_FLOAT);
-    FrameBuffer->createAndAddGBuffer(GL_TEXTURE3, GL_COLOR_ATTACHMENT1, GL_RGB16F, GL_RGB, GL_FLOAT);
-    FrameBuffer->createAndAddGBuffer(GL_TEXTURE4, GL_COLOR_ATTACHMENT2, GL_RGBA, GL_RGBA, GL_FLOAT);
-    FrameBuffer->createAndAddDepthBuffer(GL_TEXTURE5, GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+    FrameBuffer->createAndAddGBuffer("gPosition", GL_TEXTURE2, GL_COLOR_ATTACHMENT0, GL_RGB16F, GL_RGB, GL_FLOAT);
+    FrameBuffer->createAndAddGBuffer("gNormal", GL_TEXTURE3, GL_COLOR_ATTACHMENT1, GL_RGB16F, GL_RGB, GL_FLOAT);
+    FrameBuffer->createAndAddGBuffer("gAlbedoSpec", GL_TEXTURE4, GL_COLOR_ATTACHMENT2, GL_RGBA, GL_RGBA, GL_FLOAT);
+    FrameBuffer->createAndAddDepthBuffer("gDepthTexture", GL_TEXTURE5, GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
     FrameBuffer->render();
     
     
@@ -87,10 +87,6 @@ int main() {
     gShader->setFloat("material.shininess", 32);
 
     lShader->use();
-    lShader->setInt("gPosition", 2);
-    lShader->setInt("gNormal", 3);
-    lShader->setInt("gAlbedoSpec", 4);
-    lShader->setInt("gDepthTexture", 5);
     lShader->setFloat("material.shininess", 32);
     
     

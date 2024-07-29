@@ -25,20 +25,20 @@ void CFramebuffer::bind() const
 	CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer));
 }
 
-void CFramebuffer::createAndAddGBuffer(GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat,
+void CFramebuffer::createAndAddGBuffer(const std::string& vUniformName, GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat,
 	GLuint vFormat, GLuint vType)
 {
 	bind();
-	std::shared_ptr<CGBuffer> gBuffer = std::make_shared<CGBuffer>(vTextureUnit, 
+	std::shared_ptr<CGBuffer> gBuffer = std::make_shared<CGBuffer>(vUniformName, vTextureUnit, 
 		vColorAttachment, vInternalFormat, vFormat, vType, m_Width, m_Height);
 	m_GBuffers.insert(gBuffer);
 }
 
-void CFramebuffer::createAndAddDepthBuffer(GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat,
+void CFramebuffer::createAndAddDepthBuffer(const std::string& vUniformName, GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat,
 	GLuint vFormat, GLuint vType)
 {
 	bind();
-	m_DepthBuffer = std::make_shared<CGBuffer>(vTextureUnit,
+	m_DepthBuffer = std::make_shared<CGBuffer>(vUniformName, vTextureUnit,
 		vColorAttachment, vInternalFormat, vFormat, vType, m_Width, m_Height);
 }
 
@@ -56,6 +56,7 @@ void CFramebuffer::render() const
 		Attachments.push_back(gBuffer->getColorAttachment());
 		HIVE_LOG_INFO("Color Attachment: {}", gBuffer->getColorAttachment());
 	}
+	std::sort<std::vector<GLuint>::iterator>(Attachments.begin(), Attachments.end());
 	CHECK_GL_ERROR(glDrawBuffers(Attachments.size(), Attachments.data()));
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthBuffer->getTexture(), 0);
