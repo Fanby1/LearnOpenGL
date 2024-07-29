@@ -3,32 +3,28 @@
 #include "ConfigInterface.h"
 
 CWindowConfig::CWindowConfig(const std::string& vFilePath)
+	: CGLBaseConfig(vFilePath) 
 {
-	m_FilePath = vFilePath; 
 	//Due to HiveConfig, must call _defineAttribute() during construction.
 	__defineAttributesV();
 	m_Width = m_Height = m_PosX = m_PosY = m_MajVer = m_MinVer = -1;
-	m_isCore = true;
-	m_isInit = false;
+	m_IsCore = true;
+	m_IsInit = false;
 	m_Title = "";
 }
 
-void CWindowConfig::init()
+void CWindowConfig::initV()
 {
-	if (m_FilePath.empty() || m_isInit) 
+	if (m_FilePath.empty() || m_IsInit) 
 	{
-		__logNoExist("**EVERY CONFIG**");
-		m_isInit |= false;
+		_logNoExist("**EVERY CONFIG**");
+		m_IsInit |= false;
 	}
-	__readConfigFromFile();
+	hiveConfig::hiveParseConfig(m_FilePath, hiveConfig::EConfigType::XML, this);
 	__setValFromConfig();
-	m_isInit = true;
+	m_IsInit = true;
 }
 
-void CWindowConfig::__readConfigFromFile()
-{
-	hiveConfig::hiveParseConfig(m_FilePath, hiveConfig::EConfigType::XML, this);
-}
 
 void CWindowConfig::__defineAttributesV()
 {
@@ -45,27 +41,12 @@ void CWindowConfig::__defineAttributesV()
 
 void CWindowConfig::__setValFromConfig()
 {
-	__setTypeVal<std::string>(m_Title, "Title");
-	__setTypeVal<bool>(m_isCore, "UseCoreProfile");
-	__setTypeVal<int>(m_MajVer, "MajorVersion");
-	__setTypeVal<int>(m_MinVer, "MinorVersion");
-	__setTypeVal<int>(m_Width, "Width");
-	__setTypeVal<int>(m_Height, "Height");
-	__setTypeVal<int>(m_PosX, "PosX");
-	__setTypeVal<int>(m_PosY, "PosY");
-}
-
-template<typename T>
-void CWindowConfig::__setTypeVal(T& vMemberName, const std::string& vVarName)
-{
-	std::optional<T> s;
-	s.reset();
-	s = getAttribute<T>(vVarName);
-	if (!s.has_value()) __logNoExist(vVarName);
-	else vMemberName = s.value();
-}
-
-void CWindowConfig::__logNoExist(const std::string vVarName)
-{
-	HIVE_LOG_WARNING("{} is not read from XML file! Please check the format.", vVarName);
+	_setTypeVal<std::string>(m_Title, "Title");
+	_setTypeVal<bool>(m_IsCore, "UseCoreProfile");
+	_setTypeVal<int>(m_MajVer, "MajorVersion");
+	_setTypeVal<int>(m_MinVer, "MinorVersion");
+	_setTypeVal<int>(m_Width, "Width");
+	_setTypeVal<int>(m_Height, "Height");
+	_setTypeVal<int>(m_PosX, "PosX");
+	_setTypeVal<int>(m_PosY, "PosY");
 }

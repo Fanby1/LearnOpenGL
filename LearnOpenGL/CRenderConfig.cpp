@@ -4,20 +4,20 @@
 #include "ConfigInterface.h"
 
 CRenderConfig::CRenderConfig(const std::string& vFilePath)
+	: CGLBaseConfig(vFilePath)
 {
-	m_FilePath = vFilePath;
 	__defineAttributesV();
 	m_RenderPasses.clear();
 	m_ShaderPathes.clear();
 }
 
-void CRenderConfig::init()
+void CRenderConfig::initV ()
 {
 	if (m_FilePath.empty())
 	{
-		__logNoExist("**CONFIG FILE**");
+		_logNoExist("**CONFIG FILE**");
 	}
-	__readConfigFromFile();
+	hiveConfig::hiveParseConfig(m_FilePath, hiveConfig::EConfigType::XML, this);
 	__setValFromConfig();
 }
 
@@ -31,18 +31,13 @@ void CRenderConfig::__defineAttributesV()
 	_defineAttribute("FRAGMENT_SHADER", hiveConfig::EConfigDataType::ATTRIBUTE_STRING);
 }
 
-void CRenderConfig::__readConfigFromFile()
-{
-	hiveConfig::hiveParseConfig(m_FilePath, hiveConfig::EConfigType::XML, this);
-}
-
 void CRenderConfig::__setValFromConfig()
 {
 	std::vector<hiveConfig::CHiveConfig*> RenderPassSubconfigs;
 	extractSpecifiedSubconfigsRecursively("RENDER_PASS", RenderPassSubconfigs);
 	if (RenderPassSubconfigs.empty()) 
 	{
-		__logNoExist("Render pass subconfig");
+		_logNoExist("Render pass subconfig");
 		return;
 	}
 
@@ -58,7 +53,7 @@ void CRenderConfig::__setValFromConfig()
 		bool ConfigHasPath = SSubConfig->getAttribute<std::string>("SHADER_SOURCE_FILE").has_value();
 		if (!ConfigHasPath)
 		{
-			__logNoExist("Shader path in subconfig " + SName);
+			_logNoExist("Shader path in subconfig " + SName);
 			continue;
 		}
 		ShaderNames.push_back(SName);
@@ -80,7 +75,7 @@ void CRenderConfig::__setValFromConfig()
 		}
 		else
 		{
-			__logNoExist("Render pass type");
+			_logNoExist("Render pass type");
 		}
 
 		std::string VertexShaderName = RSubconfig->getAttribute<std::string>("VERTEX_SHADER").value();
@@ -105,16 +100,11 @@ void CRenderConfig::__setValFromConfig()
 		else
 		{
 			HIVE_LOG_WARNING("Renderer pass {} is not initialized!", RName);
-			if (RenderPass._VSIndex < 0) __logNoExist("Vertex shader path of " + RName);
-			if (RenderPass._FSIndex < 0) __logNoExist("Fragment shader path of " + RName);
+			if (RenderPass._VSIndex < 0) _logNoExist("Vertex shader path of " + RName);
+			if (RenderPass._FSIndex < 0) _logNoExist("Fragment shader path of " + RName);
 			RenderPass._isInit = false;
 		}
 		m_RenderPasses.push_back(RenderPass);
 	}
 	return;
-}
-
-void CRenderConfig::__logNoExist(const std::string vVarName)
-{
-	HIVE_LOG_WARNING("{} is not read from XML file! Please check the format.", vVarName);
 }

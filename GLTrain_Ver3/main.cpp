@@ -19,11 +19,11 @@ static void roateByY(std::chrono::duration<double> vElapsed, CDirectionalLight& 
 int main() 
 {  
     CWindowConfig WConfig("./assets/WConfig.xml");
-    WConfig.init();
+    WConfig.initV();
 
     CWindow GLFWWindow;
     GLFWWindow.initWindow(WConfig);
     CRenderConfig RConfig("./assets/RConfig_switch.xml");
-    RConfig.init();
+    RConfig.initV();
     GLFWWindow.startRender(RConfig, roateByY);
 }

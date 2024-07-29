@@ -29,7 +29,7 @@ public:
 	Eigen::Vector3f getPosition();
 
 protected:
-	Eigen::Vector3f m_Position = { 0,0,0 };
+	Eigen::Vector3f m_Position = { 0, 0, 0 };
 	float m_Scale = 1.0f;
 
 	// 成员变量，存储 std::function

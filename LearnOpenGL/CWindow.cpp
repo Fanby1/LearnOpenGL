@@ -208,7 +208,7 @@ void CWindow::__processInput()
         glfwSetWindowShouldClose(m_pWindow, true);
     }
 
-    if (glfwGetKey(m_pWindow, GLFW_KEY_T) == GLFW_PRESS && !m_ChangeRenderPassIsPressed)
+    if (glfwGetKey(m_pWindow, m_KeyToSwitchRenderPass) == GLFW_PRESS && !m_ChangeRenderPassIsPressed)
     {
         m_RenderPassNowAtIndex = (m_RenderPassNowAtIndex + 1) % m_RenderPassesNum;
         HIVE_LOG_INFO("Switch to render pass number: {}", m_RenderPassNowAtIndex);
@@ -216,7 +216,7 @@ void CWindow::__processInput()
 
         m_ChangeRenderPassIsPressed = true;
     }
-    if (glfwGetKey(m_pWindow, GLFW_KEY_T) == GLFW_RELEASE)
+    if (glfwGetKey(m_pWindow, m_KeyToSwitchRenderPass) == GLFW_RELEASE)
     {
         m_ChangeRenderPassIsPressed = false;
     }
