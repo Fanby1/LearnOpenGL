@@ -34,6 +34,14 @@ void CFramebuffer::createAndAddGBuffer(GLuint vTextureUnit, GLuint vColorAttachm
 	m_GBuffers.insert(gBuffer);
 }
 
+void CFramebuffer::createAndAddDepthBuffer(GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat,
+	GLuint vFormat, GLuint vType)
+{
+	bind();
+	m_DepthBuffer = std::make_shared<CGBuffer>(vTextureUnit,
+		vColorAttachment, vInternalFormat, vFormat, vType, m_Width, m_Height);
+}
+
 const std::set<std::shared_ptr<CGBuffer>> CFramebuffer::getGBuffers() const
 {
 	return m_GBuffers;
@@ -46,19 +54,14 @@ void CFramebuffer::render() const
 	for (auto& gBuffer : m_GBuffers)
 	{
 		Attachments.push_back(gBuffer->getColorAttachment());
+		HIVE_LOG_INFO("Color Attachment: {}", gBuffer->getColorAttachment());
 	}
-	glDrawBuffers(Attachments.size(), Attachments.data());
+	CHECK_GL_ERROR(glDrawBuffers(Attachments.size(), Attachments.data()));
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthBuffer->getTexture(), 0);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		HIVE_LOG_ERROR("Framebuffer not complete!");
-
-	// 创建并附加深度缓冲
-	GLuint rboDepth;
-	glGenRenderbuffers(1, &rboDepth);
-	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

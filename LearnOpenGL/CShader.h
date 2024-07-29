@@ -15,6 +15,7 @@ private:
 public:
     unsigned int ID;
     CShader(const char* vVertexPath, const char* vFragmentPath);
+    unsigned int getID();
     void use();
     void setModel(Eigen::Matrix4f vModelMatrix);
     void setView(Eigen::Matrix4f vVeiwMatrix);

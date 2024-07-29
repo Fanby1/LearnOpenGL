@@ -218,6 +218,7 @@ void CWindow::render()
 
 void CWindow::renderDeferred()
 {
+    glEnable(GL_DEPTH_TEST);
     while (!glfwWindowShouldClose(m_pWindow)) // 游戏循环
     {
         glfwPollEvents();
@@ -225,7 +226,7 @@ void CWindow::renderDeferred()
         // 1. 几何处理阶段：渲染所有的几何/颜色数据到G缓冲 
         m_FramBuffer->bind();
         // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        CHECK_GL_ERROR(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+        CHECK_GL_ERROR(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
         CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
         for (auto& RenderableObject : m_RenderableObjects)
         {
@@ -235,7 +236,7 @@ void CWindow::renderDeferred()
         // 2. 光照处理阶段：使用G缓冲计算场景的光照
         CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, 0));
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT));
+        CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
         __renderGrad(m_Camera, m_Light, m_DirectionalLight);
         if (m_Light)
         {
@@ -278,6 +279,7 @@ void CWindow::__renderGrad(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPo
 	{
 		GBuffer->bind();
 	}
+    m_FramBuffer->getDepthBuffer()->bind();
     vCamera->updateShaderUniforms(LightShader);
     if (vLight) 
     {
