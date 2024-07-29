@@ -13,6 +13,21 @@
 #include "CCamera.h"
 #include "CGBuffer.h"
 #include "CFramebuffer.h"
+#include <iostream>
+
+// º¯Êý¼ì²é OpenGL ´íÎó
+void checkOpenGLError(const char* stmt, const char* fname, int line) {
+    GLenum err = glGetError();
+    while (err != GL_NO_ERROR) {
+        std::cerr << "OpenGL error " << err << " at " << stmt << " in " << fname << " at line " << line << std::endl;
+        err = glGetError();
+    }
+}
+
+#define CHECK_GL_ERROR(stmt) do { \
+    stmt; \
+    checkOpenGLError(#stmt, __FILE__, __LINE__); \
+} while (0)
 
 //TODO: write glfwINIT() in dllmain.cpp
 
@@ -50,28 +65,44 @@ int main() {
 
     CWindow GLFWWindow;
     GLFWWindow.initWindow(WConfig);
-
+    // glEnable(GL_DEPTH_TEST);
+    
     auto FrameBuffer = std::make_shared<CFramebuffer>(GLFWWindow.getWidth(), GLFWWindow.getHeight());
 
-    FrameBuffer->createAndAddGBuffer(2, GL_COLOR_ATTACHMENT0, GL_RGB16F, GL_RGB, GL_FLOAT);
-    FrameBuffer->createAndAddGBuffer(3, GL_COLOR_ATTACHMENT1, GL_RGB16F, GL_RGB, GL_FLOAT);
-    FrameBuffer->createAndAddGBuffer(4, GL_COLOR_ATTACHMENT2, GL_RGBA16F, GL_RGBA, GL_FLOAT);
+    FrameBuffer->createAndAddGBuffer(GL_TEXTURE2, GL_COLOR_ATTACHMENT0, GL_RGB16F, GL_RGB, GL_FLOAT);
+    FrameBuffer->createAndAddGBuffer(GL_TEXTURE3, GL_COLOR_ATTACHMENT1, GL_RGB16F, GL_RGB, GL_FLOAT);
+    FrameBuffer->createAndAddGBuffer(GL_TEXTURE4, GL_COLOR_ATTACHMENT2, GL_RGBA16F, GL_RGBA, GL_FLOAT);
+    FrameBuffer->render();
+    
+    
     auto gShader = std::make_shared<CShader>("./Shader/geometry_pass.vs", "./Shader/geometry_pass.fs");
     auto lShader = std::make_shared<CShader>("./Shader/lighting_pass.vs", "./Shader/lighting_pass.fs");
 
+    gShader->use();
     gShader->setInt("material.diffuse", 0);
     gShader->setInt("material.specular", 1);
     gShader->setFloat("material.shininess", 32);
 
+    lShader->use();
+    lShader->setInt("gPosition", 2);
+    lShader->setInt("gNormal", 3);
+    lShader->setInt("gAlbedoSpec", 4);
+    lShader->setFloat("material.shininess", 32);
+    
+    
     auto Dragon = std::make_shared<CGLTFObject>("./assets/Dragon.gltf");
+    
     for(const auto& VAO : Dragon->getVAOs())
 	{
 		Dragon->setVAOGeometryShader(VAO, gShader);
-		Dragon->setVAOLightingShader(VAO, gShader);
+		Dragon->setVAOLightingShader(VAO, lShader);
 	}
+    
+    GLFWWindow.addRenderableObject(Dragon);
+
     CRenderConfig RConfig("./assets/RConfig_switch.xml");
     RConfig.init();
-
+    
     auto Camera = std::make_shared<CCamera>();
     Camera->setCameraPosition({ 0, -20, -20 });
     Camera->setFarPlane(100);
@@ -79,8 +110,9 @@ int main() {
     Camera->setAspectRatio(1.0 * GLFWWindow.getWidth() / GLFWWindow.getHeight());
     Camera->setFeildOfView(45.0);
     GLFWWindow.setCamera(Camera);
+    
 
-    GLFWWindow.addRenderableObject(Dragon);
+    
 
     auto DirectionalLight = std::make_shared<CDirectionalLight>();
     DirectionalLight->setUpdateMoveFunction(roateByY);

@@ -27,6 +27,7 @@ uniform vec3 viewPos;
 
 void main()
 {
+	
     // Retrieve data from G-buffer
     vec3 FragPos = texture(gPosition, TexCoords).rgb;
     vec3 Normal = normalize(texture(gNormal, TexCoords).rgb);
@@ -49,7 +50,7 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * Specular;  
 
-
     vec3 lighting = ambient + diffuse + specular;
+	
     FragColor = vec4(lighting, 1.0);
 }

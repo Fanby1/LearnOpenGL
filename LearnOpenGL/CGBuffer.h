@@ -8,6 +8,7 @@ public:
 	CGBuffer(GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat, 
 		GLuint vFormat, GLuint vType, unsigned int vWidth, unsigned int vHeight);
 	const GLuint getColorAttachment() const;
+	void bind() const;
 	~CGBuffer();
 private:
 	GLuint m_Texture = 0;

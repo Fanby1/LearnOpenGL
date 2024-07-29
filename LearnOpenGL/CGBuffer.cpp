@@ -1,4 +1,5 @@
 #include "CGBuffer.h"
+#include <HiveLogger.h>
 
 CGBuffer::CGBuffer()
 {
@@ -18,14 +19,34 @@ const GLuint CGBuffer::getColorAttachment() const
 	return m_ColorAttachment;
 }
 
+void CGBuffer::bind() const
+{
+	glActiveTexture(m_TextureUnit);
+	// HIVE_LOG_INFO("m_Texture: {}", m_TextureUnit - GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_Texture);
+}
+
 CGBuffer::~CGBuffer()
 {
 }
 
+#include <iostream>
+
+// º¯Êý¼ì²é OpenGL ´íÎó
+void checkOpenGLError(const char* stmt, const char* fname, int line);
+
+#define CHECK_GL_ERROR(stmt) do { \
+    stmt; \
+    checkOpenGLError(#stmt, __FILE__, __LINE__); \
+} while (0)
+
 void CGBuffer::__createGBuffer()
 {
+	CHECK_GL_ERROR(glActiveTexture(m_TextureUnit));
 	glGenTextures(1, &m_Texture);
 	glBindTexture(GL_TEXTURE_2D, m_Texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_Format, m_Type, NULL);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, m_ColorAttachment, GL_TEXTURE_2D, m_Texture, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, m_ColorAttachment, GL_TEXTURE_2D, m_Texture, 0));
 }

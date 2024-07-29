@@ -12,6 +12,7 @@ public:
 	CFramebuffer(unsigned int vWidth, unsigned int vHeight);
 	void bind() const;
 	void createAndAddGBuffer(GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat, GLuint vFormat, GLuint vType);
+	const std::set<std::shared_ptr<CGBuffer>> getGBuffers() const;
 	void render() const;
 private:
 	GLuint m_Framebuffer;

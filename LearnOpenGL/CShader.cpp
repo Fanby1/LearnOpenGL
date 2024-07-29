@@ -67,9 +67,20 @@ CShader::CShader(const char* vVertexPath, const char* vFragmentPath)
     glDeleteShader(Fragment);
 }
 
+#include <iostream>
+
+// º¯Êý¼ì²é OpenGL ´íÎó
+void checkOpenGLError(const char* stmt, const char* fname, int line);
+
+#define CHECK_GL_ERROR(stmt) do { \
+    stmt; \
+    checkOpenGLError(#stmt, __FILE__, __LINE__); \
+} while (0)
+
+
 void CShader::use()
 {
-    glUseProgram(ID);
+    CHECK_GL_ERROR(glUseProgram(ID));
     if (m_ComputeTransformFlag) {
         __computeTransformMatrix();
     }

@@ -1,4 +1,13 @@
 #include "CTexture.h"
+#include <iostream>
+
+// º¯Êý¼ì²é OpenGL ´íÎó
+void checkOpenGLError(const char* stmt, const char* fname, int line);
+
+#define CHECK_GL_ERROR(stmt) do { \
+    stmt; \
+    checkOpenGLError(#stmt, __FILE__, __LINE__); \
+} while (0)
 
 CTexture::CTexture(const CImage& vImage, GLuint vTextureUnit)
 {
@@ -23,7 +32,7 @@ CTexture::CTexture(const CImage& vImage, GLuint vTextureUnit)
 void CTexture::bind() const
 {
     glActiveTexture(m_TextureUnit);
-    glBindTexture(GL_TEXTURE_2D, m_Texture);
+    CHECK_GL_ERROR( glBindTexture(GL_TEXTURE_2D, m_Texture));
 }
 
 GLuint CTexture::getTexture() const

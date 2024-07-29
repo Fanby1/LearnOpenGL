@@ -15,6 +15,21 @@
 #include "HiveLogger.h"
 #include "CRenderConfig.h"
 #include "CGLTFObject.h"
+#include <iostream>
+
+// 函数检查 OpenGL 错误
+void checkOpenGLError(const char* stmt, const char* fname, int line) {
+    GLenum err = glGetError();
+    while (err != GL_NO_ERROR) {
+        std::cerr << "OpenGL error " << err << " at " << stmt << " in " << fname << " at line " << line << std::endl;
+        err = glGetError();
+    }
+}
+
+#define CHECK_GL_ERROR(stmt) do { \
+    stmt; \
+    checkOpenGLError(#stmt, __FILE__, __LINE__); \
+} while (0)
 
 CWindow::CWindow() 
 {
@@ -207,21 +222,29 @@ void CWindow::renderDeferred()
     {
         glfwPollEvents();
         __processInput();
+        
         // 1. 几何处理阶段：渲染所有的几何/颜色数据到G缓冲 
         m_FramBuffer->bind();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        CHECK_GL_ERROR(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+        CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
         for (auto& RenderableObject : m_RenderableObjects)
         {
             RenderableObject->renderGeometryV(m_Camera);
         }
+        
         // 2. 光照处理阶段：使用G缓冲计算场景的光照
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT));
         __renderGrad(m_Camera, m_Light, m_DirectionalLight);
         if (m_Light)
         {
             m_Light->renderV(m_Camera, m_Light, m_DirectionalLight);
         }
+        
+        glfwSwapBuffers(m_pWindow);
+        
     }
 }
 
@@ -250,6 +273,12 @@ void CWindow::__renderGrad(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPo
 {
     std::shared_ptr<CVertexArrayObject> VAO = (*m_RenderableObjects.begin())->getVAOs()[0];
     const auto& LightShader = (*m_RenderableObjects.begin())->getVAOShaders(VAO).m_LightingShader;
+    LightShader->use();
+    const auto& GBuffers = m_FramBuffer->getGBuffers();
+    for (const auto& GBuffer : GBuffers)
+	{
+		GBuffer->bind();
+	}
     vCamera->updateShaderUniforms(LightShader);
     if (vLight) 
     {
@@ -259,8 +288,8 @@ void CWindow::__renderGrad(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPo
 	{
 		vDirectionalLight->updateShaderUniforms(LightShader);
 	}
-    LightShader->use();
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    VAO->bind();
+    CHECK_GL_ERROR(glDrawArrays(GL_TRIANGLES, 0, 6));
 }
 
 void CWindow::__callbackFrameBufferSize(GLFWwindow* window, int vWidth, int vHeight)

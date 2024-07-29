@@ -8,6 +8,8 @@ in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
 
+// out vec4 FragColor;
+
 struct Material {
     sampler2D diffuse;
     sampler2D specular;    
@@ -20,6 +22,10 @@ void main()
 {    
     gPosition = FragPos;
     gNormal = normalize(Normal);
-    gAlbedoSpec.rgb = texture(material.diffuse, TexCoords).rgb;
-    gAlbedoSpec.a = texture(material.specular, TexCoords).r;
+    //gAlbedoSpec.rgb = texture(material.diffuse, TexCoords).rgb;
+    //gAlbedoSpec.a = texture(material.specular, TexCoords).r;
+	gAlbedoSpec.rgb = vec3(1.0, 1.0, 0.0);
+    gAlbedoSpec.a = 1.0;
+	
+	// FragColor = vec4(Normal, 1.0);
 }

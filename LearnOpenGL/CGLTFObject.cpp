@@ -268,8 +268,8 @@ void CGLTFObject::renderGeometryV(std::shared_ptr<CCamera> vCamera)
     {
         __transform(It.second.m_GeometryShader);
         It.second.m_GeometryShader->use();
-        m_Textures[0]->bind();
-        m_Textures[1]->bind();
+        // m_Textures[0]->bind();
+        // m_Textures[1]->bind();
         vCamera->updateShaderUniforms(It.second.m_GeometryShader);
         It.first->bind();
         if (It.first->getEBO() != nullptr)
