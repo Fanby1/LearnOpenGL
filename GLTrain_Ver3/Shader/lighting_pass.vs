@@ -1,12 +1,27 @@
 #version 450 core
 
-layout (location = 0) in vec2 aPos;
-layout (location = 2) in vec2 aTexCoords;
-
 out vec2 TexCoords;
 
 void main()
 {
-    TexCoords = aTexCoords;
-    gl_Position = vec4(aPos, 0.0, 1.0);
+    vec2 positions[6] = vec2[6](
+        vec2(-1.0,  1.0), // Top-left
+        vec2(-1.0, -1.0), // Bottom-left
+        vec2( 1.0, -1.0), // Bottom-right
+        vec2(-1.0,  1.0), // Top-left
+        vec2( 1.0, -1.0), // Bottom-right
+        vec2( 1.0,  1.0)  // Top-right
+    );
+
+    vec2 texCoords[6] = vec2[6](
+        vec2(0.0, 1.0), // Top-left
+        vec2(0.0, 0.0), // Bottom-left
+        vec2(1.0, 0.0), // Bottom-right
+        vec2(0.0, 1.0), // Top-left
+        vec2(1.0, 0.0), // Bottom-right
+        vec2(1.0, 1.0)  // Top-right
+    );
+
+    TexCoords = texCoords[gl_VertexID];
+    gl_Position = vec4(positions[gl_VertexID], 0.0, 1.0);
 }

@@ -11,7 +11,7 @@ class GLTRAINVER3_API CFramebuffer
 public:
 	CFramebuffer(unsigned int vWidth, unsigned int vHeight);
 	void bind() const;
-	void createAndAddGBuffer(GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat, GLuint vFormat, GLuint vType, unsigned int vWidth, unsigned int vHeight);
+	void createAndAddGBuffer(GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat, GLuint vFormat, GLuint vType);
 	void render() const;
 private:
 	GLuint m_Framebuffer;

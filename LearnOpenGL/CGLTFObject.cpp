@@ -219,26 +219,20 @@ void CGLTFObject::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPoi
         std::chrono::duration<double> Elapsed = Current - m_Start;
         m_UpdateMoveFunction(Elapsed, *this);
     }
-    Eigen::Vector3f LightPosition = { 0,0,0 };
-    if (vLight) 
-    {
-        Eigen::Vector3f LightPosition = vLight->getPosition();
-    }
+
     for (auto& It : m_VAOToShadersMap) 
     {
         __transform(It.second.m_ForwardShader);
         It.second.m_ForwardShader->use();
         m_Textures[0]->bind();
         m_Textures[1]->bind();
-        if (vCamera) 
+        if (vCamera)
         {
             vCamera->updateShaderUniforms(It.second.m_ForwardShader); 
-            It.second.m_ForwardShader->setVec3("viewPos", vCamera->getPosition());
         }
         if (vLight) 
         {
-            It.second.m_ForwardShader->setVec3("lightPos", LightPosition);
-            It.second.m_ForwardShader->setVec3("lightColor", { 1,1,1 });
+            vLight->updateShaderUniforms(It.second.m_ForwardShader);
         }
         if (vDirectionalLight) 
         {
@@ -251,6 +245,38 @@ void CGLTFObject::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPoi
             glDrawElements(GL_TRIANGLES, It.first->getEBO()->getSize(), GL_UNSIGNED_INT, 0);
         }
         else 
+        {
+            auto VBOs = It.first->getVBOs();
+            auto VBO = VBOs.begin();
+            auto Size = VBO->get()->getSize();
+            glDrawArrays(GL_TRIANGLES, 0, VBO->get()->getSize());
+        }
+        glBindVertexArray(0); 
+    }
+}
+
+void CGLTFObject::renderGeometryV(std::shared_ptr<CCamera> vCamera)
+{
+    if (__isFunctionSet())
+    {
+        auto Current = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> Elapsed = Current - m_Start;
+        m_UpdateMoveFunction(Elapsed, *this);
+    }
+    
+    for (auto& It : m_VAOToShadersMap)
+    {
+        __transform(It.second.m_GeometryShader);
+        It.second.m_GeometryShader->use();
+        m_Textures[0]->bind();
+        m_Textures[1]->bind();
+        vCamera->updateShaderUniforms(It.second.m_GeometryShader);
+        It.first->bind();
+        if (It.first->getEBO() != nullptr)
+        {
+            glDrawElements(GL_TRIANGLES, It.first->getEBO()->getSize(), GL_UNSIGNED_INT, 0);
+        }
+        else
         {
             auto VBOs = It.first->getVBOs();
             auto VBO = VBOs.begin();

@@ -101,6 +101,7 @@ void CCamera::updateShaderUniforms(const std::shared_ptr<CShader>& vShader)
 
     vShader->setProjection(getProjectionMatrix());
     vShader->setView(getViewMatrix());
+    vShader->setVec3("viewPos", m_Position);
 }
 
 Eigen::Matrix4f CCamera::getProjectionMatrix()

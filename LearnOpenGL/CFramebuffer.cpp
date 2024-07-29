@@ -15,11 +15,11 @@ void CFramebuffer::bind() const
 }
 
 void CFramebuffer::createAndAddGBuffer(GLuint vTextureUnit, GLuint vColorAttachment, GLuint vInternalFormat,
-	GLuint vFormat, GLuint vType, unsigned int vWidth, unsigned int vHeight)
+	GLuint vFormat, GLuint vType)
 {
 	bind();
 	std::shared_ptr<CGBuffer> gBuffer = std::make_shared<CGBuffer>(vTextureUnit, 
-		vColorAttachment, vInternalFormat, vFormat, vType, vWidth, vHeight);
+		vColorAttachment, vInternalFormat, vFormat, vType, m_Width, m_Height);
 	m_GBuffers.insert(gBuffer);
 }
 

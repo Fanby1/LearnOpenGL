@@ -127,6 +127,11 @@ void CRenderableObject::setVAOLightingShader(std::shared_ptr<CVertexArrayObject>
 	m_VAOToShadersMap[vVAO].m_LightingShader = vShader;
 }
 
+const SShaderMessage& CRenderableObject::getVAOShaders(std::shared_ptr<CVertexArrayObject> vVAO)
+{
+	return m_VAOToShadersMap[vVAO];
+}
+
 std::vector<std::shared_ptr<CVertexArrayObject>> CRenderableObject::getVAOs()
 {
 	std::vector<std::shared_ptr<CVertexArrayObject>> Keys;

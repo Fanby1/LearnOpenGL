@@ -143,7 +143,7 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
     Camera->setNearPlane(0.1);
     Camera->setAspectRatio(1.0 * m_Width / m_Height);
     Camera->setFeildOfView(45.0);
-    __setCamera(Camera);
+    setCamera(Camera);
 
     m_RenderPassesNum = vConfig.getRenderPassNum();
     m_RenderPassNowAtIndex = 0;
@@ -164,17 +164,17 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
     }
     auto RenderStuff = std::make_shared<CGLTFObject>("./assets/dragon.gltf");
     RenderStuff->setVAOForwardShader(RenderStuff->getVAOs()[0], m_ShaderPrograms[0]);
-    __addRenderableObject(RenderStuff);
+    addRenderableObject(RenderStuff);
 
     auto DirectionalLight = std::make_shared<CDirectionalLight>();
     DirectionalLight->setUpdateMoveFunction(vFunction);
-    __setDirectionalLight(DirectionalLight);
+    setDirectionalLight(DirectionalLight);
 
     glEnable(GL_DEPTH_TEST);
-    __render();
+    render();
 }
 
-void CWindow::__render()
+void CWindow::render()
 {
     if (!m_WindowConfigIsSet)
     {
@@ -201,6 +201,30 @@ void CWindow::__render()
     glfwTerminate();
 }
 
+void CWindow::renderDeferred()
+{
+    while (!glfwWindowShouldClose(m_pWindow)) // 游戏循环
+    {
+        glfwPollEvents();
+        __processInput();
+        // 1. 几何处理阶段：渲染所有的几何/颜色数据到G缓冲 
+        m_FramBuffer->bind();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        for (auto& RenderableObject : m_RenderableObjects)
+        {
+            RenderableObject->renderGeometryV(m_Camera);
+        }
+        // 2. 光照处理阶段：使用G缓冲计算场景的光照
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        __renderGrad(m_Camera, m_Light, m_DirectionalLight);
+        if (m_Light)
+        {
+            m_Light->renderV(m_Camera, m_Light, m_DirectionalLight);
+        }
+    }
+}
+
 void CWindow::__processInput()
 {
     if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -222,27 +246,44 @@ void CWindow::__processInput()
     }
 }
 
+void CWindow::__renderGrad(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight)
+{
+    std::shared_ptr<CVertexArrayObject> VAO = (*m_RenderableObjects.begin())->getVAOs()[0];
+    const auto& LightShader = (*m_RenderableObjects.begin())->getVAOShaders(VAO).m_LightingShader;
+    vCamera->updateShaderUniforms(LightShader);
+    if (vLight) 
+    {
+        vLight->updateShaderUniforms(LightShader);
+    }
+    if (vDirectionalLight) 
+	{
+		vDirectionalLight->updateShaderUniforms(LightShader);
+	}
+    LightShader->use();
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
 void CWindow::__callbackFrameBufferSize(GLFWwindow* window, int vWidth, int vHeight)
 {
     glViewport(0, 0, vWidth, vHeight);
 }
 
-void CWindow::__deleteRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject)
+void CWindow::deleteRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject)
 {
     m_RenderableObjects.erase(vRenderableObject);
 }
 
-void CWindow::__addRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject)
+void CWindow::addRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject)
 {
     m_RenderableObjects.insert(vRenderableObject);
 }
 
-void CWindow::__setCamera(std::shared_ptr<CCamera> vCamera)
+void CWindow::setCamera(std::shared_ptr<CCamera> vCamera)
 {
     m_Camera = vCamera;
 }
 
-void CWindow::__setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight)
+void CWindow::setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight)
 {
     m_DirectionalLight = vLight;
 }

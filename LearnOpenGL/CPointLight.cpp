@@ -5,6 +5,12 @@ CPointLight::CPointLight(const std::string& vPath) : CRenderableObject(vPath)
 	
 }
 
+void CPointLight::updateShaderUniforms(std::shared_ptr<CShader> vShader)
+{
+	vShader->setVec3("lightPos", m_Position);
+	vShader->setVec3("lightColor", { 1,1,1 });
+}
+
 void CPointLight::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight)
 {
 	if (__isFunctionSet()) {
@@ -19,7 +25,6 @@ void CPointLight::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPoi
 		It.first->bind();
 		if (vCamera) {
 			vCamera->updateShaderUniforms(It.second.m_ForwardShader);
-			It.second.m_ForwardShader->setVec3("viewPos", vCamera->getPosition());
 		}
 		if (It.first->getEBO() != nullptr) 
 		{

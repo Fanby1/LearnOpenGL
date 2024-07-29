@@ -1,12 +1,13 @@
 #pragma once
-#include <vector>
+#include <HiveLogger.h>
 #include <memory>
 #include <tiny_gltf.h>
-#include <HiveLogger.h>
-#include "CRenderableObject.h"
-#include "CTexture.h"
-#include "CShader.h"
+#include <vector>
 #include "CPointLight.h"
+#include "CRenderableObject.h"
+#include "CShader.h"
+#include "CTexture.h"
+#include "CGBuffer.h"
 #include "def.h"
 
 class GLTRAINVER3_API CGLTFObject :
@@ -31,6 +32,7 @@ private:
     void __printTextureInfo(const tinygltf::Model& vModel);
     void __loadTextures(const tinygltf::Model& vModel);
     void renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight) override;
+    void renderGeometryV(std::shared_ptr<CCamera> vCamera) override;
     template<typename T>
     void __rearrangeArray(const T* vArray, size_t vLength, size_t vStep, std::vector<T>& vTargetArray, int vInterval, int vOffset);
 };

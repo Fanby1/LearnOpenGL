@@ -3,8 +3,9 @@
 #include <cmath>
 #include <Eigen/Dense>
 #include "CObject.h"
+#include "def.h"
 
-class CCamera : public CObject
+class GLTRAINVER3_API CCamera : public CObject
 {
 private:
     float m_FeildOfView = 90.0f;  // Field of View, in degrees
