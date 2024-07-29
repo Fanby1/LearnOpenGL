@@ -222,7 +222,6 @@ void CWindow::renderDeferred()
     {
         glfwPollEvents();
         __processInput();
-        
         // 1. 几何处理阶段：渲染所有的几何/颜色数据到G缓冲 
         m_FramBuffer->bind();
         // glBindFramebuffer(GL_FRAMEBUFFER, 0);
