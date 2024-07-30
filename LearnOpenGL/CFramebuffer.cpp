@@ -1,7 +1,6 @@
 #include "CFramebuffer.h"
 #include <vector>
 #include <HiveLogger.h>
-
 #include <iostream>
 
 // º¯Êý¼ì²é OpenGL ´íÎó

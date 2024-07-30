@@ -13,13 +13,15 @@ private:
     bool m_ComputeTransformFlag = true;
     void __computeTransformMatrix();
 public:
-    unsigned int ID;
     CShader(const char* vVertexPath, const char* vFragmentPath);
     unsigned int getID();
     void use();
     void setModel(Eigen::Matrix4f vModelMatrix);
     void setView(Eigen::Matrix4f vVeiwMatrix);
     void setProjection(Eigen::Matrix4f vProjectionMatrix);
+
+    template<typename T>
+    void setUniform(const std::string& vName, T vValue) const;
     void setBool(const std::string& vName, bool vValue) const;
     void setInt(const std::string& vName, int vValue) const;
     void setFloat(const std::string& vName, float vValue) const;
@@ -33,6 +35,7 @@ public:
     void setMat3(const std::string& name, const Eigen::Matrix3f& mat) const;
     void setMat4(const std::string& name, const Eigen::Matrix4f& mat) const;
 private:
+    unsigned int m_ProjectID;
     void __checkCompileErrors(unsigned int vShader, std::string vType);
 };
 

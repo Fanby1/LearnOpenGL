@@ -1,3 +1,8 @@
 <CAMERA>
   
 </CAMERA>
+
+<MODEL>
+  dragon
+  <PATH>./assets/Dragon.gltf</PATH>
+</MODEL>

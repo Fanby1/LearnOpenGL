@@ -110,9 +110,6 @@ int main() {
     Camera->setAspectRatio(1.0 * GLFWWindow.getWidth() / GLFWWindow.getHeight());
     Camera->setFeildOfView(45.0);
     GLFWWindow.setCamera(Camera);
-    
-
-    
 
     auto DirectionalLight = std::make_shared<CDirectionalLight>();
     DirectionalLight->setUpdateMoveFunction(roateByY);

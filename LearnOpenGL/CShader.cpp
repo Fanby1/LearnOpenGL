@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "HiveLogger.h"
@@ -44,33 +45,31 @@ CShader::CShader(const char* vVertexPath, const char* vFragmentPath)
     }
     const char* VertexShaderCode = VertexCode.c_str();
     const char* FragmentShaderCode = FragmentCode.c_str();
-    // 2. compile shaders
     unsigned int Vertex, Fragment;
-    // Vertex shader
+
     Vertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(Vertex, 1, &VertexShaderCode, NULL);
     glCompileShader(Vertex);
     __checkCompileErrors(Vertex, "VERTEX");
-    // Fragment CShader
+
     Fragment = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(Fragment, 1, &FragmentShaderCode, NULL);
     glCompileShader(Fragment);
     __checkCompileErrors(Fragment, "FRAGMENT");
-    // shader Program
-    ID = glCreateProgram();
-    glAttachShader(ID, Vertex);
-    glAttachShader(ID, Fragment);
-    glLinkProgram(ID);
-    __checkCompileErrors(ID, "PROGRAM");
-    // delete the shaders as they're linked into our program now and no longer necessary
+
+    m_ProjectID = glCreateProgram();
+    glAttachShader(m_ProjectID, Vertex);
+    glAttachShader(m_ProjectID, Fragment);
+    glLinkProgram(m_ProjectID);
+    __checkCompileErrors(m_ProjectID, "PROGRAM");
+
     glDeleteShader(Vertex);
     glDeleteShader(Fragment);
 }
 
 unsigned int CShader::getID() {
-    return ID;
+    return m_ProjectID;
 }
-#include <iostream>
 
 // º¯Êý¼ì²é OpenGL ´íÎó
 void checkOpenGLError(const char* stmt, const char* fname, int line);
@@ -83,7 +82,7 @@ void checkOpenGLError(const char* stmt, const char* fname, int line);
 
 void CShader::use()
 {
-    CHECK_GL_ERROR(glUseProgram(ID));
+    CHECK_GL_ERROR(glUseProgram(m_ProjectID));
     if (m_ComputeTransformFlag) {
         __computeTransformMatrix();
     }
@@ -111,62 +110,67 @@ void CShader::setProjection(Eigen::Matrix4f vProjectionMatrix)
     m_ComputeTransformFlag = true;
 }
 
+template<typename T>
+void CShader::setUniform(const std::string& vName, T vValue) const {
+    GLint VarLocation = glGetUniformLocation(m_ProjectID, vName.c_str());
+}
+
 void CShader::setBool(const std::string& vName, bool vValue) const
 {
-    glUniform1i(glGetUniformLocation(ID, vName.c_str()), (int)vValue);
+    glUniform1i(glGetUniformLocation(m_ProjectID, vName.c_str()), (int)vValue);
 }
 
 void CShader::setInt(const std::string& vName, int vValue) const
 {
-    glUniform1i(glGetUniformLocation(ID, vName.c_str()), vValue);
+    glUniform1i(glGetUniformLocation(m_ProjectID, vName.c_str()), vValue);
 }
 
 void CShader::setFloat(const std::string& vName, float vValue) const
 {
-    glUniform1f(glGetUniformLocation(ID, vName.c_str()), vValue);
+    glUniform1f(glGetUniformLocation(m_ProjectID, vName.c_str()), vValue);
 }
 
 // ------------------------------------------------------------------------
 void CShader::setVec2(const std::string& name, const Eigen::Vector2f& value) const
 {
-    glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, value.data());
+    glUniform2fv(glGetUniformLocation(m_ProjectID, name.c_str()), 1, value.data());
 }
 void CShader::setVec2(const std::string& name, float x, float y) const
 {
-    glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
+    glUniform2f(glGetUniformLocation(m_ProjectID, name.c_str()), x, y);
 }
 // ------------------------------------------------------------------------
 void CShader::setVec3(const std::string& name, const Eigen::Vector3f& value) const
 {
-    glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, value.data());
+    glUniform3fv(glGetUniformLocation(m_ProjectID, name.c_str()), 1, value.data());
 }
 void CShader::setVec3(const std::string& name, float x, float y, float z) const
 {
-    glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
+    glUniform3f(glGetUniformLocation(m_ProjectID, name.c_str()), x, y, z);
 }
 // ------------------------------------------------------------------------
 void CShader::setVec4(const std::string& name, const Eigen::Vector4f& value) const
 {
-    glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, value.data());
+    glUniform4fv(glGetUniformLocation(m_ProjectID, name.c_str()), 1, value.data());
 }
 void CShader::setVec4(const std::string& name, float x, float y, float z, float w) const
 {
-    glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
+    glUniform4f(glGetUniformLocation(m_ProjectID, name.c_str()), x, y, z, w);
 }
 // ------------------------------------------------------------------------
 void CShader::setMat2(const std::string& name, const Eigen::Matrix2f& mat) const
 {
-    glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, mat.data());
+    glUniformMatrix2fv(glGetUniformLocation(m_ProjectID, name.c_str()), 1, GL_FALSE, mat.data());
 }
 // ------------------------------------------------------------------------
 void CShader::setMat3(const std::string& name, const Eigen::Matrix3f& mat) const
 {
-    glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, mat.data());
+    glUniformMatrix3fv(glGetUniformLocation(m_ProjectID, name.c_str()), 1, GL_FALSE, mat.data());
 }
 // ------------------------------------------------------------------------
 void CShader::setMat4(const std::string& name, const Eigen::Matrix4f& mat) const
 {
-    glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, mat.data());
+    glUniformMatrix4fv(glGetUniformLocation(m_ProjectID, name.c_str()), 1, GL_FALSE, mat.data());
 }
 
 void CShader::__checkCompileErrors(unsigned int vShader, std::string vType)
