@@ -1,6 +1,5 @@
 #include "CRenderConfig.h"
 #include "HiveLogger.h"
-#include "HiveLogger.h"
 #include "ConfigInterface.h"
 
 CRenderConfig::CRenderConfig(const std::string& vFilePath)
@@ -15,7 +14,7 @@ void CRenderConfig::initV ()
 {
 	if (m_FilePath.empty())
 	{
-		_logNoExist("**CONFIG FILE**");
+		_logNoExist("**RENDER CONFIG FILE**");
 	}
 	hiveConfig::hiveParseConfig(m_FilePath, hiveConfig::EConfigType::XML, this);
 	__setValFromConfig();
@@ -29,18 +28,11 @@ void CRenderConfig::__defineAttributesV()
 	_defineAttribute("RENDER_PASS", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
 	_defineAttribute("VERTEX_SHADER", hiveConfig::EConfigDataType::ATTRIBUTE_STRING);
 	_defineAttribute("FRAGMENT_SHADER", hiveConfig::EConfigDataType::ATTRIBUTE_STRING);
+	_defineAttribute("UNIFORM", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
 }
 
 void CRenderConfig::__setValFromConfig()
 {
-	std::vector<hiveConfig::CHiveConfig*> RenderPassSubconfigs;
-	extractSpecifiedSubconfigsRecursively("RENDER_PASS", RenderPassSubconfigs);
-	if (RenderPassSubconfigs.empty()) 
-	{
-		_logNoExist("Render pass subconfig");
-		return;
-	}
-
 	std::vector<hiveConfig::CHiveConfig*> ShadersSubconfigs;
 	extractSpecifiedSubconfigsRecursively("SHADER", ShadersSubconfigs);
 	std::vector<std::string> ShaderNames;
@@ -59,6 +51,14 @@ void CRenderConfig::__setValFromConfig()
 		ShaderNames.push_back(SName);
 		m_ShaderPathes.push_back(SPath);
 	}
+
+	std::vector<hiveConfig::CHiveConfig*> RenderPassSubconfigs;
+	extractSpecifiedSubconfigsRecursively("RENDER_PASS", RenderPassSubconfigs);
+	if (RenderPassSubconfigs.empty())
+	{
+		_logNoExist("Render pass subconfig");
+		return;
+	}
 	for (const auto& RSubconfig : RenderPassSubconfigs) 
 	{
 		SRenderPass RenderPass;
@@ -71,7 +71,7 @@ void CRenderConfig::__setValFromConfig()
 		}
 		else if (RName.find("pervertex") != std::string::npos)
 		{
-			RenderPass._RenderPassType = ERenderPassType::UES_PER_VERTEX_SHADING;
+			RenderPass._RenderPassType = ERenderPassType::USE_PER_VERTEX_SHADING;
 		}
 		else
 		{

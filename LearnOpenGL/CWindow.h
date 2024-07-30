@@ -15,10 +15,10 @@ public:
 	CWindow();
 	~CWindow();
 	int initWindow(const CWindowConfig& vConfig);
-	void startRender(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction);
+	void initRenderPara(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction);
 	int getWidth() const { return m_Width; }
 	int getHeight() const { return m_Height; }
-	void render();
+	void renderPixel();
 	void renderDeferred();
 
 	void deleteRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject);

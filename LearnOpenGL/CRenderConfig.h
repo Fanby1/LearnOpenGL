@@ -36,7 +36,7 @@ public:
 	enum class ERenderPassType : unsigned char
 	{
 		USE_PER_PIXEL_SHADING = 0,
-		UES_PER_VERTEX_SHADING,
+		USE_PER_VERTEX_SHADING,
 	};
 	ERenderPassType getRenderPassType(const int& vRenderPassIndex) const
 	{

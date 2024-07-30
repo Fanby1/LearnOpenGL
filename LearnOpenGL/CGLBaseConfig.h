@@ -23,6 +23,5 @@ protected:
 		if (!s.has_value()) _logNoExist(vVarName);
 		else vMember = s.value();
 	}
-
 };
 

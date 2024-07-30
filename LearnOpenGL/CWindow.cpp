@@ -150,7 +150,7 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
     return 0;
 }
 
-void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
+void CWindow::initRenderPara(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
 {
     auto Camera = std::make_shared<CCamera>();
     Camera->setCameraPosition({0, -20, -20});
@@ -168,8 +168,6 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
         std::string VSPath = isRConfigValid ? vConfig.getVertexShaderPath(i) : "./Shader/directionalLight.vs";
         std::string FSPath = isRConfigValid ? vConfig.getFragmentShaderPath(i) : "./Shader/directionalLight.fs";
         CRenderConfig::ERenderPassType UsePerVertexShading = vConfig.getRenderPassType(i);
-        HIVE_LOG_INFO("Number {} render pass will use {}", i, 
-            UsePerVertexShading == CRenderConfig::ERenderPassType::UES_PER_VERTEX_SHADING ? "per vertex shading" : "per pixel shading");
         auto ShaderProgram = std::make_shared<CShader>(VSPath.c_str(), FSPath.c_str());
         ShaderProgram->use();
         ShaderProgram->setInt("material.diffuse", 0);
@@ -186,10 +184,10 @@ void CWindow::startRender(const CRenderConfig& vConfig, std::function<void(std::
     setDirectionalLight(DirectionalLight);
 
     glEnable(GL_DEPTH_TEST);
-    render();
+    renderPixel();
 }
 
-void CWindow::render()
+void CWindow::renderPixel()
 {
     if (!m_WindowConfigIsSet)
     {

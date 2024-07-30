@@ -1,5 +1,11 @@
 <CAMERA>
-  
+  DefaultCamera
+  <X>0</X>
+  <Y>-20</Y>
+  <Z>-20</Z>
+  <NEAR>0.1</NEAR>
+  <FAR>100</FAR>
+  <VIEWFIELD>45.0</VIEWFIELD>
 </CAMERA>
 
 <MODEL>

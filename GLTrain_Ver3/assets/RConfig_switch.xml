@@ -59,10 +59,34 @@
     geometry_pass
         <VERTEX_SHADER> dr_GS_vs </VERTEX_SHADER>
         <FRAGMENT_SHADER> dr_GS_fs </FRAGMENT_SHADER>
+    <UNIFORM>material.diffuse<VALUE>0</VALUE></UNIFORM>
+    <UNIFORM>material.specular<VALUE>1</VALUE></UNIFORM>
+    <UNIFORM>material.shininess<VALUE>32.0</VALUE></UNIFORM>
   </RENDER_PASS>
   <RENDER_PASS>
     lighting_pass
         <VERTEX_SHADER> dr_LS_vs </VERTEX_SHADER>
         <FRAGMENT_SHADER> dr_LS_fs </FRAGMENT_SHADER>
+
+    <UNIFORM>
+      gPosition
+      <VALUE>32.0</VALUE>
+    </UNIFORM>
+    
+    <UNIFORM>
+      gPosition
+      <VALUE>32.0</VALUE>
+    </UNIFORM>    
+    
+    <UNIFORM>
+      gPosition
+      <VALUE>32.0</VALUE>
+    </UNIFORM>    
+    
+    <UNIFORM>
+      gPosition
+      <VALUE>32.0</VALUE>
+    </UNIFORM>
+    
   </RENDER_PASS>
 </RENDER_ALGORITHM>

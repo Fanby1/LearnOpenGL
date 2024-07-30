@@ -17,7 +17,7 @@ void CWindowConfig::initV()
 {
 	if (m_FilePath.empty() || m_IsInit) 
 	{
-		_logNoExist("**EVERY CONFIG**");
+		_logNoExist("**WINDOW CONFIG FILE**");
 		m_IsInit |= false;
 	}
 	hiveConfig::hiveParseConfig(m_FilePath, hiveConfig::EConfigType::XML, this);

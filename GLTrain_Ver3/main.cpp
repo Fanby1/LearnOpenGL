@@ -29,35 +29,12 @@ void checkOpenGLError(const char* stmt, const char* fname, int line) {
     checkOpenGLError(#stmt, __FILE__, __LINE__); \
 } while (0)
 
-//TODO: write glfwINIT() in dllmain.cpp
-
-static void initGLAD()
-{
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        HIVE_LOG_ERROR("Failed to initialize GLAD");
-    }
-}
-
 static void roateByY(std::chrono::duration<double> vElapsed, CDirectionalLight& vLight)
 {
     double Angle = M_PI * 1e-3;
     Eigen::Vector3f Axis(0, 1, -1);//normalized during process
     vLight.rotate(Angle, Axis);
 }
-/*
-int main() {  
-    CWindowConfig WConfig("./assets/WConfig.xml");
-    WConfig.init();
-
-    CWindow GLFWWindow;
-    GLFWWindow.initWindow(WConfig);
-    CRenderConfig RConfig("./assets/RConfig_switch.xml");
-    RConfig.init();
-    GLFWWindow.startRender(RConfig, roateByY);
-}
-*/
-
 
 int main() {
     CWindowConfig WConfig("./assets/WConfig.xml");
@@ -101,7 +78,7 @@ int main() {
     GLFWWindow.addRenderableObject(Dragon);
 
     CRenderConfig RConfig("./assets/RConfig_switch.xml");
-    RConfig.init();
+    RConfig.initV();
     
     auto Camera = std::make_shared<CCamera>();
     Camera->setCameraPosition({ 0, -20, -20 });
@@ -110,6 +87,15 @@ int main() {
     Camera->setAspectRatio(1.0 * GLFWWindow.getWidth() / GLFWWindow.getHeight());
     Camera->setFeildOfView(45.0);
     GLFWWindow.setCamera(Camera);
+    /*
+    *     auto Camera = std::make_shared<CCamera>();
+    Camera->setCameraPosition({ 0, -20, -20 });
+    Camera->setFarPlane(100);
+    Camera->setNearPlane(0.1);
+    Camera->setAspectRatio(1.0 * GLFWWindow.getWidth() / GLFWWindow.getHeight());
+    Camera->setFeildOfView(45.0);
+    GLFWWindow.setCamera(Camera);
+    */
 
     auto DirectionalLight = std::make_shared<CDirectionalLight>();
     DirectionalLight->setUpdateMoveFunction(roateByY);
