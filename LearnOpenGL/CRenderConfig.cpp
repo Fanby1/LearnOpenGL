@@ -26,9 +26,13 @@ void CRenderConfig::__defineAttributesV()
 	_defineAttribute("SHADER_SOURCE_FILE", hiveConfig::EConfigDataType::ATTRIBUTE_STRING);
 	_defineAttribute("RENDER_ALGORITHM", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
 	_defineAttribute("RENDER_PASS", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
+	_defineAttribute("GEOMETRY_PROGRAM", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
+	_defineAttribute("LIGHTING_PROGRAM", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
 	_defineAttribute("VERTEX_SHADER", hiveConfig::EConfigDataType::ATTRIBUTE_STRING);
 	_defineAttribute("FRAGMENT_SHADER", hiveConfig::EConfigDataType::ATTRIBUTE_STRING);
 	_defineAttribute("UNIFORM", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
+	_defineAttribute("UNITYPE", hiveConfig::EConfigDataType::ATTRIBUTE_STRING);
+	_defineAttribute("UNIVALUE", hiveConfig::EConfigDataType::ATTRIBUTE_STRING);
 }
 
 void CRenderConfig::__setValFromConfig()
@@ -40,7 +44,6 @@ void CRenderConfig::__setValFromConfig()
 	for (const auto& SSubConfig : ShadersSubconfigs) 
 	{
 		std::string SName = SSubConfig->getName();
-		std::string SPath = SSubConfig->getAttribute<std::string>("SHADER_SOURCE_FILE").value();
 		SName.erase(SName.find_last_of(' '));
 		bool ConfigHasPath = SSubConfig->getAttribute<std::string>("SHADER_SOURCE_FILE").has_value();
 		if (!ConfigHasPath)
@@ -49,11 +52,14 @@ void CRenderConfig::__setValFromConfig()
 			continue;
 		}
 		ShaderNames.push_back(SName);
+		std::string SPath = SSubConfig->getAttribute<std::string>("SHADER_SOURCE_FILE").value();
 		m_ShaderPathes.push_back(SPath);
 	}
 
 	std::vector<hiveConfig::CHiveConfig*> RenderPassSubconfigs;
-	extractSpecifiedSubconfigsRecursively("RENDER_PASS", RenderPassSubconfigs);
+	extractSpecifiedSubconfigsRecursively("GEOMETRY_PROGRAM", RenderPassSubconfigs);
+	extractSpecifiedSubconfigsRecursively("LIGHTING_PROGRAM", RenderPassSubconfigs);
+	//help xml make sure Geo before Light
 	if (RenderPassSubconfigs.empty())
 	{
 		_logNoExist("Render pass subconfig");
@@ -62,21 +68,9 @@ void CRenderConfig::__setValFromConfig()
 	for (const auto& RSubconfig : RenderPassSubconfigs) 
 	{
 		SRenderPass RenderPass;
+		RenderPass._Uniforms.clear();
 		std::string RName = RSubconfig->getName();
 		RName.erase(RName.find_first_of(' '));
-		//Messy code is found after getName() due to xml format. Use substring instead.
-		if (RName.find("perpixel") != std::string::npos)
-		{
-			RenderPass._RenderPassType = ERenderPassType::USE_PER_PIXEL_SHADING;
-		}
-		else if (RName.find("pervertex") != std::string::npos)
-		{
-			RenderPass._RenderPassType = ERenderPassType::USE_PER_VERTEX_SHADING;
-		}
-		else
-		{
-			_logNoExist("Render pass type");
-		}
 
 		std::string VertexShaderName = RSubconfig->getAttribute<std::string>("VERTEX_SHADER").value();
 		std::string FragmentShaderName = RSubconfig->getAttribute<std::string>("FRAGMENT_SHADER").value();
@@ -104,7 +98,23 @@ void CRenderConfig::__setValFromConfig()
 			if (RenderPass._FSIndex < 0) _logNoExist("Fragment shader path of " + RName);
 			RenderPass._isInit = false;
 		}
+		__setUniform(RSubconfig, &RenderPass);
+
 		m_RenderPasses.push_back(RenderPass);
 	}
 	return;
+}
+
+void CRenderConfig::__setUniform(hiveConfig::CHiveConfig* vShadingProgramSubConfig, SRenderPass* voRenderPass)
+{
+	std::vector<hiveConfig::CHiveConfig*> UniformSubconfigs;
+	vShadingProgramSubConfig->extractSpecifiedSubconfigsRecursively("UNIFORM", UniformSubconfigs);
+	for (const auto& USubConfig : UniformSubconfigs) 
+	{
+		SUniform Tmp;
+		Tmp._UName = USubConfig->getName();
+		Tmp._UType = USubConfig->getAttribute<std::string>("UNITYPE").value();
+		Tmp._UValue = USubConfig->getAttribute<std::string>("UNIVALUE").value();
+		voRenderPass->_Uniforms.push_back(Tmp);
+	}
 }

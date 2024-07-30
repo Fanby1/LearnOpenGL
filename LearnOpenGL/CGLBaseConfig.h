@@ -16,12 +16,18 @@ protected:
 	void _logNoExist(const std::string vVarName);
 
 	template<typename T>
-	void _setTypeVal(T& vMember, const std::string& vVarName) {
+	void _setTypeVal(T& vMember, const std::string& vVarName, const hiveConfig::CHiveConfig* vConfig) {
 		std::optional<T> s;
 		s.reset();
-		s = getAttribute<T>(vVarName);
+		s = vConfig->getAttribute<T>(vVarName);
 		if (!s.has_value()) _logNoExist(vVarName);
 		else vMember = s.value();
+	}
+
+	template<typename T>
+	void _setTypeVal(T& vMember, const std::string& vVarName)
+	{
+		_setTypeVal(vMember, vVarName, this);
 	}
 };
 

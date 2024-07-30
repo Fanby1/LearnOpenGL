@@ -44,12 +44,26 @@ public:
 		return m_RenderPasses[id]._RenderPassType;
 	}
 
+	struct SUniform
+	{
+		std::string _UName;
+		std::string _UType;
+		std::string _UValue;
+	};
+	std::vector<SUniform> getUniformsInPass(const int& vRenderPassIndex) const 
+	{
+		int id = std::clamp(vRenderPassIndex, 0, (const int)m_RenderPasses.size() - 1);
+		return m_RenderPasses[id]._Uniforms;
+	}
+
 private:
+	
 	struct SRenderPass
 	{
 		int _VSIndex = -1, _FSIndex = -1;
 		bool _isInit = false;
 		ERenderPassType _RenderPassType = ERenderPassType::USE_PER_PIXEL_SHADING;
+		std::vector<SUniform> _Uniforms;
 	};
 
 	std::vector<SRenderPass> m_RenderPasses;
@@ -57,4 +71,5 @@ private:
 
 	void __defineAttributesV() override;
 	void __setValFromConfig();
+	void __setUniform(hiveConfig::CHiveConfig* vShadingProgramSubConfig, SRenderPass* voRenderPass);
 };

@@ -2,6 +2,7 @@
 #include <set>
 #include "def.h"
 #include "CObject.h"
+#include "CObjectConfig.h"
 #include "CRenderConfig.h"
 #include "CWindowConfig.h"
 #include "CStuff.h"
@@ -15,7 +16,7 @@ public:
 	CWindow();
 	~CWindow();
 	int initWindow(const CWindowConfig& vConfig);
-	void initRenderPara(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction);
+	void initRenderPara(const CRenderConfig& vConfig, const CObjectConfig& vObjectConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction);
 	int getWidth() const { return m_Width; }
 	int getHeight() const { return m_Height; }
 	void renderPixel();

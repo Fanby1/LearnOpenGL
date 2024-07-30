@@ -23,7 +23,6 @@ void CObjectConfig::initV()
 void CObjectConfig::__defineAttributesV()
 {
 	_defineAttribute("CAMERA", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
-	_defineAttribute("POSITION", hiveConfig::EConfigDataType::ATTRIBUTE_SUBCONFIG);
 	_defineAttribute("X", hiveConfig::EConfigDataType::ATTRIBUTE_FLOAT);
 	_defineAttribute("Y", hiveConfig::EConfigDataType::ATTRIBUTE_FLOAT);
 	_defineAttribute("Z", hiveConfig::EConfigDataType::ATTRIBUTE_FLOAT);
@@ -37,13 +36,18 @@ void CObjectConfig::__defineAttributesV()
 
 void CObjectConfig::__setValFromConfig()
 {
-	hiveConfig::CHiveConfig* SCCamera = findSubconfigByName("CAMERA");
-	hiveConfig::CHiveConfig* SCCameraPos = SCCamera->findSubconfigByName("POS");
-	m_CameraPos(0) = SCCameraPos->getAttribute<float>("X").value();
-	m_CameraPos(1) = SCCameraPos->getAttribute<float>("Y").value();
-	m_CameraPos(2) = SCCameraPos->getAttribute<float>("Z").value();
-	_setTypeVal<float>(m_FarPlane, "CAMERA|FAR");
-	_setTypeVal<float>(m_NearPlane, "CAMERA|NEAR");
-	_setTypeVal<float>(m_ViewField, "CAMERA|VIEWFIELD");
-	_setTypeVal<std::string>(m_ModelPath, "MODEL|PATH");
+	//subconfig
+	std::vector<hiveConfig::CHiveConfig*> SCCamera;
+	extractSpecifiedSubconfigsRecursively("CAMERA", SCCamera);
+	float x, y, z;
+	_setTypeVal<float>(x,"X",SCCamera[0]);
+	_setTypeVal<float>(y,"Y",SCCamera[0]);
+	_setTypeVal<float>(z,"Z",SCCamera[0]);
+	m_CameraPos = Eigen::Vector3f(x, y, z);
+	_setTypeVal<float>(m_FarPlane, "FAR", SCCamera[0]);
+	_setTypeVal<float>(m_NearPlane, "NEAR", SCCamera[0]);
+	_setTypeVal<float>(m_ViewField, "VIEWFIELD", SCCamera[0]);
+	SCCamera.clear();
+	extractSpecifiedSubconfigsRecursively("MODEL", SCCamera);
+	_setTypeVal<std::string>(m_ModelPath, "PATH", SCCamera[0]);
 }

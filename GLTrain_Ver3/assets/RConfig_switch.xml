@@ -38,8 +38,7 @@
     <SHADER_SOURCE_FILE> ./Shader/lighting_pass.fs </SHADER_SOURCE_FILE>
 </SHADER>
 
-
-<RENDER_ALGORITHM>
+<!--<RENDER_ALGORITHM>
   ComplexShading
   <RENDER_PASS>
     pervertex_shading_pass
@@ -51,42 +50,31 @@
         <VERTEX_SHADER> pixVS </VERTEX_SHADER>
         <FRAGMENT_SHADER> pixFS </FRAGMENT_SHADER>
   </RENDER_PASS>
-</RENDER_ALGORITHM>
+</RENDER_ALGORITHM>-->
 
 <RENDER_ALGORITHM>
   DeferredShading
-  <RENDER_PASS>
-    geometry_pass
-        <VERTEX_SHADER> dr_GS_vs </VERTEX_SHADER>
-        <FRAGMENT_SHADER> dr_GS_fs </FRAGMENT_SHADER>
-    <UNIFORM>material.diffuse<VALUE>0</VALUE></UNIFORM>
-    <UNIFORM>material.specular<VALUE>1</VALUE></UNIFORM>
-    <UNIFORM>material.shininess<VALUE>32.0</VALUE></UNIFORM>
-  </RENDER_PASS>
-  <RENDER_PASS>
+
+  <LIGHTING_PROGRAM>
     lighting_pass
         <VERTEX_SHADER> dr_LS_vs </VERTEX_SHADER>
         <FRAGMENT_SHADER> dr_LS_fs </FRAGMENT_SHADER>
-
     <UNIFORM>
-      gPosition
-      <VALUE>32.0</VALUE>
+      material.shininess<UNITYPE>FLOAT</UNITYPE><UNIVALUE>32.0</UNIVALUE>
     </UNIFORM>
-    
+  </LIGHTING_PROGRAM>  
+  <GEOMETRY_PROGRAM>
+    geometry_pass
+        <VERTEX_SHADER> dr_GS_vs </VERTEX_SHADER>
+        <FRAGMENT_SHADER> dr_GS_fs </FRAGMENT_SHADER>
     <UNIFORM>
-      gPosition
-      <VALUE>32.0</VALUE>
-    </UNIFORM>    
-    
-    <UNIFORM>
-      gPosition
-      <VALUE>32.0</VALUE>
-    </UNIFORM>    
-    
-    <UNIFORM>
-      gPosition
-      <VALUE>32.0</VALUE>
+      material.diffuse<UNITYPE>INT</UNITYPE><UNIVALUE>0</UNIVALUE>
     </UNIFORM>
-    
-  </RENDER_PASS>
+    <UNIFORM>
+      material.specular<UNITYPE>INT</UNITYPE><UNIVALUE>1</UNIVALUE>
+    </UNIFORM>
+    <UNIFORM>
+      material.shininess<UNITYPE>FLOAT</UNITYPE><UNIVALUE>32.0</UNIVALUE>
+    </UNIFORM>
+  </GEOMETRY_PROGRAM>
 </RENDER_ALGORITHM>

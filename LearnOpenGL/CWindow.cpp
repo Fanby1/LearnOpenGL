@@ -150,50 +150,77 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
     return 0;
 }
 
-void CWindow::initRenderPara(const CRenderConfig& vConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
-{
-    auto Camera = std::make_shared<CCamera>();
-    Camera->setCameraPosition({0, -20, -20});
-    Camera->setFarPlane(100);
-    Camera->setNearPlane(0.1);
-    Camera->setAspectRatio(1.0 * m_Width / m_Height);
-    Camera->setFeildOfView(45.0);
-    setCamera(Camera);
-
-    m_RenderPassesNum = vConfig.getRenderPassNum();
-    m_RenderPassNowAtIndex = 0;
-    for (int i = 0; i < m_RenderPassesNum; ++i)
-    {
-        bool isRConfigValid = vConfig.isInit(i);
-        std::string VSPath = isRConfigValid ? vConfig.getVertexShaderPath(i) : "./Shader/directionalLight.vs";
-        std::string FSPath = isRConfigValid ? vConfig.getFragmentShaderPath(i) : "./Shader/directionalLight.fs";
-        CRenderConfig::ERenderPassType UsePerVertexShading = vConfig.getRenderPassType(i);
-        auto ShaderProgram = std::make_shared<CShader>(VSPath.c_str(), FSPath.c_str());
-        ShaderProgram->use();
-        ShaderProgram->setInt("material.diffuse", 0);
-        ShaderProgram->setInt("material.specular", 1);
-        ShaderProgram->setFloat("material.shininess", 64.0f);
-        m_ShaderPrograms.push_back(ShaderProgram);
-    }
-    auto RenderStuff = std::make_shared<CGLTFObject>("./assets/dragon.gltf");
-    RenderStuff->setVAOForwardShader(RenderStuff->getVAOs()[0], m_ShaderPrograms[0]);
-    addRenderableObject(RenderStuff);
-
-    auto DirectionalLight = std::make_shared<CDirectionalLight>();
-    DirectionalLight->setUpdateMoveFunction(vFunction);
-    setDirectionalLight(DirectionalLight);
-
-    glEnable(GL_DEPTH_TEST);
-    renderPixel();
-}
-
-void CWindow::renderPixel()
+void CWindow::initRenderPara(const CRenderConfig& vConfig, const CObjectConfig& vObjectConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
 {
     if (!m_WindowConfigIsSet)
     {
         HIVE_LOG_WARNING("No Window Config is loaded! We will use default parameters...");
     }
+    m_RenderPassesNum = vConfig.getRenderPassNum();
+    m_RenderPassNowAtIndex = 0;
+    for (int i = 0; i < m_RenderPassesNum; ++i)
+    {
+        bool isRConfigValid = vConfig.isInit(i);
+        if (!isRConfigValid) 
+        {
+            HIVE_LOG_ERROR("Window do not load Config {} correctly.", i);
+            continue;
+        }
+        std::string VSPath = vConfig.getVertexShaderPath(i);
+        std::string FSPath = vConfig.getFragmentShaderPath(i);
+        CRenderConfig::ERenderPassType UsePerVertexShading = vConfig.getRenderPassType(i);
+        auto ShaderProgram = std::make_shared<CShader>(VSPath.c_str(), FSPath.c_str());
+        ShaderProgram->use();
+        for (const auto& Uniform : vConfig.getUniformsInPass(i))
+        {
+            std::string TolowerUniformType = Uniform._UType;
+            transform(TolowerUniformType.begin(), TolowerUniformType.end(), TolowerUniformType.begin(), ::tolower);
+            //HIVE_LOG_INFO("{} : {} and {}", Uniforms._UName, Uniforms._UType, atoi(Uniforms._UValue.c_str()));
+            if (TolowerUniformType == "int") ShaderProgram->setInt(Uniform._UName, atoi(Uniform._UValue.c_str()));
+            if (TolowerUniformType == "float") ShaderProgram->setFloat(Uniform._UName, atof(Uniform._UValue.c_str()));
+        }
+        m_ShaderPrograms.push_back(ShaderProgram);
+    }
 
+    auto GeoShader = m_ShaderPrograms[0];
+    auto LightShader = m_ShaderPrograms[1];
+
+    HIVE_LOG_INFO("gShader ID: {}", GeoShader->getID());
+    HIVE_LOG_INFO("lShader ID: {}", LightShader->getID());
+
+    auto Dragon = std::make_shared<CGLTFObject>(vObjectConfig.getModelPath());
+    for (const auto& VAO : Dragon->getVAOs())
+    {
+        Dragon->setVAOGeometryShader(VAO, GeoShader);
+        Dragon->setVAOLightingShader(VAO, LightShader);
+    }
+    addRenderableObject(Dragon);
+
+    auto Camera = std::make_shared<CCamera>();
+    Camera->setCameraPosition(vObjectConfig.getCameraPos());
+    Camera->setFarPlane(vObjectConfig.getFarPlane());
+    Camera->setNearPlane(vObjectConfig.getNearPlane());
+    Camera->setAspectRatio(1.0 * getWidth() / getHeight());
+    Camera->setFeildOfView(vObjectConfig.getViewField());
+    setCamera(Camera);
+
+    auto DirectionalLight = std::make_shared<CDirectionalLight>();
+    DirectionalLight->setUpdateMoveFunction(vFunction);
+    setDirectionalLight(DirectionalLight);
+
+    auto FrameBuffer = std::make_shared<CFramebuffer>(getWidth(), getHeight());
+
+    FrameBuffer->createAndAddGBuffer("gPosition", GL_TEXTURE2, GL_COLOR_ATTACHMENT0, GL_RGB16F, GL_RGB, GL_FLOAT);
+    FrameBuffer->createAndAddGBuffer("gNormal", GL_TEXTURE3, GL_COLOR_ATTACHMENT1, GL_RGB16F, GL_RGB, GL_FLOAT);
+    FrameBuffer->createAndAddGBuffer("gAlbedoSpec", GL_TEXTURE4, GL_COLOR_ATTACHMENT2, GL_RGBA, GL_RGBA, GL_FLOAT);
+    FrameBuffer->createAndAddDepthBuffer("gDepthTexture", GL_TEXTURE5, GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+    FrameBuffer->render();
+    setFrameBuffer(FrameBuffer);
+    renderDeferred();
+}
+
+void CWindow::renderPixel()
+{
     while (!glfwWindowShouldClose(m_pWindow))
     {
         glfwPollEvents();
@@ -240,9 +267,7 @@ void CWindow::renderDeferred()
         {
             m_Light->renderV(m_Camera, m_Light, m_DirectionalLight);
         }
-        
         glfwSwapBuffers(m_pWindow);
-        
     }
 }
 
@@ -255,9 +280,9 @@ void CWindow::__processInput()
 
     if (glfwGetKey(m_pWindow, m_KeyToSwitchRenderPass) == GLFW_PRESS && !m_ChangeRenderPassIsPressed)
     {
-        m_RenderPassNowAtIndex = (m_RenderPassNowAtIndex + 1) % m_RenderPassesNum;
+      /*  m_RenderPassNowAtIndex = (m_RenderPassNowAtIndex + 1) % m_RenderPassesNum;
         HIVE_LOG_INFO("Switch to render pass number: {}", m_RenderPassNowAtIndex);
-        (*m_RenderableObjects.begin())->setVAOForwardShader((*m_RenderableObjects.begin())->getVAOs()[0], m_ShaderPrograms[m_RenderPassNowAtIndex]);
+        (*m_RenderableObjects.begin())->setVAOForwardShader((*m_RenderableObjects.begin())->getVAOs()[0], m_ShaderPrograms[m_RenderPassNowAtIndex]);*/
 
         m_ChangeRenderPassIsPressed = true;
     }
