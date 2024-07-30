@@ -18,16 +18,51 @@
     <SHADER_SOURCE_FILE> ./Shader/perVertexDL.fs </SHADER_SOURCE_FILE>
 </SHADER>
 
+<SHADER>
+  dr_GS_vs
+    <SHADER_SOURCE_FILE> ./Shader/geometry_pass.vs </SHADER_SOURCE_FILE>
+</SHADER>
+
+<SHADER>
+  dr_GS_fs
+    <SHADER_SOURCE_FILE> ./Shader/geometry_pass.fs </SHADER_SOURCE_FILE>
+</SHADER>
+
+<SHADER>
+  dr_LS_vs
+    <SHADER_SOURCE_FILE> ./Shader/lighting_pass.vs </SHADER_SOURCE_FILE>
+</SHADER>
+
+<SHADER>
+  dr_LS_fs
+    <SHADER_SOURCE_FILE> ./Shader/lighting_pass.fs </SHADER_SOURCE_FILE>
+</SHADER>
+
+
 <RENDER_ALGORITHM>
   ComplexShading
   <RENDER_PASS>
-    pervertex_shading
+    pervertex_shading_pass
         <VERTEX_SHADER> vtxVS </VERTEX_SHADER>
         <FRAGMENT_SHADER> vtxFS </FRAGMENT_SHADER>
   </RENDER_PASS>
   <RENDER_PASS>
-    perpixel_shading
+    perpixel_shading_pass
         <VERTEX_SHADER> pixVS </VERTEX_SHADER>
         <FRAGMENT_SHADER> pixFS </FRAGMENT_SHADER>
+  </RENDER_PASS>
+</RENDER_ALGORITHM>
+
+<RENDER_ALGORITHM>
+  DeferredShading
+  <RENDER_PASS>
+    geometry_pass
+        <VERTEX_SHADER> dr_GS_vs </VERTEX_SHADER>
+        <FRAGMENT_SHADER> dr_GS_fs </FRAGMENT_SHADER>
+  </RENDER_PASS>
+  <RENDER_PASS>
+    lighting_pass
+        <VERTEX_SHADER> dr_LS_vs </VERTEX_SHADER>
+        <FRAGMENT_SHADER> dr_LS_fs </FRAGMENT_SHADER>
   </RENDER_PASS>
 </RENDER_ALGORITHM>

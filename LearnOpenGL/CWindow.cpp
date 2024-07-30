@@ -18,10 +18,10 @@
 #include <iostream>
 
 // º¯Êý¼ì²é OpenGL ´íÎó
-void checkOpenGLError(const char* stmt, const char* fname, int line) {
+void checkOpenGLError(const char* vState, const char* vFile, int vLineNum) {
     GLenum err = glGetError();
     while (err != GL_NO_ERROR) {
-        std::cerr << "OpenGL error " << err << " at " << stmt << " in " << fname << " at line " << line << std::endl;
+        HIVE_LOG_ERROR("OpenGL ERR: {} at {} in {} at line {}.", err, vState, vFile, vLineNum);
         err = glGetError();
     }
 }
