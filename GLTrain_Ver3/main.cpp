@@ -61,7 +61,7 @@ int main() {
 
 int main() {
     CWindowConfig WConfig("./assets/WConfig.xml");
-    WConfig.init();
+    WConfig.initV();
 
     CWindow GLFWWindow;
     GLFWWindow.initWindow(WConfig);

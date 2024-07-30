@@ -47,6 +47,9 @@ private:
 	std::shared_ptr<CDirectionalLight> m_DirectionalLight = nullptr;
 	std::shared_ptr<CFramebuffer> m_FramBuffer;
 
+	//default key mapping.
+	GLuint m_KeyToSwitchRenderPass = GLFW_KEY_T;
+
 	void __destroyWindow();
 	template<typename T>
 	bool  __isParaErr(const T& vData, const T& vFloor, const T& vCeil, const std::string& vType);

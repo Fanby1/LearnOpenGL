@@ -22,7 +22,8 @@ CTexture::CTexture(const CImage& vImage, GLuint vTextureUnit)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load and generate the texture
     unsigned long RGBA = GL_RGB;
-    if (vImage.getNRChannels() == 4) {
+    if (vImage.getNRChannels() == 4) 
+    {
         RGBA = GL_RGBA;
     }
     glTexImage2D(GL_TEXTURE_2D, 0, RGBA, vImage.getWidth(), vImage.getHeight(), 0, RGBA, GL_UNSIGNED_BYTE, vImage.getData());

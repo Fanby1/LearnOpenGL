@@ -2,15 +2,18 @@
 
 bool CVertexArrayObject::__createVAO()
 {
-	if (m_ID != 0) {
+	if (m_ID != 0) 
+	{
 		glDeleteVertexArrays(1, &m_ID);
 	}
 	glGenVertexArrays(1, &m_ID);
 	glBindVertexArray(m_ID);
-	for (const auto& VBO : m_VBOs) {
+	for (const auto& VBO : m_VBOs) 
+	{
 		VBO->bind();
 	}
-	if (m_EBO != nullptr) {
+	if (m_EBO != nullptr) 
+	{
 		m_EBO->bind();
 	}
 	glBindVertexArray(0);
@@ -21,7 +24,8 @@ bool CVertexArrayObject::__createVAO()
 void CVertexArrayObject::addVBO(std::shared_ptr<CVertexBufferObject> vVBO)
 {
 	auto VBO = m_VBOs.find(vVBO);
-	if (VBO == m_VBOs.end()) {
+	if (VBO == m_VBOs.end()) 
+	{
 		m_VBOs.insert(vVBO);
 		__createVAO();
 	}
@@ -30,7 +34,8 @@ void CVertexArrayObject::addVBO(std::shared_ptr<CVertexBufferObject> vVBO)
 void CVertexArrayObject::deleteVBO(std::shared_ptr<CVertexBufferObject> vVBO)
 {
 	auto VBO = m_VBOs.find(vVBO);
-	if (VBO != m_VBOs.end()) {
+	if (VBO != m_VBOs.end()) 
+	{
 		m_VBOs.erase(VBO);
 		__createVAO();
 	}

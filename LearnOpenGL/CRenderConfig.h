@@ -1,16 +1,14 @@
 #pragma once
 #include <algorithm>
-#include <string>
 #include <set>
-#include "def.h"
-#include "HiveConfig.h"
+#include "CGLBaseConfig.h"
 
-class GLTRAINVER3_API CRenderConfig : protected hiveConfig::CHiveConfig
+class GLTRAINVER3_API CRenderConfig : public CGLBaseConfig
 {
 public:
 	CRenderConfig(const std::string& vFilePath = "");
 	~CRenderConfig() = default;
-	void init();
+	void initV() override;
 
 	int getRenderPassNum() const
 	{
@@ -47,7 +45,6 @@ public:
 	}
 
 private:
-	std::string m_FilePath = "";
 	struct SRenderPass
 	{
 		int _VSIndex = -1, _FSIndex = -1;
@@ -58,8 +55,6 @@ private:
 	std::vector<SRenderPass> m_RenderPasses;
 	std::vector<std::string> m_ShaderPathes;
 
-	void __defineAttributesV();
-	void __readConfigFromFile();
+	void __defineAttributesV() override;
 	void __setValFromConfig();
-	void __logNoExist(const std::string vType);
 };

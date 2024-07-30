@@ -7,49 +7,63 @@
 std::vector<unsigned int> CRenderableObject::__createOffset(unsigned int vType)
 {
 	std::vector<unsigned int> Offset;
-	if (vType & VERTEX_TYPE_VERTEX_BIT) {
+	if (vType & VERTEX_TYPE_VERTEX_BIT) 
+	{
 		Offset.push_back(3);
 	}
-	else {
+	else 
+	{
 		Offset.push_back(0);
 	}
-	if (vType & VERTEX_TYPE_COLOR_BIT) {
+	if (vType & VERTEX_TYPE_COLOR_BIT) 
+	{
 		Offset.push_back(3);
 	}
-	else {
+	else 
+	{
 		Offset.push_back(0);
 	}
-	if (vType & VERTEX_TYPE_TEXTURE_BIT) {
+	if (vType & VERTEX_TYPE_TEXTURE_BIT) 
+	{
 		Offset.push_back(2);
 	}
-	else {
+	else 
+	{
 		Offset.push_back(0);
 	}
-	if (vType & VERTEX_TYPE_NORMAL_BIT) {
+	if (vType & VERTEX_TYPE_NORMAL_BIT) 
+	{
 		Offset.push_back(3);
 	}
-	else {
+	else 
+	{
 		Offset.push_back(0);
 	}
 	return Offset;
 }
 
-std::vector<float> CRenderableObject::__readFloatArrayFromFile(std::ifstream& vFile) {
+std::vector<float> CRenderableObject::__readFloatArrayFromFile(std::ifstream& vFile) 
+{
 	std::vector<float> Result;
 	std::string FileBuffer;
 
-	while (std::getline(vFile, FileBuffer)) {
+	while (std::getline(vFile, FileBuffer)) 
+	{
 		std::stringstream ss(FileBuffer);
 		std::string ValueString;
 
-		while (std::getline(ss, ValueString, ',')) {
-			try {
+		while (std::getline(ss, ValueString, ',')) 
+		{
+			try 
+			{
 				Result.push_back(std::stof(ValueString));
 			}
-			catch (const std::invalid_argument& e) {
+			catch (const std::invalid_argument& e) 
+			{
 				HIVE_LOG_ERROR("Invalid number in file: {}", ValueString);
 			}
-			catch (const std::out_of_range& e) {
+			catch (const std::out_of_range& e) 
+			{
 				HIVE_LOG_ERROR("Number out of range in file: {}", ValueString);
 			}
 		}
