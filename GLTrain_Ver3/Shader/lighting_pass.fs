@@ -7,6 +7,7 @@ in vec2 TexCoords;
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
+uniform sampler2D gDepthTexture;
 
 struct Light {
     //vec3 position;
@@ -27,8 +28,9 @@ uniform vec3 viewPos;
 
 void main()
 {
-	
-    // Retrieve data from G-buffer
+	float depthValue = texture(gDepthTexture, TexCoords).r;  
+    gl_FragDepth = depthValue;
+	// Retrieve data from G-buffer
     vec3 FragPos = texture(gPosition, TexCoords).rgb;
     vec3 Normal = normalize(texture(gNormal, TexCoords).rgb);
     vec3 Albedo = texture(gAlbedoSpec, TexCoords).rgb;
@@ -53,4 +55,6 @@ void main()
     vec3 lighting = ambient + diffuse + specular;
 	
     FragColor = vec4(lighting, 1.0);
+	
+	 
 }

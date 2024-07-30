@@ -67,6 +67,9 @@ CShader::CShader(const char* vVertexPath, const char* vFragmentPath)
     glDeleteShader(Fragment);
 }
 
+unsigned int CShader::getID() {
+    return ID;
+}
 #include <iostream>
 
 // º¯Êı¼ì²é OpenGL ´íÎó
