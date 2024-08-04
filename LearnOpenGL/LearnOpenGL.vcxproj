@@ -30,6 +30,7 @@
     <ClInclude Include="CGLBaseConfig.h" />
     <ClInclude Include="CGLTFObject.h" />
     <ClInclude Include="CImage.h" />
+    <ClInclude Include="CLight.h" />
     <ClInclude Include="CObjectConfig.h" />
     <ClInclude Include="CPointLight.h" />
     <ClInclude Include="CObject.h" />
@@ -53,6 +54,7 @@
     <ClCompile Include="CGLBaseConfig.cpp" />
     <ClCompile Include="CGLTFObject.cpp" />
     <ClCompile Include="CImage.cpp" />
+    <ClCompile Include="CLight.cpp" />
     <ClCompile Include="CObjectConfig.cpp" />
     <ClCompile Include="CPointLight.cpp" />
     <ClCompile Include="CObject.cpp" />
@@ -161,6 +163,7 @@
       <PreprocessorDefinitions>_DEBUG;GLTRAINVER3_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -81,6 +81,9 @@
     <ClInclude Include="CObjectConfig.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWindow.cpp">
@@ -144,6 +147,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CObjectConfig.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CLight.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
