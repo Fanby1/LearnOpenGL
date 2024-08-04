@@ -1,5 +1,6 @@
 #include "CDirectionalLight.h"
 #include "iostream"
+#include "HiveLogger.h"
 
 const Eigen::Vector3f& CDirectionalLight::getDirection() const
 {
@@ -29,15 +30,10 @@ void CDirectionalLight::updateShaderUniforms(const std::shared_ptr<CShader>& vSh
 		std::chrono::duration<double> Elapsed = Current - m_Start;
 		m_UpdateMoveFunction(Elapsed, *this);
 	}
-	vShader->setVec3("light.direction", m_Direction);
-	vShader->setVec3("light.ambient", m_Ambient);
-	vShader->setVec3("light.diffuse", m_Diffuse);
-	vShader->setVec3("light.specular", m_Specular);
-}
-
-void CDirectionalLight::setUpdateMoveFunction(std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
-{
-	m_UpdateMoveFunction = vFunction;
+	vShader->setVec3(m_NameInShader + ".direction", m_Direction);
+	vShader->setVec3(m_NameInShader + ".ambient", m_Ambient);
+	vShader->setVec3(m_NameInShader + ".diffuse", m_Diffuse);
+	vShader->setVec3(m_NameInShader + ".specular", m_Specular);
 }
 
 void CDirectionalLight::rotate(float vAngle, const Eigen::Vector3f& vAxis)

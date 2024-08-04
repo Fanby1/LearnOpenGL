@@ -150,7 +150,7 @@ int CWindow::initWindow(const CWindowConfig& vConfig)
     return 0;
 }
 
-void CWindow::initRenderPara(const CRenderConfig& vConfig, const CObjectConfig& vObjectConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction)
+void CWindow::initRenderPara(const CRenderConfig& vConfig, const CObjectConfig& vObjectConfig, std::function<void(std::chrono::duration<double>, CObject&)> vFunction)
 {
     if (!m_WindowConfigIsSet)
     {
@@ -196,6 +196,15 @@ void CWindow::initRenderPara(const CRenderConfig& vConfig, const CObjectConfig& 
     }
     addRenderableObject(Dragon);
 
+    auto Cube = std::make_shared<CStuff>("./assets/light.txt");
+    Cube->move({ 0.0f, - 10.f, - 15.f });
+    for (const auto& VAO : Cube->getVAOs())
+    {
+        Cube->setVAOGeometryShader(VAO, GeoShader);
+        Cube->setVAOLightingShader(VAO, LightShader);
+    }
+    addRenderableObject(Cube);
+
     auto Camera = std::make_shared<CCamera>();
     Camera->setCameraPosition(vObjectConfig.getCameraPos());
     Camera->setFarPlane(vObjectConfig.getFarPlane());
@@ -206,7 +215,15 @@ void CWindow::initRenderPara(const CRenderConfig& vConfig, const CObjectConfig& 
 
     auto DirectionalLight = std::make_shared<CDirectionalLight>();
     DirectionalLight->setUpdateMoveFunction(vFunction);
+    DirectionalLight->setNameInShader("light");
+    DirectionalLight->setColor({ 1.0f, 0.f, 0.f });
     setDirectionalLight(DirectionalLight);
+
+    auto PointLight = std::make_shared<CPointLight>();
+    PointLight->setColor({ 1.0f, 0.0f, 1.0f });
+    PointLight->move({ 0.0f, -19.0f, -19.0f });
+    PointLight->setNameInShader("pointLight");
+    setPointLight(PointLight);
 
     auto FrameBuffer = std::make_shared<CFramebuffer>(getWidth(), getHeight());
 
@@ -228,10 +245,6 @@ void CWindow::renderPixel()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if (m_Light) 
-        {
-            m_Light->renderV(m_Camera, m_Light, m_DirectionalLight);
-        }
         for (auto& RenderableObject : m_RenderableObjects) 
         {
             RenderableObject->renderV(m_Camera, m_Light, m_DirectionalLight);
@@ -263,10 +276,6 @@ void CWindow::renderDeferred()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         CHECK_GL_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
         __renderGrad(m_Camera, m_Light, m_DirectionalLight);
-        if (m_Light)
-        {
-            m_Light->renderV(m_Camera, m_Light, m_DirectionalLight);
-        }
         glfwSwapBuffers(m_pWindow);
     }
 }
@@ -341,4 +350,9 @@ void CWindow::setCamera(std::shared_ptr<CCamera> vCamera)
 void CWindow::setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight)
 {
     m_DirectionalLight = vLight;
+}
+
+void CWindow::setPointLight(std::shared_ptr<CPointLight> vLight)
+{
+    m_Light = vLight;
 }

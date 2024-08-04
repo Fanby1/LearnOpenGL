@@ -20,15 +20,16 @@ void CStuff::renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLig
 	for (auto& It : m_VAOToShadersMap) {
 		__transform(It.second.m_ForwardShader);
 		It.second.m_ForwardShader->use();
-		if (vCamera) {
+		if (vCamera)
+		{
 			vCamera->updateShaderUniforms(It.second.m_ForwardShader);
-			It.second.m_ForwardShader->setVec3("viewPos", vCamera->getPosition());
 		}
-		if (vLight) {
-			It.second.m_ForwardShader->setVec3("lightPos", LightPosition);
-			It.second.m_ForwardShader->setVec3("lightColor", { 1,1,1 });
+		if (vLight)
+		{
+			vLight->updateShaderUniforms(It.second.m_ForwardShader);
 		}
-		if (vDirectionalLight) {
+		if (vDirectionalLight)
+		{
 			vDirectionalLight->updateShaderUniforms(It.second.m_ForwardShader);
 		}
 		

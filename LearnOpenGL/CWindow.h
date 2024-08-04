@@ -16,7 +16,7 @@ public:
 	CWindow();
 	~CWindow();
 	int initWindow(const CWindowConfig& vConfig);
-	void initRenderPara(const CRenderConfig& vConfig, const CObjectConfig& vObjectConfig, std::function<void(std::chrono::duration<double>, CDirectionalLight&)> vFunction);
+	void initRenderPara(const CRenderConfig& vConfig, const CObjectConfig& vObjectConfig, std::function<void(std::chrono::duration<double>, CObject&)> vFunction);
 	int getWidth() const { return m_Width; }
 	int getHeight() const { return m_Height; }
 	void renderPixel();
@@ -26,6 +26,7 @@ public:
 	void addRenderableObject(std::shared_ptr<CRenderableObject> vRenderableObject);
 	void setCamera(std::shared_ptr<CCamera> vCamera);
 	void setDirectionalLight(std::shared_ptr<CDirectionalLight> vLight);
+	void setPointLight(std::shared_ptr<CPointLight> vLight);
 	void setFrameBuffer(std::shared_ptr<CFramebuffer> vFrameBuffer) { m_FramBuffer = vFrameBuffer; }
 
 private:

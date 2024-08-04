@@ -23,7 +23,7 @@ public:
 	std::map<std::shared_ptr<CVertexArrayObject>, SShaderMessage>::iterator begin();
 	std::map<std::shared_ptr<CVertexArrayObject>, SShaderMessage>::iterator end();
 	virtual void renderV(std::shared_ptr<CCamera> vCamera, std::shared_ptr<CPointLight> vLight, std::shared_ptr<CDirectionalLight> vDirectionalLight)= 0;
-	virtual void renderGeometryV(std::shared_ptr<CCamera> vCamera)= 0;
+	virtual void renderGeometryV(std::shared_ptr<CCamera> vCamera);
 	
 protected:
 	std::map<std::shared_ptr<CVertexArrayObject>, SShaderMessage> m_VAOToShadersMap;

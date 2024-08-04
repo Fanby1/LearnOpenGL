@@ -16,11 +16,13 @@
 #include "CFramebuffer.h"
 #include <iostream>
 
-static void roateByY(std::chrono::duration<double> vElapsed, CDirectionalLight& vLight)
+static void roateByY(std::chrono::duration<double> vElapsed, CObject& vLight)
 {
     double Angle = M_PI * 1e-3;
     Eigen::Vector3f Axis(0, 1, -1);//normalized during process
-    vLight.rotate(Angle, Axis);
+    CDirectionalLight& Light = static_cast<CDirectionalLight&>(vLight);
+    auto& Direction = Light.getDirection();
+    Light.rotate(Angle, Axis);
 }
 
 int main() {

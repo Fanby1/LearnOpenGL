@@ -166,3 +166,34 @@ std::map<std::shared_ptr<CVertexArrayObject>, SShaderMessage>::iterator CRendera
 	return m_VAOToShadersMap.end();
 }
 
+void CRenderableObject::renderGeometryV(std::shared_ptr<CCamera> vCamera)
+{
+	if (__isFunctionSet())
+	{
+		auto Current = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> Elapsed = Current - m_Start;
+		m_UpdateMoveFunction(Elapsed, *this);
+	}
+
+	for (auto& It : m_VAOToShadersMap)
+	{
+		__transform(It.second.m_GeometryShader);
+		It.second.m_GeometryShader->use();
+		// m_Textures[0]->bind();
+		// m_Textures[1]->bind();
+		vCamera->updateShaderUniforms(It.second.m_GeometryShader);
+		It.first->bind();
+		if (It.first->getEBO() != nullptr)
+		{
+			glDrawElements(GL_TRIANGLES, It.first->getEBO()->getSize(), GL_UNSIGNED_INT, 0);
+		}
+		else
+		{
+			auto VBOs = It.first->getVBOs();
+			auto VBO = VBOs.begin();
+			auto Size = VBO->get()->getSize();
+			glDrawArrays(GL_TRIANGLES, 0, VBO->get()->getSize());
+		}
+		glBindVertexArray(0);
+	}
+}

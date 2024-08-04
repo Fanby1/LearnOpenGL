@@ -41,6 +41,11 @@ void CObject::move(Eigen::Vector3f vDisplacement)
 	m_Position += vDisplacement;
 }
 
+void CObject::setNameInShader(const std::string& vName)
+{
+	m_NameInShader = vName;
+}
+
 void CObject::setPosition(Eigen::Vector3f vNewPosition)
 {
 	m_Position = vNewPosition;

@@ -1,6 +1,8 @@
 #pragma once
 #include "CObject.h"
-class CLight : public CObject
+#include "def.h"
+
+class GLTRAINVER3_API CLight : public CObject
 {
 	/*
 	颜色（Color）：
@@ -11,7 +13,11 @@ class CLight : public CObject
 光源的强度或亮度。
 	*/
 public:
-
+	CLight() = default;
+	void setColor(const Eigen::Vector3f& vColor);
+	void setIntensity(float vIntensity);
+	const Eigen::Vector3f& getColor() const;
+	float getIntensity() const;
 protected:
 	Eigen::Vector3f m_Color = { 1.0f, 1.0f, 1.0f };
 	float m_Intensity = 1.0f;

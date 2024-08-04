@@ -23,12 +23,14 @@ public:
 	CObject() = default;
 	void setUpdateMoveFunction(std::function<void(std::chrono::duration<double>, CObject&)> vFunction);
 	void move(Eigen::Vector3f vDisplacement);
+	void setNameInShader(const std::string& vName);
 	void setPosition(Eigen::Vector3f vNewPosition);
 	void scale(float vScale);
 	void setScale(float vScale);
 	Eigen::Vector3f getPosition();
 
 protected:
+	std::string m_NameInShader;
 	Eigen::Vector3f m_Position = { 0, 0, 0 };
 	Eigen::Vector3f m_Direction = { 0, 0, 0 };
 	float m_Scale = 1.0f;
